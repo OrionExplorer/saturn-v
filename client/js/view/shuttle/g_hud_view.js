@@ -1,13 +1,3 @@
-function showDevicesInfo() {
-    print('<div class="box-1-info">'+
-            '<table>'+
-            '<caption><strong>DEVICES STATUS</strong></caption>'+
-                _showRecord('<strong>HIGH-GAIN ANTENNA</strong>', '<span id="voyager7_highGainAntenna">'+highGainAntenna.getEngagedStatus())+
-                _showRecord('<strong>LOW-GAIN ANTENNA</strong>', '<span id="voyager7_lowGainAntenna">'+lowGainAntenna.getEngagedStatus())+
-            '</table>'+
-        '</div>');
-}
-
 function showPitchRollYaw() {
 //    print('<div class="box-1-info">'+
 //            '<table>'+
@@ -33,42 +23,6 @@ function showEngines() {
                 _showRecord('<strong>YAW</strong>', '<span id="voyager7_yaw">0°</span')+
                 _showRecord('<strong>HORIZONTAL</br>ALTITUDE</strong>', '<span id="voyager7_horizontalAltitude">'+getHorizontalAltitudeStatus()+'</span>')+
         '</table>'+
-        '</div>');
-}
-
-function showMPS() {
-    print('<div class="box-1-info">'+
-            '<table>'+
-            '<caption><strong>MAIN PROPULSION SYSTEM</strong></caption>'+
-                _showRecord('<strong>APS</strong>', '<span id="voyager7_systemAPS">'+systemAPS.getEngagedStatus()+'</span>')+
-                _showRecord('<strong>DPS</strong>', '<span id="voyager7_systemDPS">'+systemDPS.getEngagedStatus()+'</span>')+
-            '</table>'+
-       '</div>');
-}
-
-function showRCS() {
-    print('<div class="box-info">'+
-            '<table>'+
-            '<caption><strong>REACTION CONTROL SUBSYSTEM</strong></caption>'
-    );
-    for(var i = 0, thrusters_len = thrusters.length; i < thrusters_len; i++) {
-        var _thrusterID = i+1;
-        var thruster_name = thrusters[i].name != undefined ? thrusters[i].name : 'THRUSTER #'+_thrusterID;
-        print(_showRecord('<strong>'+thruster_name+'</strong>', '<span id="voyager7_thruster_'+i+'">'+thrusters[i].getEngagedStatus()+' ('+thrusters[i].getThrust()+' %)</span>'));
-    }
-
-    endTag('table');
-    endTag('div');
-}
-
-function showCoordinates() {
-    print('<div class="box-info">'+
-            '<table>'+
-            '<caption><strong>COORDINATES INFORMATION</strong></caption>'+
-                _showRecord('<strong>DECLINATION</strong>', '<span id="voyager7_declination">'+declination+' °</span>')+
-                _showRecord('<strong>RIGHT ASCENSION</strong>', '<span id="voyager7_right_ascension">'+rightAscension+' HRS</span>')+
-                _showRecord('<strong>ECLIPTIC LATITUDE</strong>', '<span id="voyager7_energy">'+eclipticLatitude+' °</span>')+
-            '</table>'+
         '</div>');
 }
 

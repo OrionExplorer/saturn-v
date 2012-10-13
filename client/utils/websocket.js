@@ -25,6 +25,7 @@ function connectToVoyager7(address) {
         if(json.data_type == 'telemetry') {
             if(json.success) {
                 console.log('Received telemetry data.', json.data );
+                parseRemoteData(json.data);
             } else {
                 
             }

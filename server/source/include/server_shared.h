@@ -144,9 +144,34 @@ struct TELEMETRY {
 	short					max_q_achieved;
 	int						current_dynamic_pressure;
 	short					stable_orbit_achieved;
+	short					launch_escape_tower_ready;
 	double					pitch;
+	double					dest_pitch;
 	double					roll;
+	double					dest_roll;
 	double					yaw;
+	char					destination[ SMALL_BUFF_SIZE ];
+	int						destination_altitude;
+	short					internal_guidance_engaged;
+	short					main_engine_engaged;
+	short					pitch_program_engaged;
+	short					roll_program_engaged;
+	short					yaw_program_engaged;
+	long double				s_ic_fuel;
+	long double				s_ii_fuel;
+	long double				s_ivb_fuel;
+	short					s_ic_attached;
+	short					s_ii_attached;
+	short					s_ivb_attached;
+	long double				s_ic_thrust;
+	long double				s_ii_thrust;
+	long double				s_ivb_thrust;
+	double					s_ic_burn_time;
+	double					s_ii_burn_time;
+	double					s_ivb_burn_time;
+	short					s_ic_center_engine_available;
+	short					s_ii_center_engine_available;
+	short					s_ivb_center_engine_available;
 };
 
 /* G³ówna struktura, która bêdzie przechowywa³a wszystkie informacje o po³¹czonym kliencie */
@@ -189,11 +214,11 @@ enum vCONTROL_MODE {
 };
 
 enum vDEVICE {
-	MAIN_ENGINE,
+	INTERNAL_GUIDANCE,
 	S1,
 	S2,
 	S3,
-	APS,
+	MAIN_ENGINE,
 	THRUST,
 	PITCH_PROGRAM,
 	ROLL_PROGRAM,

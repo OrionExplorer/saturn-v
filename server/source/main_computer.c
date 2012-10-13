@@ -85,6 +85,8 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddStringToObject( root, "data_type", "telemetry" );
 	cJSON_AddItemToObject( root, "data", data );
 
+	cJSON_AddNumberToObject( data, "mission_time", telemetry_data.mission_time );
+
 	cJSON_AddNumberToObject( data, "current_fuel_mass", telemetry_data.current_fuel_mass );
 	cJSON_AddNumberToObject( data, "total_mass", telemetry_data.total_mass );
 	cJSON_AddNumberToObject( data, "thrust_newtons", telemetry_data.thrust_newtons );
@@ -98,14 +100,48 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "current_altitude", telemetry_data.current_altitude );
 	cJSON_AddNumberToObject( data, "total_distance", telemetry_data.total_distance );
 	cJSON_AddNumberToObject( data, "last_velocity", telemetry_data.last_velocity );
-	cJSON_AddNumberToObject( data, "mission_time", telemetry_data.mission_time );
+
 	cJSON_AddNumberToObject( data, "ascending_time", telemetry_data.ascending_time );
+
 	cJSON_AddNumberToObject( data, "max_q_achieved", telemetry_data.max_q_achieved );
 	cJSON_AddNumberToObject( data, "current_dynamic_pressure", telemetry_data.current_dynamic_pressure );
+
 	cJSON_AddNumberToObject( data, "stable_orbit_achieved", telemetry_data.stable_orbit_achieved );
+	cJSON_AddNumberToObject( data, "launch_escape_tower_ready", telemetry_data.launch_escape_tower_ready );
+
 	cJSON_AddNumberToObject( data, "pitch", telemetry_data.pitch );
+	cJSON_AddNumberToObject( data, "dest_pitch", telemetry_data.dest_pitch );
 	cJSON_AddNumberToObject( data, "roll", telemetry_data.roll );
+	cJSON_AddNumberToObject( data, "dest_roll", telemetry_data.dest_roll );
 	cJSON_AddNumberToObject( data, "yaw", telemetry_data.yaw );
+
+	cJSON_AddStringToObject( data, "destination", telemetry_data.destination );
+	cJSON_AddNumberToObject( data, "destination_altitude", telemetry_data.destination_altitude );
+
+	cJSON_AddNumberToObject( data, "internal_guidance_engaged", telemetry_data.internal_guidance_engaged );
+	cJSON_AddNumberToObject( data, "main_engine_engaged", telemetry_data.main_engine_engaged );
+
+	cJSON_AddNumberToObject( data, "pitch_program_engaged", telemetry_data.pitch_program_engaged );
+	cJSON_AddNumberToObject( data, "roll_program_engaged", telemetry_data.roll_program_engaged );
+	cJSON_AddNumberToObject( data, "yaw_program_engaged", telemetry_data.yaw_program_engaged );
+
+	cJSON_AddNumberToObject( data, "s_ic_fuel", telemetry_data.s_ic_fuel );
+	cJSON_AddNumberToObject( data, "s_ic_attached", telemetry_data.s_ic_attached );
+	cJSON_AddNumberToObject( data, "s_ic_thrust", telemetry_data.s_ic_thrust );
+	cJSON_AddNumberToObject( data, "s_ic_burn_time", telemetry_data.s_ic_burn_time );
+	cJSON_AddNumberToObject( data, "s_ic_center_engine_available", telemetry_data.s_ic_center_engine_available );
+
+	cJSON_AddNumberToObject( data, "s_ii_fuel", telemetry_data.s_ii_fuel );
+	cJSON_AddNumberToObject( data, "s_ii_attached", telemetry_data.s_ii_attached );
+	cJSON_AddNumberToObject( data, "s_ii_thrust", telemetry_data.s_ii_thrust );
+	cJSON_AddNumberToObject( data, "s_ii_burn_time", telemetry_data.s_ii_burn_time );
+	cJSON_AddNumberToObject( data, "s_ii_center_engine_available", telemetry_data.s_ii_center_engine_available );
+
+	cJSON_AddNumberToObject( data, "s_ivb_fuel", telemetry_data.s_ivb_fuel );
+	cJSON_AddNumberToObject( data, "s_ivb_attached", telemetry_data.s_ivb_attached );
+	cJSON_AddNumberToObject( data, "s_ivb_thrust", telemetry_data.s_ivb_thrust );
+	cJSON_AddNumberToObject( data, "s_ivb_burn_time", telemetry_data.s_ivb_burn_time );
+	cJSON_AddNumberToObject( data, "s_ivb_center_engine_available", telemetry_data.s_ivb_center_engine_available );
 
 	output = cJSON_Print( root );
 
@@ -136,8 +172,9 @@ void* TELEMETRY_send_live_data( void* data ) {
 	int i;
 
 	while(1) {
-		Sleep(1000);
+		Sleep(500);
 		for( i = 0; i < MAX_CLIENTS; i++ ) {
+			TELEMETRY_update();
 			if(connected_clients[ i ].socket_descriptor > 0 ) {
 				if( connected_clients[ i ].authorized == 1 && connected_clients[ i ].binded == 1 ) {
 					TELEMETRY_send_ondemand_data( &connected_clients[ i ] );
@@ -169,7 +206,7 @@ void MAIN_COMPUTER_init( void ) {
 	EXEC_COMMAND( S2, TANK, 0 );
 	EXEC_COMMAND( S3, ATTACH, 0 );
 	EXEC_COMMAND( S3, TANK, 0 );
-	EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+	//EXEC_COMMAND( INTERNAL_GUIDANCE, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
@@ -199,38 +236,38 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 	switch( device ) {
 		default : /* Nic */ break;
-		case MAIN_ENGINE : {
+		case INTERNAL_GUIDANCE : {
 			switch( command ) {
 				default : /* Nic */ break;
 
 				case START : {
-					if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+					if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 ) {
 						success = 0;
-						strncpy( message, "ERROR: MAIN ENGINE IS ENGAGED", BIG_BUFF_SIZE );
+						strncpy( message, "ERROR: INTERNAL GUIDANCE IS ENGAGED", BIG_BUFF_SIZE );
 					} else {
-						if( ROCKET_ENGINE_get_engaged( &aps_system ) == 0 && ROCKET_STAGE_get_attached( &system_s1 ) == 1 && ROCKET_STAGE_get_fuel( &system_s1) > 0 ) {
-							ROCKET_ENGINE_do_engage( &main_engine );
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 && ROCKET_STAGE_get_attached( &system_s1 ) == 1 && ROCKET_STAGE_get_fuel( &system_s1) > 0 ) {
+							ROCKET_ENGINE_do_engage( &internal_guidance );
 							success = 1;
-							strncpy( message, "MAIN ENGINE ENGAGED", BIG_BUFF_SIZE );
+							strncpy( message, "GUIDANCE IS INTERNAL", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO START MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO ENGAGE INTERNAL GUIDANCE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
 
 				case STOP : {
-					if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
+					if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 ) {
 						success = 0;
-						strncpy( message, "ERROR: MAIN ENGINE IS DISENGAGED", BIG_BUFF_SIZE );
+						strncpy( message, "ERROR: INTERNAL GUIDANCE IS DISENGAGED", BIG_BUFF_SIZE );
 					} else {
-						if( ROCKET_ENGINE_get_engaged( &aps_system ) == 0 && ROCKET_ENGINE_get_thrust( &main_engine) == 0 ) {
-							ROCKET_ENGINE_do_disengage( &main_engine );
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 && ROCKET_ENGINE_get_thrust( &internal_guidance) == 0 ) {
+							ROCKET_ENGINE_do_disengage( &internal_guidance );
 							success = 1;
-							strncpy( message, "MAIN ENGINE DISENGAGED", BIG_BUFF_SIZE );
+							strncpy( message, "GUIDANCE IS EXTERNAL", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO STOP MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO SWITCH TO EXTERNAL GUIDANCE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
@@ -238,7 +275,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case S1 : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ROCKET_ENGINE_get_engaged( &aps_system ) == 1&& command != CENTER_ENGINE_CUTOFF ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1&& command != CENTER_ENGINE_CUTOFF ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IC OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -295,7 +332,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 					case CENTER_ENGINE_CUTOFF : {
 						if( system_s1.center_engine_available == 1 ) {
-							ROCKET_ENGINE_set_thrust( &aps_system, ROCKET_ENGINE_get_thrust( &aps_system ) - 20 );
+							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s1.center_engine_available = 0;
 							success = 1;
 							strncpy( message, "S-IC CENTER_ENGINE CUTOFF", BIG_BUFF_SIZE );
@@ -309,7 +346,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case S2 : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) && ROCKET_ENGINE_get_engaged( &aps_system ) == 1 && command != CENTER_ENGINE_CUTOFF ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && command != CENTER_ENGINE_CUTOFF ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-II OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -366,7 +403,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 					case CENTER_ENGINE_CUTOFF : {
 						if( system_s2.center_engine_available == 1 ) {
-							ROCKET_ENGINE_set_thrust( &aps_system, ROCKET_ENGINE_get_thrust( &aps_system ) - 20 );
+							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s2.center_engine_available = 0;
 							success = 1;
 							strncpy( message, "S-II CENTER_ENGINE CUTOFF", BIG_BUFF_SIZE );
@@ -380,7 +417,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case S3 : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ROCKET_ENGINE_get_engaged( &aps_system ) == 1 && command != CENTER_ENGINE_CUTOFF ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && command != CENTER_ENGINE_CUTOFF ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IVB OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -450,18 +487,18 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 			}
 		} break;
 
-		case APS : {
+		case MAIN_ENGINE : {
 			switch( command ) {
 				default : /* Nic */ break;
 				case START : {
-					if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
+					if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 						success = 0;
-						strncpy( message, "ERROR: APS SYSTEM IS ENGAGED", BIG_BUFF_SIZE );
+						strncpy( message, "ERROR: MAIN ENGINE IS ENGAGED", BIG_BUFF_SIZE );
 					} else {
-						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ROCKET_ENGINE_get_thrust( &main_engine ) == 0 ) {
-							ROCKET_ENGINE_do_engage( &aps_system );
+						if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+							ROCKET_ENGINE_do_engage( &main_engine );
 							success = 1;
-							strncpy( message, "APS SYSTEM ENGAGED", BIG_BUFF_SIZE );
+							strncpy( message, "MAIN ENGINE ENGAGED", BIG_BUFF_SIZE );
 							if( computing_all == 0 ) {
 								/* Uruchomienie w¹tku wysy³aj¹cego dane do pod³¹czonych klientów */
 								pthread_create(&sthread, NULL, run_simulation, NULL );
@@ -471,23 +508,23 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							}
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO START APS SYSTEM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO START MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
 
 				case STOP : {
-					if( ROCKET_ENGINE_get_engaged( &aps_system ) == 0 ) {
+					if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
 						success = 0;
-						strncpy( message, "ERROR: APS SYSTEM IS DISENGAGED", BIG_BUFF_SIZE );
+						strncpy( message, "ERROR: MAIN ENGINE IS DISENGAGED", BIG_BUFF_SIZE );
 					} else {
-						if( ROCKET_ENGINE_get_thrust( &aps_system ) == 0 ) {
-							ROCKET_ENGINE_do_disengage( &aps_system );
+						if( ROCKET_ENGINE_get_thrust( &main_engine ) == 0 ) {
+							ROCKET_ENGINE_do_disengage( &main_engine );
 							success = 1;
-							strncpy( message, "APS SYSTEM DISENGAGED", BIG_BUFF_SIZE );
+							strncpy( message, "MAIN ENGINE DISENGAGED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO STOP APS SYSTEM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO STOP MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
@@ -495,15 +532,15 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case THRUST : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 && ROCKET_ENGINE_get_engaged( &aps_system ) == 0) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 && ROCKET_ENGINE_get_engaged( &main_engine ) == 0) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO CHANGE THRUST. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
 					case FULL_THRUST : {
-						if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
-							ROCKET_ENGINE_set_thrust( &aps_system, MAX_THRUST );
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+							ROCKET_ENGINE_set_thrust( &main_engine, MAX_THRUST );
 							success = 1;
 							strncpy( message, "APS THRUST SET TO 100%", BIG_BUFF_SIZE );
 						} else {
@@ -513,8 +550,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case NULL_THRUST : {
-						if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
-							ROCKET_ENGINE_set_thrust( &aps_system, 0 );
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+							ROCKET_ENGINE_set_thrust( &main_engine, 0 );
 							success = 1;
 							strncpy( message, "APS THRUST TERMINATED", BIG_BUFF_SIZE );
 						} else {
@@ -524,14 +561,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case INCREASE : {
-						if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
-							if( ROCKET_ENGINE_get_thrust( &aps_system) + value <= MAX_THRUST ) {
-								ROCKET_ENGINE_set_thrust( &aps_system, ROCKET_ENGINE_get_thrust( &aps_system ) + value );
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+							if( ROCKET_ENGINE_get_thrust( &main_engine) + value <= MAX_THRUST ) {
+								ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) + value );
 								success = 1;
-								sprintf( message, "APS THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &aps_system ) );
+								sprintf( message, "APS THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
 							} else {
 								success = 0;
-								sprintf( message, "ERROR: UNABLE TO INCREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &aps_system ) + value) );
+								sprintf( message, "ERROR: UNABLE TO INCREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &main_engine ) + value) );
 							}
 						} else {
 							success = 0;
@@ -540,14 +577,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DECREASE : {
-						if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
-							if( ROCKET_ENGINE_get_thrust( &aps_system ) - value >= 0 ) {
-								ROCKET_ENGINE_set_thrust( &aps_system, ROCKET_ENGINE_get_thrust( &aps_system) - value );
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+							if( ROCKET_ENGINE_get_thrust( &main_engine ) - value >= 0 ) {
+								ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine) - value );
 								success = 1;
-								sprintf( message, "APS THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &aps_system ) );
+								sprintf( message, "APS THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
 							} else {
 								success = 0;
-								sprintf( message, "ERROR: UNABLE TO DECREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &aps_system ) - value) );
+								sprintf( message, "ERROR: UNABLE TO DECREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &main_engine ) - value) );
 							}
 						} else {
 							success = 0;
@@ -559,7 +596,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case PITCH_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ROCKET_ENGINE_get_engaged( &aps_system ) == 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -581,7 +618,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case ROLL_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ROCKET_ENGINE_get_engaged( &aps_system ) == 0 || current_altitude <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -603,7 +640,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case YAW_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ROCKET_ENGINE_get_engaged( &aps_system ) == 0 || current_altitude <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -625,7 +662,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case LET : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ROCKET_ENGINE_get_engaged( &aps_system ) == 0 || ( current_altitude <= 0 || launch_escape_tower_ready == 0 ) ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ( current_altitude <= 0 || launch_escape_tower_ready == 0 ) ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO ENGAGE LAUNCH ESCAPE TOWER SYSTEM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -642,8 +679,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 	}
 
-	if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
-		ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &aps_system ) );
+	if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+		ROCKET_ENGINE_set_thrust( &internal_guidance, ROCKET_ENGINE_get_thrust( &main_engine ) );
 	}
 
 	interpreter_result.success = success;
@@ -734,9 +771,9 @@ void auto_pilot( double real_second ) {
 	int second = round( real_second );
 
 	if( stable_orbit_achieved == 1 ) {
-		if( ROCKET_ENGINE_get_thrust( &main_engine ) == 100 ) {
+		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
 				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-				EXEC_COMMAND( APS, STOP, 0 );
+				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 			}
 			return;
 	}
@@ -780,16 +817,16 @@ void auto_pilot( double real_second ) {
 		} break;
 
 		case 161 : {
-			if( ROCKET_ENGINE_get_thrust( &main_engine ) == 80 && current_system->id == 1 ) {
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 80 && current_system->id == 1 ) {
 				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-				EXEC_COMMAND( APS, STOP, 0 );
+				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 				EXEC_COMMAND( S1, DETACH, 0 );
 			}
 		} break;
 
 		case 164 : {
-			if( ROCKET_ENGINE_get_thrust( &main_engine ) == 0 ) {
-				EXEC_COMMAND( APS, START, 0 );
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
 				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
 			}
 		} break;
@@ -807,22 +844,22 @@ void auto_pilot( double real_second ) {
 		} break;
 
 		case 500 : {
-			if( ROCKET_ENGINE_get_thrust( &main_engine ) > 60 ) {
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60 ) {
 				EXEC_COMMAND( THRUST, DECREASE, 20 );
 			}
 		} break;
 
 		case 548 : {
-			if( ROCKET_ENGINE_get_thrust( &main_engine ) == 60 && current_system->id == 2 ) {
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 60 && current_system->id == 2 ) {
 				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-				EXEC_COMMAND( APS, STOP, 0 );
+				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 				EXEC_COMMAND( S2, DETACH, 0 );
 			}
 		} break;
 
 		case 552 : {
-			if( ROCKET_ENGINE_get_thrust( &main_engine ) == 0 ) {
-				EXEC_COMMAND( APS, START, 0 );
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
 				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
 			}
 		} break;
@@ -850,8 +887,6 @@ void instrument_unit_calculations( void ) {
 		}
 	}
 
-	TELEMETRY_update();
-
 	//printf("[%4.0f MET][dV:%2.1f m/s][alt:%6.0f m][vel:%4.0f m/s]             \r", round(telemetry_data.mission_time), (telemetry_data.current_acceleration), (telemetry_data.current_altitude), round(telemetry_data.last_velocity) );
 }
 
@@ -873,7 +908,7 @@ void compute_launch_physics( void ) {
 	current_vertical_velocity = 0;
 	current_horizontal_velocity = 0;
 	current_fuel_burn = 0;
-	current_thrust = ROCKET_ENGINE_get_thrust( &main_engine );
+	current_thrust = ROCKET_ENGINE_get_thrust( &internal_guidance );
 
 	if( ROCKET_STAGE_get_attached( &system_s1 ) == 0) {
 		if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
@@ -896,7 +931,7 @@ void compute_launch_physics( void ) {
 			current_system->burn_start = get_current_epoch();
 		}
 	} else {
-		if( ROCKET_ENGINE_get_engaged( &aps_system ) == 1 ) {
+		if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 			current_system->burn_time += time_tick;
 		}
 	}
@@ -948,7 +983,11 @@ void compute_launch_physics( void ) {
 		thrust_newtons = 0;
 	}
 
-	if( ROCKET_ENGINE_get_thrust( &main_engine ) >= 60 ) {
+	if( ROCKET_STAGE_get_attached( current_system ) == 1 ) {
+		current_system->current_thrust = thrust_newtons;
+	}
+
+	if( ROCKET_ENGINE_get_thrust( &internal_guidance ) >= 60 ) {
 		dynamic_pressure = get_dynamic_pressure_force( current_altitude );
 	}
 
@@ -1024,14 +1063,14 @@ void compute_launch_physics( void ) {
 		}
 	}
 
-	if( current_distance < 0 && current_acceleration < 0 && ROCKET_ENGINE_get_thrust( &main_engine ) < 100 && max_q_achieved == 0 ) {
+	if( current_distance < 0 && current_acceleration < 0 && ROCKET_ENGINE_get_thrust( &internal_guidance ) < 100 && max_q_achieved == 0 ) {
 		current_altitude += (current_distance / time_mod);
 	}
 
 	last_velocity = current_velocity;
 
 	if( current_altitude > 0 ) {
-		total_distance += abs( current_distance / time_mod );
+		total_distance += ( current_distance / time_mod );
 	} else {
 		last_velocity = 0;
 	}
@@ -1058,11 +1097,42 @@ void TELEMETRY_update( void ) {
 	telemetry_data.last_velocity = last_velocity;
 	telemetry_data.max_q_achieved = max_q_achieved;
 	telemetry_data.mission_time = mission_time;
-	telemetry_data.stable_orbit_achieved = stable_orbit_achieved;
 	telemetry_data.thrust_newtons = thrust_newtons;
 	telemetry_data.total_distance = total_distance;
 	telemetry_data.total_mass = total_mass;
 	telemetry_data.pitch = pitch_program.current_value;
+	telemetry_data.dest_pitch = pitch_program.dest_value;
 	telemetry_data.roll = roll_program.current_value;
+	telemetry_data.dest_roll = roll_program.dest_value;
 	telemetry_data.yaw = yaw_program.current_value;
+	strncpy( telemetry_data.destination, AO_current->ground_destination, SMALL_BUFF_SIZE );
+	telemetry_data.destination_altitude = AO_current->ground_destination_altitude;
+
+	telemetry_data.stable_orbit_achieved = stable_orbit_achieved;
+	telemetry_data.launch_escape_tower_ready = launch_escape_tower_ready;
+
+	telemetry_data.internal_guidance_engaged = ROCKET_ENGINE_get_engaged( &internal_guidance );
+	telemetry_data.main_engine_engaged = ROCKET_ENGINE_get_engaged( &main_engine );
+
+	telemetry_data.pitch_program_engaged = pitch_program.running;
+	telemetry_data.roll_program_engaged = roll_program.running;
+	telemetry_data.yaw_program_engaged = yaw_program.running;
+
+	telemetry_data.s_ic_fuel = system_s1.fuel;
+	telemetry_data.s_ic_attached = ROCKET_STAGE_get_attached( &system_s1 );
+	telemetry_data.s_ic_thrust = system_s1.current_thrust;
+	telemetry_data.s_ic_burn_time = system_s1.burn_time;
+	telemetry_data.s_ic_center_engine_available = system_s1.center_engine_available;
+
+	telemetry_data.s_ii_fuel = system_s2.fuel;
+	telemetry_data.s_ii_attached = ROCKET_STAGE_get_attached( &system_s2 );
+	telemetry_data.s_ii_thrust = system_s2.current_thrust;
+	telemetry_data.s_ii_burn_time = system_s2.burn_time;
+	telemetry_data.s_ii_center_engine_available = system_s2.center_engine_available;
+
+	telemetry_data.s_ivb_fuel = system_s3.fuel;
+	telemetry_data.s_ivb_attached = ROCKET_STAGE_get_attached( &system_s3 );
+	telemetry_data.s_ivb_thrust = system_s3.current_thrust;
+	telemetry_data.s_ivb_burn_time = system_s3.burn_time;
+	telemetry_data.s_ivb_center_engine_available = system_s3.center_engine_available;
 }

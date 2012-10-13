@@ -39,6 +39,7 @@ struct ROCKET_STAGE {
 	int instrument_mass;
 	int max_fuel_burn;
 	long int max_thrust_n;
+	long int current_thrust;
 	short variable_thrust;
 	long double initial_thrust;
 	long double thrust_step;

@@ -13,8 +13,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include "spacecraft_components.h"
 
 /* G³ówny silnik */
+ROCKET_ENGINE internal_guidance;
 ROCKET_ENGINE main_engine;
-ROCKET_ENGINE aps_system;
 
 void MAIN_COMPUTER_init( void );
 void compute_all( void );

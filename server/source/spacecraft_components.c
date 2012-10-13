@@ -52,6 +52,7 @@ void ROCKET_STAGE_do_attach( ROCKET_STAGE *rs ) {
 
 void ROCKET_STAGE_do_detach( ROCKET_STAGE *rs ) {
 	rs->attached = 0;
+	rs->current_thrust = 0;
 }
 
 void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value ) {
@@ -98,6 +99,7 @@ void STAGE_1_init( void ) {
 	system_s1.instrument_mass = 5206;
 	system_s1.max_fuel_burn = 13232;
 	system_s1.max_thrust_n = 39782855;
+	system_s1.current_thrust = 0;
 	system_s1.variable_thrust = 1;
 	system_s1.initial_thrust = 34517594;
 	system_s1.thrust_step = 33387;
@@ -124,6 +126,7 @@ void STAGE_2_init( void ) {
 	system_s2.max_fuel_burn = 1224;
 	system_s2.max_thrust_n = 5095279;
 	system_s2.variable_thrust = 1;
+	system_s2.current_thrust = 0;
 	system_s2.initial_thrust = 5095184;
 	system_s2.thrust_step = 12;
 	system_s2.burn_start = 0;
@@ -146,6 +149,7 @@ void STAGE_3_init( void ) {
 	system_s3.instrument_mass = 45693+4200;
 	system_s3.max_fuel_burn = 213;
 	system_s3.max_thrust_n = 901223;
+	system_s3.current_thrust = 0;
 	system_s3.variable_thrust = 0;
 	system_s3.initial_thrust = 0;
 	system_s3.thrust_step = 0;

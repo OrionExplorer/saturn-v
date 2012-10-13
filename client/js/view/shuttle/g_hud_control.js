@@ -28,7 +28,7 @@ function controlEngines() {
     print('<div class="box-2-info">'+
             '<table>'+
             '<caption><strong>ENGINES CONTROL PANEL</strong></caption>'+
-                _showRecord('<strong>MAIN ENGINE</strong>', showButton(mainEngine.getPossibleAction(), 'mainEngineEngageButtonController', 'mainEngineEngageButton'))
+                _showRecord('<strong>INTERNAL GUIDANCE</strong>', showButton(mainEngine.getPossibleAction(), 'mainEngineEngageButtonController', 'mainEngineEngageButton'))
        );
 
     print(_showRecord('<strong>THRUST</strong>',
@@ -36,7 +36,7 @@ function controlEngines() {
     showButton('UP', 'mainEngineThrustButtonController', 'mainEngineThrustUpButton')+'</br>'+
     showButton('DOWN', 'mainEngineThrustButtonController', 'mainEngineThrustDownButton')+'</br>'+
     showButton('NULL', 'mainEngineThrustButtonController', 'mainEngineThrustNullButton'))+'</br>'+
-    _showRecord('<strong>APS</strong>', showButton(systemAPS.getPossibleAction(), 'systemMPSButtonController', 'systemAPSButton'))+
+    _showRecord('<strong>MAIN ENGINE</strong>', showButton(systemAPS.getPossibleAction(), 'systemMPSButtonController', 'systemAPSButton'))+
         '</table>'+
         '</div>');
 }
@@ -50,18 +50,6 @@ function controlMPS() {
         '</table>'+
         '</div>');
 
-}
-
-function controlAntennas() {
-    print('<div class="box-1-info">'+
-            '<table>'+
-            '<caption><strong>COMMUNICATION SYSTEM CONTROL PANEL</strong></caption>'+
-            _showRecord('<strong>HIGH-GAIN ANTENNA</strong>',
-                showButton(systemDPS.getPossibleAction(), 'antennasButtonController', 'antennaHGButton'))+
-            _showRecord('<strong>LOW-GAIN ANTENNA</strong>',
-                showButton(systemAPS.getPossibleAction(), 'antennasButtonController', 'antennaLGButton'))+
-        '</table>'+
-        '</div>');
 }
 
 function controlPitchRollYawProgram() {
@@ -79,12 +67,11 @@ function controlPitchRollYawProgram() {
         '</table>'+
         '</div>');
 }
+
 function controlS1Component() {
     print('<div class="box-1-info">'+
             '<table>'+
             '<caption><strong>S-IC STAGE CONTROL PANEL</strong></caption>'+
-            _showRecord('<strong>FUEL</strong>',
-                showButton(systemS1.getFuelPossibleAction(), 'systemS1ButtonController', 'systemS1FuelButton'))+
             _showRecord('<strong>ENGINE CUTOFF</strong>',
                 showButton('CENTER', 'systemS1ButtonController', 'systemS1CenterEngineCutoffButton')+'</br>'+
                 showButton('OUTBOARD', 'systemS1ButtonController', 'systemS1ActionButton'))+
@@ -100,8 +87,6 @@ function controlS2Component() {
     print('<div class="box-1-info">'+
             '<table>'+
             '<caption><strong>S-II STAGE CONTROL PANEL</strong></caption>'+
-            _showRecord('<strong>FUEL</strong>',
-                showButton(systemS2.getFuelPossibleAction(), 'systemS2ButtonController', 'systemS2FuelButton'))+
             _showRecord('<strong>ENGINE CUTOFF</strong>',
                 showButton('CENTER', 'systemS2ButtonController', 'systemS2CenterEngineCutoffButton')+'</br>'+
                 showButton('OUTBOARD', 'systemS2ButtonController', 'systemS2ActionButton'))+
@@ -117,8 +102,6 @@ function controlS3Component() {
     print('<div class="box-1-info">'+
             '<table>'+
             '<caption><strong>S-IVB STAGE CONTROL PANEL</strong></caption>'+
-            _showRecord('<strong>FUEL</strong>',
-                showButton(systemS3.getFuelPossibleAction(), 'systemS3ButtonController', 'systemS3FuelButton'))+
             _showRecord('<strong>RESTART</strong>',
                 showButton('ENGAGE', 'systemS3ButtonController', 'systemS3Restart'))+
             _showRecord('<strong>ENGINE CUTOFF</strong>',
