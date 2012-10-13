@@ -1,0 +1,90 @@
+
+.box-info {
+    display: block;
+    margin: 5px;
+    color: #999999;
+    overflow: visible;
+}
+
+.box-1-info {
+    width: 300px;
+    height: 140px;
+    margin: 5px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.box-2-info {
+    width: 300px;
+    height: 220px;
+    margin: 5px;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+#app-title {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-weight: bolder;
+    font-family: Helvetica;
+    color: #999999;
+    text-align: left;
+}
+
+#reports-1-panel {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 12px;
+    overflow: hidden;
+}
+
+#reports-2-panel {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 12px;
+    overflow: hidden;
+}
+
+#control-1-unit {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 12px;
+    overflow: hidden;
+}
+
+#control-2-unit {
+    width: 100%;
+    text-align: center;
+    white-space: nowrap;
+    line-height: 12px;
+    overflow: hidden;
+}
+
+#title-hr {
+    position: relative;
+    top: 20px;
+}
+
+#current-time-info {
+    position: absolute;
+    float: left;
+    top: 5px;
+    right: 15px;
+    font-weight: bolder;
+    font-family: Helvetica;
+    text-align: right;
+}
+
+.mission-time-info {
+    position: absolute;
+    float: left;
+    top: 55px;
+    right: 30px;
+    font-weight: bolder;
+    font-family: Helvetica;
+    text-align: right;
+}

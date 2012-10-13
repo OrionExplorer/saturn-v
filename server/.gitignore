@@ -1,0 +1,7 @@
+obj/
+*.cbp
+*.depend
+*.layout
+*.cbTemp
+*.conf
+Release/logs

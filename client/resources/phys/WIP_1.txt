@@ -1,0 +1,64 @@
+function computeAll() {
+    console.log('\ncomputeAll()');
+    console.log('============');
+    var currentFuelMass = systemS1.getFuel();
+    var totalMass = systemS1.getTotalMass() + SPACECRAFT_MASS;
+    var throttleNewtons = 0;
+    var currentAcceleration = 0;
+    var currentDistance = 0;
+    var currentVelocity = 0;
+    var currentAltitude = 0;
+
+    console.log('Stan paliwa: '+currentFuelMass);
+    console.log('Masa ca�kowita: '+totalMass);
+
+    missionTime += timeInterval/1000;
+
+    console.log('Czas od startu (s): '+missionTime);
+
+    //1. Obliczenie spalonego paliwa
+    if(currentFuelMass > 0) {
+        var currentFuelBurn = (mainEngine.getThrottle() * 132);
+        console.log('Spalone paliwo (kg): '+currentFuelBurn);
+        systemS1.setFuel(currentFuelMass - currentFuelBurn);
+    } else {
+        console.log('Stan paliwa: brak.');
+        currentFuelMass = 0;
+    }
+    //2. Obliczenie si�y ci�gu
+     if(currentFuelBurn > 0) {
+        throttleNewtons = (mainEngine.getThrottle() * MAX_THROTTLE_N)/100;
+    } else {
+        throttleNewtons = 0;
+    }
+    console.log('Si�a ci�gu: '+throttleNewtons+' N');
+
+    //1. Obliczenie przyspieszenia
+    /**
+        * Fw = F - m*g
+        * a = Fw/m
+        */
+    var Fw = throttleNewtons - totalMass*9.81;
+    //currentAcceleration = Fw/totalMass;
+    currentAcceleration = throttleNewtons/totalMass;
+    console.log('Przyspieszenie (m/s^2): '+currentAcceleration);
+    
+    currentVelocity = lastVelocity+currentAcceleration;
+    lastVelocity = currentVelocity/10;
+    console.log('Pr�dko�� (m/s): '+lastVelocity);
+
+    updateHUD('voyager7_mission_time', secondsToHms(missionTime));
+    updateHUD('voyager7_speed', Math.round(lastVelocity) + ' M/S');
+    updateHUD('voyager7_s1_fuel', currentFuelMass+' KG');
+    if(currentAltitude <= 1000) {
+        updateHUD('voyager7_altitude', Math.round(currentAltitude) + ' M');
+    } else {
+        updateHUD('voyager7_altitude', Math.round(currentAltitude)/1000 + ' KM');
+    }
+    if(totalDistance <= 1000) {
+        updateHUD('voyager7_distance', Math.round(totalDistance) + ' M');
+    } else {
+        updateHUD('voyager7_distance', Math.round(totalDistance)/1000 + ' KM');
+    }
+    setTimeout("computeAll()", timeInterval);
+}

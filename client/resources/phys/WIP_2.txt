@@ -1,0 +1,151 @@
+function computeAll() {
+    var currentFuelMass = systemS1.getFuel();
+    var totalMass = systemS1.getTotalMass();
+    var throttleNewtons = 0;
+    var currentAcceleration = 0;
+    var currentDistance = 0;
+    var currentVelocity = 0;
+    
+    missionTime += timeInterval/1000;
+    if(missionTime >= 140) {
+        mainEngine.setThrottle(80);
+    }
+
+    if(currentAltitude == 0) {
+        ascendingTime = 0;
+    }
+
+    if(currentFuelMass > 0) {
+        var currentFuelBurn = (mainEngine.getThrottle() * 1323) / 100;
+        systemS1.setFuel(currentFuelMass - currentFuelBurn);
+    } else {
+        currentFuelMass = 0;
+    }
+
+    
+    if(ascendingTime == -1) {
+        ascendingTime = 0;
+    } else {
+        ascendingTime += timeInterval/1000;
+    }
+
+    /**
+       * Acceleration
+       * a = F/m
+       * F - si�a [N]
+       * m - masa [kg]
+       * g - przyci�ganie [m/s2]
+       */
+    if(currentFuelBurn > 0) {
+        throttleNewtons = (mainEngine.getThrottle() * MAX_THROTTLE_N) / 100;
+    } else {
+        throttleNewtons = 0;
+    }
+    //TODO: Op�r powietrza
+    //currentAcceleration = (throttleNewtons - (totalMass*currentAO.getGravityValue(currentAltitude))) / (totalMass);
+    var Fw = throttleNewtons - (totalMass*currentAO.getGravityValue(currentAltitude));
+    //var Fw = throttleNewtons - (totalMass*10);
+    //console.log('THROTTLE: '+throttleNewtons+' (Fw='+Fw);
+    currentAcceleration = Fw/totalMass;
+    if(currentAcceleration < 0 && currentAltitude <= 0) {
+        currentAcceleration = 0;
+    }
+
+    /**
+        * Wznoszenie
+        */
+    //if(currentAcceleration >= 0) {
+    currentVelocity = lastVelocity+currentAcceleration/10;
+    currentDistance = currentVelocity;//(currentAcceleration/2)*Math.pow(missionTime,2);
+        if(currentDistance != 0  && currentAO.getCurrentDestinationAltitude() > currentAltitude) {
+            currentAltitude += currentDistance/10;
+        }
+    if(0 == 1) {
+        descendingTime = -1;
+        var res = 0;
+        res = lastVelocity-currentVelocity;
+        /**
+              * Velocity
+              * v = a*t; 
+              */
+        if(lastVelocity < 0) {
+            
+            currentVelocity = lastVelocity+currentAcceleration/10;
+            //currentVelocity = lastVelocity+currentAcceleration/10-res;
+        } else {
+            //currentVelocity = currentAcceleration*ascendingTime;
+            //currentVelocity = lastVelocity+currentAcceleration/10-res;
+            res = lastVelocity-currentVelocity;
+            if(res > 0) {
+                currentVelocity = lastVelocity+currentAcceleration/10;
+            } else {
+                currentVelocity = lastVelocity+currentAcceleration/10-res;
+            }
+            console.log(lastVelocity+' - '+currentVelocity+' = '+res);
+        }
+        
+        //currentVelocity = lastVelocity+currentAcceleration/10-res;
+//        if(Math.round(currentVelocity) != Math.round(currentAcceleration*ascendingTime)) {
+//            currentVelocity = currentAcceleration*ascendingTime;
+//        } else {
+//            currentVelocity = (lastVelocity+currentAcceleration/10);
+//        }
+
+        //console.log('DIFF: '+(lastVelocity - Math.abs(currentVelocity)));
+        //lastVelocity = currentVelocity;
+        /**
+               * Distance
+               * s = a*(t^2)/2
+               */
+        currentDistance = currentVelocity;//(currentAcceleration/2)*Math.pow(missionTime,2);
+        if(currentDistance != 0  && currentAO.getCurrentDestinationAltitude() > currentAltitude) {
+            currentAltitude += currentDistance/10;
+        }
+    } else {
+//        currentVelocity = (lastVelocity-(currentAO.getGravityValue(currentAltitude)/10));
+//        //lastVelocity = currentVelocity;
+//        if(currentVelocity <= 0) {
+//            ascendingTime = -1;
+//        }
+//        currentDistance = currentVelocity;
+//        if(currentDistance > 0  && currentAO.getCurrentDestinationAltitude() > currentAltitude) {
+//            currentAltitude += currentDistance/10;
+//        }
+//        if(currentDistance <= 0) {
+//            currentAltitude += currentDistance/10;
+//        }
+//
+//        if(currentAltitude < 0) {
+//            currentAltitude = 0;
+//        }
+    }
+    
+    lastVelocity = currentVelocity;
+
+    if(currentAltitude > 0) {
+        totalDistance += Math.abs(currentDistance/10);
+    } else {
+        lastVelocity = 0;
+    }
+
+    if(currentAltitude < 0) {
+        currentAltitude = 0;
+    }
+
+    //console.log('a='+currentAcceleration);
+    updateHUD('voyager7_mission_time', secondsToHms(missionTime));
+    updateHUD('voyager7_speed', Math.round(lastVelocity*10)/10 + ' M/S');
+    updateHUD('voyager7_acceleration', Math.round(currentAcceleration*10)/10 + ' M/S');
+    updateHUD('voyager7_s1_fuel', currentFuelMass+' KG');
+    if(currentAltitude <= 1000) {
+        updateHUD('voyager7_altitude', Math.round(currentAltitude) + ' M');
+    } else {
+        updateHUD('voyager7_altitude', Math.round(currentAltitude)/1000 + ' KM');
+    }
+    if(totalDistance <= 1000) {
+        updateHUD('voyager7_distance', Math.round(totalDistance) + ' M');
+    } else {
+        updateHUD('voyager7_distance', Math.round(totalDistance)/1000 + ' KM');
+    }
+    setTimeout("computeAll()", timeInterval);
+}

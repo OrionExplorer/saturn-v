@@ -1,0 +1,41 @@
+function appInit() {
+    startTag('terminal');
+        startTag('div id="tooltip"');
+            showTitle();
+            showTimer();
+            setTimeout("updateTime()", 1000);
+        endTag('div');
+
+        showInformation('idle');
+
+        startTag('div id="reports-1-panel"');
+            showDistance();
+            showMPS();
+            showEngines();
+            showDevicesInfo();
+        endTag('div');
+
+        startTag('div id="reports-2-panel"');
+            showS3Component();
+            showS2Component();
+            showS1Component();
+        endTag('div');
+
+        startTag('div id="title-hr"');
+            startTag('hr');
+        endTag('div');
+
+        startTag('div id="control-1-unit"');
+            controlS3Component();
+            controlS2Component();
+            controlS1Component();
+        endTag('div');
+
+        startTag('div id="control-2-unit"');
+            controlEngines();
+            controlMPS();
+            controlAntennas();
+        endTag('div');
+
+    endTag('terminal');
+}
