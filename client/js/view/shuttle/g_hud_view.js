@@ -13,7 +13,7 @@ function showPitchRollYaw() {
 function showEngines() {
     print('<div class="box-1-info">'+
             '<table>'+
-            '<caption><strong>VEHICLE INFORMATION</strong></caption>'+
+            '<caption><strong>VEHICLE</strong></caption>'+
                 //_showRecord('<strong>RTG</strong>', '<span id="voyager7_RTGStatus">'+getCurrentRTGStatus()+' %</span>')+
                 _showRecord('<strong>MAIN ENGINE</strong>', '<span id="voyager7_mainEngine">'+mainEngine.getEngagedStatus()+'</span>')+
                 _showRecord('<strong>TOTAL MASS</strong>', '<span id="voyager7_totalMass">0 KG</span>')+
@@ -21,7 +21,9 @@ function showEngines() {
                 //_showRecord('<strong>ROLL</strong>', '<span id="voyager7_roll">0°</span')+
                 _showRecord('<strong>ROLL</strong>', '<span id="voyager7_rollAzimuth">90° / '+destRoll+'°</span')+
                 _showRecord('<strong>YAW</strong>', '<span id="voyager7_yaw">0°</span')+
-                _showRecord('<strong>HORIZONTAL</br>ALTITUDE</strong>', '<span id="voyager7_horizontalAltitude">'+getHorizontalAltitudeStatus()+'</span>')+
+                _showRecord('<strong>TOTAL</strong>', '<span id="voyager7_distance">'+totalDistance+' M</span>')+
+                _showRecord('<strong>ALTITUDE</strong>', '<span id="voyager7_altitude">'+currentAltitude+' M</span>')+
+                //_showRecord('<strong>HORIZONTAL</br>ALTITUDE</strong>', '<span id="voyager7_horizontalAltitude">'+getHorizontalAltitudeStatus()+'</span>')+
         '</table>'+
         '</div>');
 }
@@ -29,10 +31,10 @@ function showEngines() {
 function showDistance() {
     print('<div class="box-1-info">'+
         '<table>'+
-            '<caption><strong>DISTANCE INFORMATION</strong></caption>'+
+            '<caption><strong>DISTANCE</strong></caption>'+
                 _showRecord('<strong>TOTAL</strong>', '<span id="voyager7_distance">'+totalDistance+' M</span>')+
                 _showRecord('<strong>ALTITUDE</strong>', '<span id="voyager7_altitude">'+currentAltitude+' M</span>')+
-                _showRecord('<strong>DESTINATION</strong>', '<span id="voyager7_destination">'+currentAO.getCurrentDestination()+' ('+Math.round(currentAO.getCurrentDestinationAltitude()/100)/10+' KM)</span>')+
+               // _showRecord('<strong>DESTINATION</strong>', '<span id="voyager7_destination">'+currentAO.getCurrentDestination()+' ('+Math.round(currentAO.getCurrentDestinationAltitude()/100)/10+' KM)</span>')+
                 //_showRecord('<strong>CURRENT<br/>CELESTIAL BODY</strong>', '<span id="voyager7_current_ao">'+currentAO.name+'</span>')+
             '</table>'+
         '</div>');
@@ -41,7 +43,7 @@ function showDistance() {
 function showVelocityData() {
     print('<div class="box-1-info">'+
         '<table>'+
-            '<caption><strong>VELOCITY INFORMATION</strong></caption>'+
+            '<caption><strong>VELOCITY</strong></caption>'+
                 _showRecord('<strong>VELOCITY</strong>', '<span id="voyager7_velocity">0 M/S</span>')+
                 _showRecord('<strong>VERTICAL VELOCITY</strong>', '<span id="voyager7_verticalVelocity">0 M/S</span>')+
                 _showRecord('<strong>HORIZONTAL VELOCITY</strong>', '<span id="voyager7_horizontalVelocity">0 M/S</span>')+

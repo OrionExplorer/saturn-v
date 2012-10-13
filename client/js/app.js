@@ -12,7 +12,6 @@ function appInit() {
                 showVelocityData();
                 showEngines();
                 showPitchRollYaw();
-                showDistance();
             endTag('div');
 
             startTag('div id="reports-2-panel"');

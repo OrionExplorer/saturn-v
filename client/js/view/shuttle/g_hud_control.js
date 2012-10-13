@@ -41,17 +41,6 @@ function controlEngines() {
         '</div>');
 }
 
-function controlMPS() {
-    print('<div class="box-2-info">'+
-            '<table>'+
-            '<caption><strong>MAIN PROPULSION SYSTEM CONTROL PANEL</strong></caption>'+
-            _showRecord('<strong>APS</strong>',
-                showButton(systemAPS.getPossibleAction(), 'systemMPSButtonController', 'systemAPSButton'))+
-        '</table>'+
-        '</div>');
-
-}
-
 function controlPitchRollYawProgram() {
     print('<div class="box-1-info">'+
             '<table>'+
@@ -62,8 +51,6 @@ function controlPitchRollYawProgram() {
                 showButton(rollProgram.getPossibleAction(), 'pitchRollYawButtonController', 'rollButton'))+
             _showRecord('<strong>YAW</strong>',
                 showButton(yawProgram.getPossibleAction(), 'pitchRollYawButtonController', 'yawButton'))+
-            _showRecord('<strong>LOCAL HORIZONTAL</br>ALTITUDE</strong>',
-                showButton(horizontalAltitudeProgram.getPossibleAction(), 'horizontalAltitudeButtonController', 'horizontalAltitudeButton'))+
         '</table>'+
         '</div>');
 }
@@ -118,9 +105,9 @@ function controlDevices() {
             '<caption><strong>DEVICES</strong></caption>'+
             _showRecord('<strong>LAUNCH ESCAPE TOWER</strong>',
                 showButton('JETTISON', 'towerJettisonButtonController', 'towerJettisonButton')+'</br>'+
-                showButton('ENGAGE', 'towerJettisonButtonController', 'towerJettisonEngageButton'))+'</br>'+
+                showButton('ENGAGE', 'towerJettisonButtonController', 'towerJettisonEngageButton'))+
            _showRecord('<strong>GASTRONOMICAL ARM</strong>',
-                showButton('GET KOTLECIK', 'kotlecikButtonController', 'kotlecikButton'))+'</br>'+
+                showButton('GET KOTLECIK', 'kotlecikButtonController', 'kotlecikButton'))+
         '</table>'+
         '</div>');
 }
