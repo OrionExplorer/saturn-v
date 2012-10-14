@@ -686,6 +686,9 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	interpreter_result.success = success;
 	strncpy( interpreter_result.message, message, BIG_BUFF_SIZE );
 
+	LOG_print( "[%s] %s.\n", get_actual_time_gmt(), message );
+	printf( "[%s] %s.\n", get_actual_time_gmt(), message );
+
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
 

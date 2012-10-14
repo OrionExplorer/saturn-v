@@ -186,11 +186,10 @@ void SOCKET_run( void ) {
 					newfd = accept( socket_server, ( struct sockaddr* )&communication_session_.address, &communication_session_.data_length );
 					communication_session_.socket_descriptor = newfd;
 
-					SOCKET_register_client( newfd );
-
 					if( newfd == -1 ) {
-						LOG_print( "Socket error: accept().\n" );
+						LOG_print( "Socket closed.\n" );
 					} else {
+						SOCKET_register_client( newfd );
 						FD_SET( newfd, &master );
 						if( newfd > fdmax ) {
 							fdmax = newfd;
@@ -221,6 +220,8 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	char *response_mode = NULL;//( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
 	char *main_computer_response_str = NULL;
 	short main_computer_response_success = 0;
+
+	LOG_print( "[%s] [%d] Received command: \"%s\".\n", get_actual_time_gmt(), client->socket_descriptor, data );
 
 	if( json == NULL ) {
 		SOCKET_send( &communication_session_, client, INVALID_JSON, -1 );
@@ -269,7 +270,6 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 				if( sscanf( command, "%d %d %d", ( int * )&rocket_device, ( int * )&rocket_command, &rocket_value ) == 3 ) {
 					main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
 					result = EXEC_COMMAND( rocket_device, rocket_command, rocket_value );
-					printf("MAIN COMPUTER: %s.\n", result->message );
 
 					main_computer_response_success = result->success;
 					snprintf( main_computer_response_str, STD_BUFF_SIZE, MAIN_COMPUTER_RESPONSE_TEMPLATE, ( main_computer_response_success == 1 ? "true" : "false" ), result->message );
@@ -416,24 +416,14 @@ SOCKET_stop( void )
 - zwolnienie WinSock
 - zwolnienie socketa */
 void SOCKET_stop( void ) {
-	LOG_print( "SOCKET_stop( %d ):\n", fdmax );
-	LOG_print( "\t- shutdown( %d )...", socket_server );
 	shutdown( socket_server, SHUT_RDWR );
-	LOG_print( "ok.\n" );
-
-	LOG_print( "\t- close( %d )...", communication_session_.socket );
 	close( communication_session_.socket );
-	LOG_print( "ok.\n" );
-
-	LOG_print( "\t- close( %d )...", socket_server );
 	close( socket_server );
-	LOG_print( "ok.\n" );
 
 #ifdef _WIN32
-	LOG_print( "\t- WSACleanup()..." );
 	WSACleanup();
-	LOG_print( "ok.\n" );
 #endif
+	//LOG_print( "Sockets closed.\n" );
 }
 
 /*
@@ -530,7 +520,7 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			LOG_print("[%ld] connected client with descriptor %d.\n", get_current_epoch(), socket_descriptor );
+			LOG_print("[%s] connected client with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			LOG_save();
 			return;
 		}
