@@ -126,10 +126,12 @@ struct INTERPRETER_RESULT {
 
 /* Struktura przechowuje informacje o telemetrii */
 struct TELEMETRY {
+	char					computer_message[ STD_BUFF_SIZE ];
 	int						current_fuel_mass;
 	long double				total_mass;
 	long double				thrust_newtons;
 	double					current_acceleration;
+	double					current_gforce;
 	double					current_distance;
 	double					current_velocity;
 	double					current_vertical_velocity;
@@ -223,7 +225,6 @@ enum vDEVICE {
 	PITCH_PROGRAM,
 	ROLL_PROGRAM,
 	YAW_PROGRAM,
-	HORIZONTAL_ALTITUDE_PROGRAM,
 	LET
 };
 
@@ -231,7 +232,6 @@ enum vCOMMAND {
 	START,
 	STOP,
 	TANK,
-	RELEASE,
 	ATTACH,
 	DETACH,
 	CENTER_ENGINE_CUTOFF,

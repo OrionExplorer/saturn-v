@@ -11,7 +11,6 @@ function appInit() {
             startTag('div id="reports-1-panel"');
                 showVelocityData();
                 showEngines();
-                showPitchRollYaw();
             endTag('div');
 
             startTag('div id="reports-2-panel"');

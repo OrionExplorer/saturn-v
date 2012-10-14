@@ -28,7 +28,7 @@ function controlEngines() {
     print('<div class="box-2-info">'+
             '<table>'+
             '<caption><strong>ENGINES CONTROL PANEL</strong></caption>'+
-                _showRecord('<strong>INTERNAL GUIDANCE</strong>', showButton(mainEngine.getPossibleAction(), 'mainEngineEngageButtonController', 'mainEngineEngageButton'))
+                _showRecord('<strong>INTERNAL GUIDANCE</strong>', showButton('ENGAGE', 'mainEngineEngageButtonController', 'mainEngineEngageButton'))
        );
 
     print(_showRecord('<strong>THRUST</strong>',
@@ -36,7 +36,7 @@ function controlEngines() {
     showButton('UP', 'mainEngineThrustButtonController', 'mainEngineThrustUpButton')+'</br>'+
     showButton('DOWN', 'mainEngineThrustButtonController', 'mainEngineThrustDownButton')+'</br>'+
     showButton('NULL', 'mainEngineThrustButtonController', 'mainEngineThrustNullButton'))+'</br>'+
-    _showRecord('<strong>MAIN ENGINE</strong>', showButton(systemAPS.getPossibleAction(), 'systemMPSButtonController', 'systemAPSButton'))+
+    _showRecord('<strong>MAIN ENGINE</strong>', showButton('ENGAGE', 'systemMPSButtonController', 'systemAPSButton'))+
         '</table>'+
         '</div>');
 }
@@ -46,11 +46,11 @@ function controlPitchRollYawProgram() {
             '<table>'+
             '<caption><strong>PITCH-ROLL PROGRAM</strong></caption>'+
             _showRecord('<strong>PITCH</strong>',
-                showButton(pitchProgram.getPossibleAction(), 'pitchRollYawButtonController', 'pitchButton'))+
+                showButton('START', 'pitchRollYawButtonController', 'pitchButton'))+
             _showRecord('<strong>ROLL</strong>',
-                showButton(rollProgram.getPossibleAction(), 'pitchRollYawButtonController', 'rollButton'))+
+                showButton('START', 'pitchRollYawButtonController', 'rollButton'))+
             _showRecord('<strong>YAW</strong>',
-                showButton(yawProgram.getPossibleAction(), 'pitchRollYawButtonController', 'yawButton'))+
+                showButton('START', 'pitchRollYawButtonController', 'yawButton'))+
         '</table>'+
         '</div>');
 }

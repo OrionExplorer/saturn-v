@@ -85,12 +85,14 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddStringToObject( root, "data_type", "telemetry" );
 	cJSON_AddItemToObject( root, "data", data );
 
+	cJSON_AddStringToObject( data, "computer_message", telemetry_data.computer_message );
 	cJSON_AddNumberToObject( data, "mission_time", telemetry_data.mission_time );
 
 	cJSON_AddNumberToObject( data, "current_fuel_mass", telemetry_data.current_fuel_mass );
 	cJSON_AddNumberToObject( data, "total_mass", telemetry_data.total_mass );
 	cJSON_AddNumberToObject( data, "thrust_newtons", telemetry_data.thrust_newtons );
 	cJSON_AddNumberToObject( data, "current_acceleration", telemetry_data.current_acceleration );
+	cJSON_AddNumberToObject( data, "current_gforce", telemetry_data.current_gforce );
 	cJSON_AddNumberToObject( data, "current_distance", telemetry_data.current_distance );
 	cJSON_AddNumberToObject( data, "current_velocity", telemetry_data.current_velocity );
 	cJSON_AddNumberToObject( data, "current_vertical_velocity", telemetry_data.current_vertical_velocity );
@@ -285,21 +287,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( (ROCKET_STAGE_get_fuel( &system_s1 ) < system_s1.max_fuel) && system_s1.attached == 1 ) {
 							ROCKET_STAGE_set_fuel( &system_s1, system_s1.max_fuel );
 							success = 1;
-							strncpy( message, "PERFORMED S-IC FUEL OPERATION", BIG_BUFF_SIZE );
+							strncpy( message, "S-IC STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC TANK OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
-						}
-					} break;
-
-					case RELEASE : {
-						if( ROCKET_STAGE_get_fuel( &system_s1 ) > 0 && system_s1.attached == 1 ) {
-							ROCKET_STAGE_set_fuel( &system_s1, 0 );
-							success = 1;
-							strncpy( message, "PERFORMED S-IC FUEL RELEASE OPERATION", BIG_BUFF_SIZE );
-						} else {
-							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC FUEL RELEASE OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC PROPELLANT LOADING OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -323,10 +314,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_STAGE_get_attached( &system_s1 ) == 1 ) {
 							ROCKET_STAGE_do_detach( &system_s1 );
 							success = 1;
-							strncpy( message, "S-IC STAGE DETACHED", BIG_BUFF_SIZE );
+							strncpy( message, "S-IC STAGED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: S-IC STAGE IS DETACHED", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: S-IC STAGE IS STAGED", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -356,21 +347,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_STAGE_get_fuel( &system_s2 ) < system_s2.max_fuel && system_s2.attached == 1 ) {
 							ROCKET_STAGE_set_fuel( &system_s2, system_s2.max_fuel );
 							success = 1;
-							strncpy( message, "PERFORMED S-II FUEL OPERATION", BIG_BUFF_SIZE );
+							strncpy( message, "S-II STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II TANK OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
-						}
-					} break;
-
-					case RELEASE : {
-						if( ROCKET_STAGE_get_fuel( &system_s2 ) > 0 && system_s2.attached == 1 ) {
-							ROCKET_STAGE_set_fuel( &system_s2, 0 );
-							success = 1;
-							strncpy( message, "PERFORMED S-II FUEL RELEASE OPERATION", BIG_BUFF_SIZE );
-						} else {
-							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II FUEL RELEASE OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II PROPELLANT LOADING OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -394,10 +374,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
 							ROCKET_STAGE_do_detach( &system_s2 );
 							success = 1;
-							strncpy( message, "S-II STAGE DETACHED", BIG_BUFF_SIZE );
+							strncpy( message, "S-II STAGED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: S-II STAGE IS DETACHED", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: S-II STAGE IS STAGED", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -427,21 +407,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_STAGE_get_fuel( &system_s3 ) < system_s3.max_fuel && system_s3.attached == 1 ) {
 							ROCKET_STAGE_set_fuel( &system_s3, system_s3.max_fuel );
 							success = 1;
-							strncpy( message, "PERFORMED S-IVB FUEL OPERATION", BIG_BUFF_SIZE );
+							strncpy( message, "S-IVB STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB TANK OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
-						}
-					} break;
-
-					case RELEASE : {
-						if( ROCKET_STAGE_get_fuel( &system_s3 ) > 0 && system_s3.attached == 1 ) {
-							ROCKET_STAGE_set_fuel( &system_s3, 0 );
-							success = 1;
-							strncpy( message, "PERFORMED S-IVB FUEL RELEASE OPERATION", BIG_BUFF_SIZE );
-						} else {
-							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB FUEL RELEASE OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB PROPELLANT LOADING OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -465,10 +434,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
 							ROCKET_STAGE_do_detach( &system_s3 );
 							success = 1;
-							strncpy( message, "S-IVB STAGE DETACHED", BIG_BUFF_SIZE );
+							strncpy( message, "S-IVB STAGED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: S-IVB STAGE IS DETACHED", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: S-IVB STAGE IS STAGED", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -542,10 +511,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, MAX_THRUST );
 							success = 1;
-							strncpy( message, "APS THRUST SET TO 100%", BIG_BUFF_SIZE );
+							strncpy( message, "THRUST SET TO 100%", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: APS SYSTEM IS IDLE", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -553,10 +522,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, 0 );
 							success = 1;
-							strncpy( message, "APS THRUST TERMINATED", BIG_BUFF_SIZE );
+							strncpy( message, "THRUST TERMINATED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: APS SYSTEM IS IDLE", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -565,14 +534,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							if( ROCKET_ENGINE_get_thrust( &main_engine) + value <= MAX_THRUST ) {
 								ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) + value );
 								success = 1;
-								sprintf( message, "APS THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
+								sprintf( message, "THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
 							} else {
 								success = 0;
 								sprintf( message, "ERROR: UNABLE TO INCREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &main_engine ) + value) );
 							}
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: APS SYSTEM IS IDLE", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -581,14 +550,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							if( ROCKET_ENGINE_get_thrust( &main_engine ) - value >= 0 ) {
 								ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine) - value );
 								success = 1;
-								sprintf( message, "APS THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
+								sprintf( message, "THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
 							} else {
 								success = 0;
 								sprintf( message, "ERROR: UNABLE TO DECREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &main_engine ) - value) );
 							}
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: APS SYSTEM IS IDLE", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
 						}
 					}
 				}
@@ -688,6 +657,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 	LOG_print( "[%s] %s.\n", get_actual_time_gmt(), message );
 	printf( "[%s] %s.\n", get_actual_time_gmt(), message );
+
+	strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
 
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
@@ -1088,6 +1059,7 @@ void compute_launch_physics( void ) {
 void TELEMETRY_update( void ) {
 	telemetry_data.ascending_time = ascending_time;
 	telemetry_data.current_acceleration = current_acceleration;
+	telemetry_data.current_gforce = round( current_acceleration / 10 );
 	telemetry_data.current_altitude = current_altitude;
 	telemetry_data.current_distance = current_distance;
 	telemetry_data.current_dynamic_pressure = current_dynamic_pressure;

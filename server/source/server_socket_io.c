@@ -520,7 +520,7 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			LOG_print("[%s] connected client with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
+			LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			LOG_save();
 			return;
 		}
@@ -542,7 +542,7 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			LOG_print("[%ld] disconnected client with descriptor %d.\n", get_current_epoch(), socket_descriptor );
+			LOG_print("[%s] client disconnected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			LOG_save();
 			break;
 		}

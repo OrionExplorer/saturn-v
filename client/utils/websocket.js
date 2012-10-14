@@ -34,6 +34,7 @@ function connectToVoyager7(address) {
                 if(json.msg == 'user_authorized') {
                     updateInformation('Access to remote computer granted');
                     setAllButtonsDisabled(false);
+                    sendCommand('', 'data', 'live');
                 } else {
                     updateInformation(json.msg);
                 }
