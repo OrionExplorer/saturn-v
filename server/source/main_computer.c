@@ -72,7 +72,7 @@ void *run_simulation( void ) {
 
 	while(1) {
 		compute_launch_physics();
-		sleep(100);
+		Sleep(100);
 	}
 }
 

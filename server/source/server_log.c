@@ -33,6 +33,7 @@ void LOG_print( char *fmt, ... ) {
 	va_list args;
 	int buf_len = 0;
 	int len = 0;
+	return;
 
 	/* Rezerwacja pami�ci */
 	output_text = malloc( STD_BUFF_SIZE_CHAR );

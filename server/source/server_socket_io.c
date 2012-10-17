@@ -250,8 +250,8 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 			SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
 		} else {
 			if( command_type && command ) {
-				if( strncmp( "authorization", command_type, SMALL_BUFF_SIZE ) == 0 ) {
-					if( strncmp( app_auth, command, SMALL_BUFF_SIZE ) == 0 ) {
+				if( strncmp( "authorization", command_type, STD_BUFF_SIZE ) == 0 ) {
+					if( strncmp( app_auth, command, STD_BUFF_SIZE ) == 0 ) {
 						client->authorized = 1;
 						SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
 					} else {
@@ -266,7 +266,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		}
 	} else {
 		if( command && command_type ) {
-			if(strncmp( "computer", command_type, SMALL_BUFF_SIZE ) == 0 ) {
+			if(strncmp( "computer", command_type, STD_BUFF_SIZE ) == 0 ) {
 				if( sscanf( command, "%d %d %d", ( int * )&rocket_device, ( int * )&rocket_command, &rocket_value ) == 3 ) {
 					main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
 					result = EXEC_COMMAND( rocket_device, rocket_command, rocket_value );
@@ -281,24 +281,24 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 				} else {
 					SOCKET_send( &communication_session_, client, "ILLEGAL COMMAND", -1 );
 				}
-			} else if( strncmp( "data", command_type, SMALL_BUFF_SIZE ) == 0 ) {
-				if( strncmp( "status", command, SMALL_BUFF_SIZE ) == 0 ) {
+			} else if( strncmp( "data", command_type, STD_BUFF_SIZE ) == 0 ) {
+				if( strncmp( "status", command, STD_BUFF_SIZE ) == 0 ) {
 					TELEMETRY_send_ondemand_data( client );
 				}
 			}
 		}
 
 		if( response_mode ) {
-			if(strncmp( "live", response_mode, SMALL_BUFF_SIZE ) == 0 ) {
+			if(strncmp( "live", response_mode, STD_BUFF_SIZE ) == 0 ) {
 				client->binded = 1;
-			} else if ( strncmp( "on-demand", response_mode, SMALL_BUFF_SIZE ) == 0 ) {
+			} else if ( strncmp( "on-demand", response_mode, STD_BUFF_SIZE ) == 0 ) {
 				client->binded = 0;
 			}
 		}
 	}
 
 	if( json ) {
-		cJSON_Delete( json );
+		//cJSON_Delete( json );
 	}
 
 	if( command ) {
@@ -520,8 +520,7 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
-			LOG_save();
+			//LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			return;
 		}
 	}
@@ -542,8 +541,7 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			LOG_print("[%s] client disconnected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
-			LOG_save();
+			//LOG_print("[%s] client disconnected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			break;
 		}
 	}
