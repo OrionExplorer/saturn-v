@@ -263,7 +263,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						success = 0;
 						strncpy( message, "ERROR: INTERNAL GUIDANCE IS DISENGAGED", BIG_BUFF_SIZE );
 					} else {
-						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 && ROCKET_ENGINE_get_thrust( &internal_guidance) == 0 ) {
+						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 && ROCKET_ENGINE_get_thrust( &internal_guidance) == 0 && current_system->burn_time == 0 ) {
 							ROCKET_ENGINE_do_disengage( &internal_guidance );
 							success = 1;
 							strncpy( message, "GUIDANCE IS EXTERNAL", BIG_BUFF_SIZE );
@@ -326,7 +326,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s1.center_engine_available = 0;
 							success = 1;
-							strncpy( message, "S-IC CENTER_ENGINE CUTOFF", BIG_BUFF_SIZE );
+							strncpy( message, "S-IC CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC CENTER ENGINE CUTOFF. CHECK CONFIGURATION", BIG_BUFF_SIZE );
@@ -386,7 +386,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s2.center_engine_available = 0;
 							success = 1;
-							strncpy( message, "S-II CENTER_ENGINE CUTOFF", BIG_BUFF_SIZE );
+							strncpy( message, "S-II CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-II CENTER ENGINE CUTOFF. CHECK CONFIGURATION", BIG_BUFF_SIZE );
