@@ -311,18 +311,23 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DETACH : {
-						if( ROCKET_STAGE_get_attached( &system_s1 ) == 1 ) {
-							ROCKET_STAGE_do_detach( &system_s1 );
-							success = 1;
-							strncpy( message, "S-IC STAGED", BIG_BUFF_SIZE );
-						} else {
+						if( current_altitude == 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: S-IC STAGE IS STAGED", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						} else {
+							if( ROCKET_STAGE_get_attached( &system_s1 ) == 1 ) {
+								ROCKET_STAGE_do_detach( &system_s1 );
+								success = 1;
+								strncpy( message, "S-IC STAGED", BIG_BUFF_SIZE );
+							} else {
+								success = 0;
+								strncpy( message, "ERROR: S-IC STAGE IS STAGED", BIG_BUFF_SIZE );
+							}
 						}
 					} break;
 
 					case CENTER_ENGINE_CUTOFF : {
-						if( system_s1.center_engine_available == 1 ) {
+						if( system_s1.center_engine_available == 1 && current_altitude > 0 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s1.center_engine_available = 0;
 							success = 1;
@@ -371,18 +376,23 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DETACH : {
-						if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
-							ROCKET_STAGE_do_detach( &system_s2 );
-							success = 1;
-							strncpy( message, "S-II STAGED", BIG_BUFF_SIZE );
-						} else {
+						if( current_altitude == 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: S-II STAGE IS STAGED", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						} else {
+							if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
+								ROCKET_STAGE_do_detach( &system_s2 );
+								success = 1;
+								strncpy( message, "S-II STAGED", BIG_BUFF_SIZE );
+							} else {
+								success = 0;
+								strncpy( message, "ERROR: S-II STAGE IS STAGED", BIG_BUFF_SIZE );
+							}
 						}
 					} break;
 
 					case CENTER_ENGINE_CUTOFF : {
-						if( system_s2.center_engine_available == 1 ) {
+						if( system_s2.center_engine_available == 1 && current_altitude > 0 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s2.center_engine_available = 0;
 							success = 1;
@@ -431,18 +441,23 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DETACH : {
-						if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
-							ROCKET_STAGE_do_detach( &system_s3 );
-							success = 1;
-							strncpy( message, "S-IVB STAGED", BIG_BUFF_SIZE );
-						} else {
+						if( current_altitude == 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: S-IVB STAGE IS STAGED", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						} else {
+							if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
+								ROCKET_STAGE_do_detach( &system_s3 );
+								success = 1;
+								strncpy( message, "S-IVB STAGED", BIG_BUFF_SIZE );
+							} else {
+								success = 0;
+								strncpy( message, "ERROR: S-IVB STAGE IS STAGED", BIG_BUFF_SIZE );
+							}
 						}
 					} break;
 
 					case RESTART : {
-						if( current_system->id == system_s3.id ) {
+						if( current_system->id == system_s3.id && current_altitude > 0 ) {
 							system_s3.burn_start = 0;
 							system_s3.burn_time = 0;
 							success = 1;
