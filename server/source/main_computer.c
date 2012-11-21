@@ -1008,7 +1008,7 @@ void compute_launch_physics( void ) {
 		pitch_program.current_value += get_pitch_step() / time_mod;
 	}
 
-	if( pitch_program.current_value > 0 ) {
+	if( pitch_program.current_value > 0 && pitch_program.current_value < 90 ) {
 		rad2deg = pitch_program.current_value * _PI / 180;
 		current_vertical_velocity = round( ( (last_velocity+current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) ) * cos( rad2deg ) );
 		if( current_vertical_velocity < 0 ) {
