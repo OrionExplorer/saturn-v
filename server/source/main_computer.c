@@ -87,6 +87,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 
 	cJSON_AddStringToObject( data, "computer_message", telemetry_data.computer_message );
 	cJSON_AddNumberToObject( data, "mission_time", telemetry_data.mission_time );
+	cJSON_AddStringToObject( data, "current_time_gmt", telemetry_data.current_time_gmt );
 
 	cJSON_AddNumberToObject( data, "current_fuel_mass", telemetry_data.current_fuel_mass );
 	cJSON_AddNumberToObject( data, "total_mass", telemetry_data.total_mass );
@@ -1087,6 +1088,7 @@ void TELEMETRY_update( void ) {
 	telemetry_data.last_velocity = last_velocity;
 	telemetry_data.max_q_achieved = max_q_achieved;
 	telemetry_data.mission_time = mission_time;
+	strncpy( telemetry_data.current_time_gmt, get_actual_time_gmt(), TIME_BUFF_SIZE );
 	telemetry_data.thrust_newtons = thrust_newtons;
 	telemetry_data.total_distance = total_distance;
 	telemetry_data.total_mass = total_mass;

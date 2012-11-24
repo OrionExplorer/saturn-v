@@ -154,7 +154,9 @@ function execCommand(device, command, value) {
 function parseRemoteData(json) {
     
     if(json.computer_message != lastComputerMessage) {
-        updateInformation(json.computer_message);
+        var message = '<'+secondsToHms(json.mission_time)+'> '+json.computer_message;
+        lastComputerMessage = json.computer_message;
+        updateInformation(message);
     }
     updateHUD('yawButton', (json.yaw_program_engaged == 1 ? 'STOP' : 'START' ));
     updateHUD('rollButton', (json.roll_program_engaged == 1 ? 'STOP' : 'START' ));
@@ -162,7 +164,7 @@ function parseRemoteData(json) {
     updateHUD('voyager7_pitch', Math.round(json.pitch)+'° / '+json.dest_pitch+'°');
     updateHUD('voyager7_rollAzimuth', Math.round(90-json.roll)+'° / '+json.dest_roll+'°');
     updateHUD('voyager7_yaw', Math.round(json.yaw*10)/10+'°');
-    updateHUD('voyager7_mainEngine', (json.main_engine_engaged == 1 ? 'ON' : 'OFF' ));
+    //updateHUD('voyager7_mainEngine', (json.main_engine_engaged == 1 ? 'ON' : 'OFF' ));
 
     updateHUD('voyager7_s1_fuel', Math.round(json.s_ic_fuel)+' KG');
     updateHUD('voyager7_s1_burnTime', Math.round(json.s_ic_burn_time)+' S');
@@ -180,10 +182,11 @@ function parseRemoteData(json) {
     updateHUD('voyager7_s3_thrust', Math.round(json.s_ivb_thrust)+' N');
     
     updateHUD('voyager7_mission_time', secondsToHms(json.mission_time));
+    updateHUD('voyager7_timeInfo', json.current_time_gmt.toUpperCase());
     updateHUD('voyager7_velocity', Math.round(json.last_velocity) + ' M/S');
-    updateHUD('voyager7_verticalVelocity', Math.round(json.current_vertical_velocity) + ' M/S');
-    updateHUD('voyager7_horizontalVelocity', Math.round(json.current_horizontal_velocity) + ' M/S');
-    updateHUD('voyager7_totalMass', Math.round(json.total_mass) + ' KG');
+    //updateHUD('voyager7_verticalVelocity', Math.round(json.current_vertical_velocity) + ' M/S');
+    //updateHUD('voyager7_horizontalVelocity', Math.round(json.current_horizontal_velocity) + ' M/S');
+    //updateHUD('voyager7_totalMass', Math.round(json.total_mass) + ' KG');
     updateHUD('voyager7_acceleration', Math.round(json.current_acceleration*10)/10 + ' M/S');
     updateHUD('voyager7_gForce', json.current_gforce + ' G');
     updateHUD('voyager7_dynamicPressure', Math.round(json.current_dynamic_pressure)/10+' KG/M²');

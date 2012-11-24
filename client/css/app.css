@@ -4,10 +4,31 @@ body {
 
 caption {
     margin: 5px;
+    color: #999999;
 }
-#terminal {
-    color: #999999; font-family: courier, monaco; font-size: 9pt;
-    width: 100%;
+.terminal {
+    color: #999999;
+    font-family: courier, monaco;
+    font-size: 9pt;
+}
+
+label, input[type=text], textarea {
+  display: block;
+  border: 0px;
+  font-family: arial, monaco;
+  background-color: #999999;
+  border-radius: 5px;
+  -moz-border-radius: 5px;
+  padding: 2px;
+}
+
+.terminal table {
+    color : black;
+    background-color : #999999;
+}
+
+.terminal td.title {
+    border: 0px;
 }
 
 input {
@@ -15,53 +36,17 @@ input {
 }
 
 table, td {
-    border-collapse: collapse;
-    padding: 2px;
     border: 2px solid #999999;
-    font-family: Helvetica;
-    width: 100%;
-    text-align: center;
-}
-
-th {
-    padding: 2px;
-    border: 1px solid #999999;
+    border-radius: 5px;
     font-family: Helvetica;
     text-align: center;
-    background-color: #999999;
-    color: black;
-}
+    width: auto;
+    -moz-border-radius: 5px;
+    padding: 5px;
+    table-layout:fixed;
+}​
 
 strong {
     font-weight: bolder;
     font-family: Helvetica;
-}
-
-.background-property-cell {
-    border: 1px solid #999999;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
-    background: #999999;
-    color: black;
-    width: 130px;
-}
-.background-value-cell {
-    border: 1px solid #999999;
-    border-bottom: 1px solid #999999;
-    border-right: 1px solid #999999;
-    background: black;
-    color: #999999;
-    width: 130px;
-}
-
-.tooltip {
-    background-color: black;
-    border: 2px solid #999999;
-    color: #999999;
-    height: 20px;
-    position: relative;
-    padding: 5px;
-    font-weight: bold;
-    font-family: Helvetica;
-    margin: 5px;
 }

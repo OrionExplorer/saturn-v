@@ -4,35 +4,39 @@
         <!-- Project start: 25 Sept. 2011 -->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta name="author" content="Marcin Kelar">
-	<link href="css/app.css" rel="stylesheet" type="text/css">
+        <link href="css/app.css" rel="stylesheet" type="text/css">
         <link href="css/g_hud.css" rel="stylesheet" type="text/css">
         <link rel="SHORTCUT ICON" href="favicon.ico">
-        <title>VOYAGER 7</title>
+        <title>SATURN V</title>
     </head>
     <body>
         <script type="text/javascript" src="js/websocket.js"></script>
         <script type="text/javascript" src="js/main_computer.js"></script>
-	<script type="text/javascript" src="js/app.js"></script>
-    
-        <div id="terminal">
-            <div class="tooltip">
-                <div class="app-title">
-                    <strong>VOYAGER 7 CONTROL PANEL</strong>
+        <script type="text/javascript" src="js/app.js"></script>
+
+
+
+        <div class="terminal">
+            <div class="reports-1-panel">
+                <div class="box-info">
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:10px;">
+                                    SATURN V SA-514
+                                </td>
+                                <td class="title" style="text-align:center; border-left:0px; font-weight:bold; width:30%; padding:10px;">
+                                    <span id="voyager7_mission_time">T-00:00:00</span>
+                                </td>
+                                <td class="title" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:10px;">
+                                    <span id="voyager7_timeInfo"></span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div id="current-time-info">
-                </div>
-                
             </div>
-            <div class="tooltip">
-                <span id="status_text">
-                    <strong></strong>
-                </span>
-            </div>
-            <div class="mission-time-info">
-                <strong></strong>
-                <span id="voyager7_mission_time">T-00:00:00</span>
-            </div>
-            <div id="reports-1-panel">
+            <div class="reports-1-panel">
                 <div class="box-1-info">
                     <table>
                         <caption>
@@ -45,22 +49,6 @@
                                 </td>
                                 <td class="background-value-cell">
                                     <span id="voyager7_velocity">0 M/S</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>VERTICAL VELOCITY</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <span id="voyager7_verticalVelocity">0 M/S</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>HORIZONTAL VELOCITY</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <span id="voyager7_horizontalVelocity">0 M/S</span>
                                 </td>
                             </tr>
                             <tr>
@@ -98,21 +86,13 @@
                         </tbody>
                     </table>
                 </div>
-                
+
                 <div class="box-1-info">
                     <table>
                         <caption>
                             <strong>VEHICLE</strong>
                         </caption>
                         <tbody>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>TOTAL MASS</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <span id="voyager7_totalMass">0 KG</span>
-                                </td>
-                            </tr>
                             <tr>
                                 <td class="background-property-cell">
                                     <strong>PITCH</strong>
@@ -153,19 +133,11 @@
                                     <span id="voyager7_altitude">0 M</span>
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>MAIN ENGINE</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <span id="voyager7_mainEngine">OFF</span>
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div id="reports-2-panel">
+            <div class="reports-1-panel">
                 <div class="box-1-info">
                     <table>
                         <caption>
@@ -290,7 +262,8 @@
                     </table>
                 </div>
             </div>
-            <div id="control-1-unit">
+            <div class="reports-1-panel" >
+
                 <div class="box-1-info">
                     <table>
                         <caption>
@@ -324,7 +297,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="box-2-info">
+                <div class="box-1-info">
                     <br>
                     <table>
                         <caption>
@@ -367,12 +340,12 @@
                 <div class="box-1-info">
                     <table>
                         <caption>
-                            <strong>DEVICES</strong>
+                            <strong>LES SYSTEM</strong>
                         </caption>
                         <tbody>
                             <tr>
                                 <td class="background-property-cell">
-                                    <strong>LAUNCH ESCAPE TOWER</strong>
+                                    <strong>LET</strong>
                                 </td>
                                 <td class="background-value-cell">
                                     <input type="button" id="towerJettisonButton" value="JETTISON" onclick="towerJettisonButtonController('towerJettisonButton');" disabled="">
@@ -380,85 +353,91 @@
                                     <input type="button" id="towerJettisonEngageButton" value="ENGAGE" onclick="towerJettisonButtonController('towerJettisonEngageButton');" disabled="">
                                 </td>
                             </tr>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>GASTRONOMICAL ARM</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <input type="button" id="kotlecikButton" value="GET KOTLECIK" onclick="kotlecikButtonController('kotlecikButton');" disabled="">
-                                </td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <div id="control-2-unit">
-                <div class="box-1-info">
-                    <table>
-                        <caption>
-                            <strong>S-IVB STAGE CONTROL PANEL</strong>
-                        </caption>
-                        <tbody>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>RESTART</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <input type="button" id="systemS3Restart" value="ENGAGE" onclick="systemS3ButtonController('systemS3Restart');" disabled="">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>ENGINE CUTOFF</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <input type="button" id="systemS3ActionButton" value="OUTBOARD" onclick="systemS3ButtonController('systemS3ActionButton');" disabled="">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="box-1-info">
-                    <table>
-                        <caption>
-                            <strong>S-II STAGE CONTROL PANEL</strong>
-                        </caption>
-                        <tbody>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>ENGINE CUTOFF</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <input type="button" id="systemS2CenterEngineCutoffButton" value="CENTER" onclick="systemS2ButtonController('systemS2CenterEngineCutoffButton');" disabled="">
-                                    <br>
-                                    <input type="button" id="systemS2ActionButton" value="OUTBOARD" onclick="systemS2ButtonController('systemS2ActionButton');" disabled="">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="box-1-info">
-                    <table>
-                        <caption>
-                            <strong>S-IC STAGE CONTROL PANEL</strong>
-                        </caption>
-                        <tbody>
-                            <tr>
-                                <td class="background-property-cell">
-                                    <strong>ENGINE CUTOFF</strong>
-                                </td>
-                                <td class="background-value-cell">
-                                    <input type="button" id="systemS1CenterEngineCutoffButton" value="CENTER" onclick="systemS1ButtonController('systemS1CenterEngineCutoffButton');" disabled="">
-                                    <br>
-                                    <input type="button" id="systemS1ActionButton" value="OUTBOARD" onclick="systemS1ButtonController('systemS1ActionButton');" disabled="">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style="width:100%">
+                    <div class="box-1-info">
+                        <table>
+                            <caption>
+                                <strong>S-IVB STAGE CONTROL PANEL</strong>
+                            </caption>
+                            <tbody>
+                                <tr>
+                                    <td class="background-property-cell">
+                                        <strong>RESTART</strong>
+                                    </td>
+                                    <td class="background-value-cell">
+                                        <input type="button" id="systemS3Restart" value="ENGAGE" onclick="systemS3ButtonController('systemS3Restart');" disabled="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="background-property-cell">
+                                        <strong>ENGINE CUTOFF</strong>
+                                    </td>
+                                    <td class="background-value-cell">
+                                        <input type="button" id="systemS3ActionButton" value="OUTBOARD" onclick="systemS3ButtonController('systemS3ActionButton');" disabled="">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-1-info">
+                        <table>
+                            <caption>
+                                <strong>S-II STAGE CONTROL PANEL</strong>
+                            </caption>
+                            <tbody>
+                                <tr>
+                                    <td class="background-property-cell">
+                                        <strong>ENGINE CUTOFF</strong>
+                                    </td>
+                                    <td class="background-value-cell">
+                                        <input type="button" id="systemS2CenterEngineCutoffButton" value="CENTER" onclick="systemS2ButtonController('systemS2CenterEngineCutoffButton');" disabled="">
+                                        <br>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="background-value-cell">
+                                        <input type="button" id="systemS2ActionButton" value="OUTBOARD" onclick="systemS2ButtonController('systemS2ActionButton');" disabled="">  
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="box-1-info">
+                        <table>
+                            <caption>
+                                <strong>S-IC STAGE CONTROL PANEL</strong>
+                            </caption>
+                            <tbody>
+                                <tr>
+                                    <td class="background-property-cell">
+                                        <strong>ENGINE CUTOFF</strong>
+                                    </td>
+                                    <td class="background-value-cell">
+                                        <input type="button" id="systemS1CenterEngineCutoffButton" value="CENTER" onclick="systemS1ButtonController('systemS1CenterEngineCutoffButton');" disabled="">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td class="background-value-cell">
+                                        <input type="button" id="systemS1ActionButton" value="OUTBOARD" onclick="systemS1ButtonController('systemS1ActionButton');" disabled="">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="reports-1-panel">
+                        <div class="box-info">
+                            <textarea id="message-box" readonly="readonly" style="height:100px; width:100%"></textarea>
+<!--                            <input type="text" style="width:100%; height:30px; margin-top:2px;"/>-->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        
-
-</body>
+    </body>
 </html>

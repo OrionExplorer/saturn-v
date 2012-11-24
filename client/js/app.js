@@ -38,8 +38,8 @@ function enableEl(id) {
 }
 
 function getActualDateTime() {
-    var currentDate = new Date(),
-    result = currentDate;
+    var currentDate = new Date();
+    var result = currentDate;
     delete currentDate;
     return result.toGMTString();
 }
@@ -70,9 +70,11 @@ function setAllButtonsDisabled(bool) {
 }
 
 function updateInformation(status) {
-    var infoPanel = document.getElementById('status_text');
+    var infoPanel = document.getElementById('message-box');
     var _status = status.toString().toUpperCase();
-    infoPanel.innerHTML = '<strong>STATUS: '+_status+'.</strong>';
+    infoPanel.value += '\n'+_status;
+    infoPanel.scrollTop = 99999;
+    //infoPanel.innerHTML = '<strong>STATUS: '+_status+'.</strong>';
 }
 
 function json2text(json_object) {
@@ -87,7 +89,7 @@ function json2text(json_object) {
 }
 
 setAllButtonsDisabled(true);
-setTimeout("updateTime()", 1000);
+//setTimeout("updateTime()", 1000);
 
 if( checkBrowserForHTML5() ) {
     getVoyager7RemoteAddress();

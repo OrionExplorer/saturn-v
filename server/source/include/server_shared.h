@@ -142,6 +142,7 @@ struct TELEMETRY {
 	double					total_distance;
 	double					last_velocity;
 	double					mission_time;
+	char					current_time_gmt[ TIME_BUFF_SIZE ];
 	double					ascending_time;
 	short					max_q_achieved;
 	int						current_dynamic_pressure;
