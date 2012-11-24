@@ -740,7 +740,7 @@ double get_pitch_step( void ) {
 }
 
 double get_roll_step( void ) {
-	return 0.98;
+	return 0.94;
 }
 
 double get_yaw_step( void ) {
@@ -751,7 +751,7 @@ double get_yaw_step( void ) {
 	if( current_altitude < 130 && liftoff_yaw_achieved == 0 ) {
 		return 0.15625;
 	} else if( current_altitude > 130 ) {
-		return -0.15625;
+		return -0.10625;
 	}
 
 	return 0;
@@ -768,7 +768,7 @@ void auto_pilot( double real_second ) {
 			return;
 	}
 
-	if( yaw_program.current_value == 0 && liftoff_yaw_achieved == 1 && yaw_program.running == 1 ) {
+	if( yaw_program.current_value <= 0 && liftoff_yaw_achieved == 1 && yaw_program.running == 1 ) {
 		EXEC_COMMAND( YAW_PROGRAM, STOP, 0 );
 	}
 
@@ -794,7 +794,7 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 30 : {
+		case 31 : {
 			if( pitch_program.running == 0 ) {
 				EXEC_COMMAND( PITCH_PROGRAM, START, 0 );
 			}
