@@ -740,7 +740,7 @@ double get_pitch_step( void ) {
 }
 
 double get_roll_step( void ) {
-	return 0.94;
+	return 0.98;
 }
 
 double get_yaw_step( void ) {
@@ -794,7 +794,7 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 31 : {
+		case 30 : {
 			if( pitch_program.running == 0 ) {
 				EXEC_COMMAND( PITCH_PROGRAM, START, 0 );
 			}
@@ -917,7 +917,7 @@ void compute_launch_physics( void ) {
 	}
 
 	if( current_system->burn_start == 0 ) {
-		if( current_thrust == 100 ) {
+		if( current_thrust > 0 ) {
 			current_system->burn_start = get_current_epoch();
 		}
 	} else {

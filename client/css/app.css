@@ -12,7 +12,7 @@ caption {
     font-size: 9pt;
 }
 
-label, input[type=text], textarea {
+input[type=text], textarea {
   display: block;
   border: 0px;
   font-family: arial, monaco;
@@ -36,15 +36,21 @@ input {
 }
 
 table, td {
-    border: 2px solid #999999;
+    border: 0px solid #999999;
     border-radius: 5px;
     font-family: Helvetica;
     text-align: center;
     width: auto;
     -moz-border-radius: 5px;
-    padding: 5px;
+    padding: 3px;
     table-layout:fixed;
 }​
+
+td {
+  padding: 0px;  
+  table-layout:fixed;
+  border-radius: 0px;
+}
 
 strong {
     font-weight: bolder;
