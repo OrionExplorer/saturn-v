@@ -72,3 +72,23 @@ function getVoyager7RemoteAddress() {
 function checkBrowserForHTML5() {
     return ('WebSocket' in window && 'localStorage' in window);
 }
+
+function sendCommand( command, commandType, responseMode ) {
+    var sendData = {};
+    
+    if(command) {
+        sendData['command'] = command;
+    }
+    if(commandType) {
+        sendData['command_type'] = commandType;
+    }
+    if(responseMode) {
+        sendData['response_mode'] = responseMode;
+    }
+    
+    var sendDataStr = JSON.stringify(sendData);
+    
+    console.log('sendDataStr = '+sendDataStr);
+    
+    Socket.send(sendDataStr);
+}

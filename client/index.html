@@ -3,24 +3,462 @@
     <head>
         <!-- Project start: 25 Sept. 2011 -->
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="author" content="Marcin Kelar">
 	<link href="css/app.css" rel="stylesheet" type="text/css">
         <link href="css/g_hud.css" rel="stylesheet" type="text/css">
         <link rel="SHORTCUT ICON" href="favicon.ico">
         <title>VOYAGER 7</title>
     </head>
     <body>
-        <!-- Not real MVC -->
-        <!--Utils -->
-	<script type="text/javascript" src="utils/html.js"></script>
-        <script type="text/javascript" src="utils/g_time.js"></script>
-        <script type="text/javascript" src="utils/websocket.js"></script>
-        <!-- View -->
-        <script type="text/javascript" src="js/view/shuttle/g_hud_view.js"></script>
-        <script type="text/javascript" src="js/view/shuttle/g_hud_control.js"></script>
-        <!-- Controller -->
-        <script type="text/javascript" src="js/controller/shuttle/main_computer.js"></script>
-        <script type="text/javascript" src="js/controller/shuttle/g_rocket.js"></script>
-        <script type="text/javascript" src="js/g_shared.js"></script>
+        <script type="text/javascript" src="js/websocket.js"></script>
+        <script type="text/javascript" src="js/main_computer.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
-    </body>
+    
+        <div id="terminal">
+            <div class="tooltip">
+                <div class="app-title">
+                    <strong>VOYAGER 7 CONTROL PANEL</strong>
+                </div>
+                <div id="current-time-info">
+                </div>
+                
+            </div>
+            <div class="tooltip">
+                <span id="status_text">
+                    <strong></strong>
+                </span>
+            </div>
+            <div class="mission-time-info">
+                <strong></strong>
+                <span id="voyager7_mission_time">T-00:00:00</span>
+            </div>
+            <div id="reports-1-panel">
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>VELOCITY</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>VELOCITY</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_velocity">0 M/S</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>VERTICAL VELOCITY</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_verticalVelocity">0 M/S</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>HORIZONTAL VELOCITY</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_horizontalVelocity">0 M/S</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ACCELERATION</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_acceleration">0 M/S</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>G-FORCE</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_gForce">0 G</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>THRUST</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_thrust">0 %</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>MAX Q</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_dynamicPressure">0 KG/M²</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>VEHICLE</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>TOTAL MASS</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_totalMass">0 KG</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>PITCH</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_pitch">0° / 0°</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ROLL</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_rollAzimuth">90° / 90°</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>YAW</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_yaw">0°</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>TOTAL</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_distance">0 M</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ALTITUDE</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_altitude">0 M</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>MAIN ENGINE</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_mainEngine">OFF</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="reports-2-panel">
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>S-IVB STAGE</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>FUEL</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s3_fuel">0 KG</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>STATUS</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s3_status">STAGED</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>THRUST</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s3_thrust">0 N</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>BURN TIME</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s3_burnTime">0 S</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>S-II STAGE</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>FUEL</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s2_fuel">0 KG</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>STATUS</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s2_status">STAGED</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>THRUST</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s2_thrust">0 N</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>BURN TIME</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s2_burnTime">0 S</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>S-IC STAGE</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>FUEL</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s1_fuel">0 KG</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>STATUS</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s1_status">STAGED</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>THRUST</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s1_thrust">0 N</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>BURN TIME</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <span id="voyager7_s1_burnTime">0 S</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="control-1-unit">
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>PITCH-ROLL PROGRAM</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>PITCH</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="pitchButton" value="START" onclick="pitchRollYawButtonController('pitchButton');" disabled="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ROLL</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="rollButton" value="START" onclick="pitchRollYawButtonController('rollButton');" disabled="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>YAW</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="yawButton" value="START" onclick="pitchRollYawButtonController('yawButton');" disabled="">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-2-info">
+                    <br>
+                    <table>
+                        <caption>
+                            <strong>ENGINES CONTROL PANEL</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>INTERNAL GUIDANCE</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="mainEngineEngageButton" value="ENGAGE" onclick="mainEngineEngageButtonController('mainEngineEngageButton');" disabled="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>THRUST</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="mainEngineThrustFullButton" value="FULL" onclick="mainEngineThrustButtonController('mainEngineThrustFullButton');" disabled="">
+                                    <br>
+                                    <input type="button" id="mainEngineThrustUpButton" value="UP" onclick="mainEngineThrustButtonController('mainEngineThrustUpButton');" disabled="">
+                                    <br>
+                                    <input type="button" id="mainEngineThrustDownButton" value="DOWN" onclick="mainEngineThrustButtonController('mainEngineThrustDownButton');" disabled="">
+                                    <br>
+                                    <input type="button" id="mainEngineThrustNullButton" value="NULL" onclick="mainEngineThrustButtonController('mainEngineThrustNullButton');" disabled="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>MAIN ENGINE</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="systemAPSButton" value="ENGAGE" onclick="systemMPSButtonController('systemAPSButton');" disabled="">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>DEVICES</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>LAUNCH ESCAPE TOWER</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="towerJettisonButton" value="JETTISON" onclick="towerJettisonButtonController('towerJettisonButton');" disabled="">
+                                    <br>
+                                    <input type="button" id="towerJettisonEngageButton" value="ENGAGE" onclick="towerJettisonButtonController('towerJettisonEngageButton');" disabled="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>GASTRONOMICAL ARM</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="kotlecikButton" value="GET KOTLECIK" onclick="kotlecikButtonController('kotlecikButton');" disabled="">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div id="control-2-unit">
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>S-IVB STAGE CONTROL PANEL</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>RESTART</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="systemS3Restart" value="ENGAGE" onclick="systemS3ButtonController('systemS3Restart');" disabled="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ENGINE CUTOFF</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="systemS3ActionButton" value="OUTBOARD" onclick="systemS3ButtonController('systemS3ActionButton');" disabled="">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>S-II STAGE CONTROL PANEL</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ENGINE CUTOFF</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="systemS2CenterEngineCutoffButton" value="CENTER" onclick="systemS2ButtonController('systemS2CenterEngineCutoffButton');" disabled="">
+                                    <br>
+                                    <input type="button" id="systemS2ActionButton" value="OUTBOARD" onclick="systemS2ButtonController('systemS2ActionButton');" disabled="">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="box-1-info">
+                    <table>
+                        <caption>
+                            <strong>S-IC STAGE CONTROL PANEL</strong>
+                        </caption>
+                        <tbody>
+                            <tr>
+                                <td class="background-property-cell">
+                                    <strong>ENGINE CUTOFF</strong>
+                                </td>
+                                <td class="background-value-cell">
+                                    <input type="button" id="systemS1CenterEngineCutoffButton" value="CENTER" onclick="systemS1ButtonController('systemS1CenterEngineCutoffButton');" disabled="">
+                                    <br>
+                                    <input type="button" id="systemS1ActionButton" value="OUTBOARD" onclick="systemS1ButtonController('systemS1ActionButton');" disabled="">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+
+</body>
 </html>

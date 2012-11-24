@@ -1,5 +1,119 @@
 var lastComputerMessage = '';
 
+function kotlecikButtonController(id) {
+    var button = document.getElementById(id);
+    Socket.send('konsumpcja kotlecika!');
+    
+}
+
+function pitchRollYawButtonController(id) {
+    var button = document.getElementById(id);
+    switch(button.id) {
+        case 'pitchButton' : {
+                execCommand('PITCH_PROGRAM', button.value);
+        } break;
+        case 'rollButton' : {
+                execCommand('ROLL_PROGRAM', button.value);
+        } break;
+        case 'yawButton' : {
+                execCommand('YAW_PROGRAM', button.value);
+        } break;
+    }
+}
+
+function mainEngineEngageButtonController(id) {
+    switch(document.getElementById(id).value) {
+        case 'ENGAGE' : {
+                execCommand('INTERNAL_GUIDANCE', 'START');
+                
+        }break;
+        case 'DISENGAGE' : {
+                execCommand('INTERNAL_GUIDANCE', 'STOP');
+        }break;
+    }
+}
+
+function systemMPSButtonController(id) {
+    var button = document.getElementById(id);
+    switch(button.id) {
+        case 'systemAPSButton' : {
+                if(button.value == 'ENGAGE') {
+                    execCommand('MAIN_ENGINE', 'START');
+                } else {
+                    execCommand('MAIN_ENGINE', 'STOP');
+                }
+        } break;
+    }
+}
+
+function mainEngineThrustButtonController(id) {
+    switch(document.getElementById(id).value) {
+        case 'UP' : {
+                execCommand('THRUST', 'INCREASE', 5, false);
+        } break;
+        case 'DOWN' : {
+                execCommand('THRUST', 'DECREASE', 5, false);
+        } break;
+        case 'FULL' : {
+                execCommand('THRUST', 'FULL_THRUST', null, false);
+        } break;
+        case 'NULL' : {
+                execCommand('THRUST', 'NULL_THRUST', null, false);
+        } break;
+    }
+}
+
+function towerJettisonButtonController(id) {
+    var button = document.getElementById(id);
+    switch(button.id) {
+        case 'towerJettisonButton' : {
+            execCommand('LET', 'JETTISON');
+        } break;
+    }
+}
+
+function systemS1ButtonController(id) {
+    var button = document.getElementById(id);
+    switch(button.id) {
+        case 'systemS1ActionButton' : {
+            if(button.value == 'OUTBOARD') {
+                execCommand('S1', 'DETACH');
+            }
+        } break;
+        case 'systemS1CenterEngineCutoffButton' : {
+            execCommand('S1', 'CENTER_ENGINE_CUTOFF', 20, true)
+        } break;
+    }
+}
+
+function systemS2ButtonController(id) {
+    var button = document.getElementById(id);
+    switch(button.id) {
+        case 'systemS2ActionButton' : {
+            if(button.value == 'OUTBOARD') {
+                execCommand('S2', 'DETACH');
+            }
+        } break;
+        case 'systemS2CenterEngineCutoffButton' : {
+            execCommand('S2', 'CENTER_ENGINE_CUTOFF');
+        } break;
+    }
+}
+
+function systemS3ButtonController(id) {
+    var button = document.getElementById(id);
+    switch(button.id) {
+        case 'systemS3ActionButton' : {
+            if(button.value == 'OUTBOARD') {
+                execCommand('S3', 'DETACH');
+            }
+        } break;
+        case 'systemS3Restart' : {
+            execCommand('S3', 'RESTART');
+        }
+    }
+}
+
 function execCommand(device, command, value) {
     var commandStr = '';
     
@@ -86,10 +200,6 @@ function parseRemoteData(json) {
         updateHUD('voyager7_distance', Math.round(json.total_distance)/1000 + ' KM');
     }
     updateHUD('voyager7_thrust', json.current_thrust+' %');
-
-    if(json.mission_time > 0) {
-        enableThrustChange();
-    }
 
     if(json.internal_guidance_engaged == 0) {
         updateHUD('mainEngineEngageButton', 'ENGAGE');//, 2000, 'enableEl("'+id+'")');

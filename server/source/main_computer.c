@@ -174,7 +174,7 @@ void* TELEMETRY_send_live_data( void* data ) {
 	int i;
 
 	while(1) {
-		Sleep(500);
+		Sleep(200);
 		for( i = 0; i < MAX_CLIENTS; i++ ) {
 			TELEMETRY_update();
 			if(connected_clients[ i ].socket_descriptor > 0 ) {
@@ -1008,9 +1008,9 @@ void compute_launch_physics( void ) {
 		pitch_program.current_value += get_pitch_step() / time_mod;
 	}
 
-	if( pitch_program.current_value > 0 && pitch_program.current_value < 90 ) {
+	if( pitch_program.current_value > 0 ) {
 		rad2deg = pitch_program.current_value * _PI / 180;
-		current_vertical_velocity = round( ( (last_velocity+current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) ) * cos( rad2deg ) );
+		current_vertical_velocity = round( ( (last_velocity + current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) ) * cos( rad2deg ) );
 		if( current_vertical_velocity < 0 ) {
 			current_vertical_velocity = 0;
 		}
