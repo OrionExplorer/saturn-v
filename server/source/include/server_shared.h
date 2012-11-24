@@ -103,8 +103,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define INVALID_JSON						"{\"success\":true,\"msg\":\"invalid_message_format\",\"data_type\":\"command_response\"}\0"
 #define MAIN_COMPUTER_RESPONSE_TEMPLATE		"{\"success\":%s,\"msg\":\"%s\",\"data_type\":\"command_response\"}\0"
 
-char										app_path[ MAX_PATH_LENGTH ];
-char										app_auth[ SMALL_BUFF_SIZE ];
+extern char									app_path[ MAX_PATH_LENGTH ];
+extern char									app_auth[ SMALL_BUFF_SIZE ];
 
 typedef struct COMMUNICATION_SESSION		COMMUNICATION_SESSION;
 typedef struct CONNECTED_CLIENT				CONNECTED_CLIENT;

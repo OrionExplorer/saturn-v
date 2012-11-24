@@ -39,7 +39,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 	#define S_IXOTH		S_IEXEC
 	#define sighandler	__p_sig_fn_t
 	#define MSG_NOSIGNAL	0
-	#define sleep       Sleep
+	#define sleep		Sleep
 
 	#define APP_NAME	"Saturn V Computer (Win32)"
 #else
@@ -52,7 +52,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 	#define EXIT_FAILURE ( 1 )
 	#define READ_BINARY	"re"
 	#define sighandler	__sighandler_t
-	#define Sleep(x)      usleep(x*1000)
+	#define Sleep(x)	usleep(x*1000)
 
 	#define APP_NAME	"Saturn V Computer (Linux)"
 #endif

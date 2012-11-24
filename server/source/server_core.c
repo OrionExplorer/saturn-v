@@ -22,19 +22,13 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <sys/stat.h>
 
 /* �cie�ka startowa aplikacji */
-char	app_path[];
-
+char	app_path[ MAX_PATH_LENGTH ];
+char	app_auth[ SMALL_BUFF_SIZE ];
 /*Pe�na nazwa pliku ( +�cie�ka dost�pu ) "log.txt" */
 char	LOG_filename[ MAX_PATH_LENGTH ];
 
 /*Przechowuje informacj� o typach adres�w IP: IPv4 lub IPv6 */
 int		ip_proto_ver = -1;
-
-/* Przechowuje informacj� o ilo�ci wczytanych rozszerze� dla innych typ�w plik�w */
-int		cgi_other_count = 0;
-
-/* Przechowuje informacj� o ilo�ci wczytanych nazw plik�w index */
-int		index_file_count = 0;
 
 static void		server_log_prepare( void );
 static void		server_validate_paths( void );
