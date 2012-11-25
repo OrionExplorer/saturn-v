@@ -6,16 +6,17 @@ caption {
     margin: 5px;
     color: #999999;
 }
+
 .terminal {
     color: #999999;
-    font-family: courier, monaco;
+    font-family: Helvetica;
     font-size: 9pt;
 }
 
 input[type=text], textarea {
   display: block;
   border: 0px;
-  font-family: arial, monaco;
+  font-family: Helvetica, monaco;
   background-color: #999999;
   border-radius: 5px;
   -moz-border-radius: 5px;
@@ -29,6 +30,12 @@ input[type=text], textarea {
 
 .terminal td.title {
     border: 0px;
+}
+
+.link {
+    border: 0px;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 input {

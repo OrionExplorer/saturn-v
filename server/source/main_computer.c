@@ -780,6 +780,12 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
 	}
 
+	if( system_s1.fuel <= 10000 && system_s1.attached == 1 ) {
+		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
+		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+		EXEC_COMMAND( S1, DETACH, 0 );
+	}
+
 	switch( second ) {
 		default : /* Nic */ break;
 		case 2 : {
@@ -806,15 +812,15 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 161 : {
+		/*case 161 : {
 			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 80 && current_system->id == 1 ) {
 				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 				EXEC_COMMAND( S1, DETACH, 0 );
 			}
-		} break;
+		} break;*/
 
-		case 164 : {
+		case 166 : {
 			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
 				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
 				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );

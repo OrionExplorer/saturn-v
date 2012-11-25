@@ -88,6 +88,20 @@ function json2text(json_object) {
     return JSON.stringify(json_object, replacer);
 }
 
+function showApolloLMControlPanel() {
+    var apolloCSM_control = document.getElementById('apolloCSM_control');
+    var apolloLM_control = document.getElementById('apolloLM_control');
+    apolloCSM_control.style.display = 'none';
+    apolloLM_control.style.display = 'block';
+}
+
+function showApolloCSMControlPanel() {
+    var apolloCSM_control = document.getElementById('apolloCSM_control');
+    var apolloLM_control = document.getElementById('apolloLM_control');
+    apolloLM_control.style.display = 'none';
+    apolloCSM_control.style.display = 'block';
+}
+
 setAllButtonsDisabled(true);
 //setTimeout("updateTime()", 1000);
 
