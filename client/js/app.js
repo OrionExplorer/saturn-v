@@ -37,19 +37,6 @@ function enableEl(id) {
     document.getElementById(id).disabled = false;
 }
 
-function getActualDateTime() {
-    var currentDate = new Date();
-    var result = currentDate;
-    delete currentDate;
-    return result.toGMTString();
-}
-
-function updateTime() {
-    var timeStr = document.getElementById('current-time-info');
-    timeStr.innerHTML = getActualDateTime().toUpperCase();
-    setTimeout('updateTime()', 1000);
-}
-
 function secondsToHms(d) {
     var lessThanZero = (d < 0) ? true : false;
     d = Math.abs(Math.round(Number(d)));
@@ -74,7 +61,6 @@ function updateInformation(status) {
     var _status = status.toString().toUpperCase();
     infoPanel.value += '\n'+_status;
     infoPanel.scrollTop = 99999;
-    //infoPanel.innerHTML = '<strong>STATUS: '+_status+'.</strong>';
 }
 
 function json2text(json_object) {
@@ -91,19 +77,31 @@ function json2text(json_object) {
 function showApolloLMControlPanel() {
     var apolloCSM_control = document.getElementById('apolloCSM_control');
     var apolloLM_control = document.getElementById('apolloLM_control');
+    var sa514_control = document.getElementById('sa514_control');
     apolloCSM_control.style.display = 'none';
+    sa514_control.style.display = 'none';
     apolloLM_control.style.display = 'block';
 }
 
 function showApolloCSMControlPanel() {
     var apolloCSM_control = document.getElementById('apolloCSM_control');
     var apolloLM_control = document.getElementById('apolloLM_control');
+    var sa514_control = document.getElementById('sa514_control');
     apolloLM_control.style.display = 'none';
+    sa514_control.style.display = 'none';
     apolloCSM_control.style.display = 'block';
 }
 
+function showApolloSA514ControlPanel() {
+    var apolloCSM_control = document.getElementById('apolloCSM_control');
+    var apolloLM_control = document.getElementById('apolloLM_control');
+    var sa514_control = document.getElementById('sa514_control');
+    apolloLM_control.style.display = 'none';
+    apolloCSM_control.style.display = 'none';
+    sa514_control.style.display = 'block';
+}
+
 setAllButtonsDisabled(true);
-//setTimeout("updateTime()", 1000);
 
 if( checkBrowserForHTML5() ) {
     getVoyager7RemoteAddress();

@@ -37,6 +37,35 @@
                     
                 </div>
             </div>
+            <!-- APOLLO CSM -->
+            <div id="apolloCSM_control" style="display:none;">
+                 <div class="reports-1-panel">
+                    <div class="box-info">
+                        <table style="width:100%; margin-top:2px;">
+                            <tbody>
+                                <tr>
+                                    <td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+                                        <strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
+                                    </td>
+                                    <td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+                                        Command/Service Module
+                                    </td>
+                                    <td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
+                                        <strong class="link" onclick="javascript:showApolloLMControlPanel();">LM</strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="terminal">
+                    <div class="reports-1-panel">
+                        <div class="box-info">
+                            Apollo Command/Service Module not yet available
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- APOLLO LM -->
             <div id="apolloLM_control" style="display:none;">
                  <div class="reports-1-panel">
@@ -45,13 +74,13 @@
                             <tbody>
                                 <tr>
                                     <td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-                                        <b></b>
+                                        <strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
                                     </td>
                                     <td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
                                         Lunar Module
                                     </td>
                                     <td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
-                                        <strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
+                                        <strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
                                     </td>
                                 </tr>
                             </tbody>
@@ -66,18 +95,18 @@
                     </div>
                 </div>
             </div>
-            <!-- APOLLO CSM -->
-            <div id="apolloCSM_control">
+            <!-- SA-514 -->
+            <div id="sa514_control">
                 <div class="reports-1-panel">
                     <div class="box-info">
                         <table style="width:100%; margin-top:2px;">
                             <tbody>
                                 <tr>
                                     <td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-                                        <b></b>
+                                        <strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
                                     </td>
                                     <td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-                                        Command/Service Module
+                                        SA-514
                                     </td>
                                     <td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
                                         <strong class="link" onclick="javascript:showApolloLMControlPanel();">LM</strong>
