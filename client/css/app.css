@@ -47,7 +47,7 @@ table, td {
     border-radius: 5px;
     font-family: Helvetica;
     text-align: center;
-    width: auto;
+    /*width: auto;*/
     -moz-border-radius: 5px;
     padding: 3px;
     table-layout:fixed;
