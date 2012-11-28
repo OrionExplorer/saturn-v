@@ -1,65 +1,108 @@
 body {
-    background-color: black;
+		background-color: black;
 }
 
+ul {margin:0; padding:0;}
+li {list-style: none;}
+
+/* clean gray from http://hellohappy.org/css3-buttons/
+*******************************************************************************/
+input[type="button"] {
+	clear: right;
+	background-color: #eeeeee;
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc));
+	background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+	background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+	background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+	background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+	background-image: linear-gradient(top, #eeeeee, #cccccc);
+	border: 1px solid #ccc;
+	margin: 1px;
+	border-bottom: 1px solid #bbb;
+	border-radius: 3px;
+	color: #333;
+	font: bold 11px/1 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+	padding: 5px;
+	text-align: center;
+	text-shadow: 0 1px 0 #eee;
+	width: 150px; }
+	input[type="button"]:hover {
+		background-color: #dddddd;
+		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dddddd), color-stop(100%, #bbbbbb));
+		background-image: -webkit-linear-gradient(top, #dddddd, #bbbbbb);
+		background-image: -moz-linear-gradient(top, #dddddd, #bbbbbb);
+		background-image: -ms-linear-gradient(top, #dddddd, #bbbbbb);
+		background-image: -o-linear-gradient(top, #dddddd, #bbbbbb);
+		background-image: linear-gradient(top, #dddddd, #bbbbbb);
+		border: 1px solid #bbb;
+		border-bottom: 1px solid #999;
+		cursor: pointer;
+		text-shadow: 0 1px 0 #ddd; }
+	input[type="button"]:active {
+		border: 1px solid #aaa;
+		border-bottom: 1px solid #888;
+		-webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee; }
+
+
 caption {
-    margin: 5px;
-    color: #999999;
+		margin: 5px;
+		color: #999999;
 }
 
 .terminal {
-    color: #999999;
-    font-family: Helvetica;
-    font-size: 9pt;
+		color: #999999;
+		font-family: Helvetica;
+		font-size: 9pt;
 }
 
 input[type=text], textarea {
-  display: block;
-  border: 0px;
-  font-family: Helvetica, monaco;
-  background-color: #999999;
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  padding: 2px;
+	display: block;
+	border: 0px;
+	font-family: Helvetica, monaco;
+	background-color: #999999;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	padding: 2px;
 }
 
 .terminal table {
-    color : black;
-    background-color : #999999;
+		color : black;
+		background-color : #999999;
 }
 
 .terminal td.title {
-    border: 0px;
+		border: 0px;
 }
 
 .link {
-    border: 0px;
-    text-decoration: underline;
-    cursor: pointer;
+		border: 0px;
+		text-decoration: underline;
+		cursor: pointer;
 }
 
 input {
-    width: 123px;
+		width: 123px;
 }
 
 table, td {
-    border: 0px solid #999999;
-    border-radius: 5px;
-    font-family: Helvetica;
-    text-align: center;
-    /*width: auto;*/
-    -moz-border-radius: 5px;
-    padding: 3px;
-    table-layout:fixed;
+		border: 0px solid #999999;
+		border-radius: 5px;
+		font-family: Helvetica;
+		text-align: center;
+		/*width: auto;*/
+		-moz-border-radius: 5px;
+		padding: 3px;
+		table-layout:fixed;
 }​
 
 td {
-  padding: 0px;  
-  table-layout:fixed;
-  border-radius: 0px;
+	padding: 0px;  
+	table-layout:fixed;
+	border-radius: 0px;
 }
 
 strong {
-    font-weight: bolder;
-    font-family: Helvetica;
+		font-weight: bolder;
+		font-family: Helvetica;
 }
