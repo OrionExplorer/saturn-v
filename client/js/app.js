@@ -17,18 +17,6 @@ function updateEl(id, val, callback) {
     }
 }
 
-function updateHUD(id, val, delay, callback) {
-    if(delay != undefined) {
-        if(callback != undefined) {
-            setTimeout('updateEl(\''+id+'\', \''+val+'\', \''+callback+'\')', delay);
-        } else {
-            setTimeout('updateEl(\''+id+'\', \''+val+'\')', delay);
-        }
-    } else {
-        updateEl(id, val);
-    }
-}
-
 function disableEl(id) {
     document.getElementById(id).disabled = true;
 }
