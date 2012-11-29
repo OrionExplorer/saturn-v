@@ -1,42 +1,41 @@
 .box-info {
-    display: block;
-    margin: 5px;
-    color: #999999;
-    width: 80em;
-    overflow: visible;
-    display: inline-block;
-    vertical-align: middle;
+	display: block;
+	margin: 5px;
+	color: #999999;
+	width: 80em;
+	overflow: visible;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .box-1-info {
-    /*width: 300px;*/
-    height: auto;
-    margin: 5px;
-    display: inline-block;
-    vertical-align: middle;
+	height: auto;
+	margin: 5px;
+	display: inline-block;
+	vertical-align: middle;
 }
 
 .reports-1-panel {
-    width: 100%;
-    text-align: center;
-    white-space: nowrap;
-    line-height: 12px;
-    height: auto;
+	width: 100%;
+	text-align: center;
+	white-space: nowrap;
+	line-height: 12px;
+	height: auto;
 }
 
 .background-property-cell {
-    border: 1px solid;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
-    background: #999999;
-    color: black;
-    width: 130px;
+	border: 1px solid;
+	border-bottom: 1px solid black;
+	border-right: 1px solid black;
+	background: #999999;
+	color: black;
+	width: 130px;
 }
 .background-value-cell {
-    border: 1px solid;
-    border-bottom: 1px solid #999999;
-    border-right: 1px solid #999999;
-    background: black;
-    color: #999999;
-    width: 130px;
+	border: 1px solid;
+	border-bottom: 1px solid #999999;
+	border-right: 1px solid #999999;
+	background: black;
+	color: #999999;
+	width: 130px;
 }

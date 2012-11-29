@@ -87,21 +87,12 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 #define RFC1123FMT							"%a, %d %b %Y %H:%M:%S GMT"
 
-#define START_STR							"START"
-#define STOP_STR							"STOP"
-#define TANK_STR							"TANK"
-#define RELEASE_STR							"RELEASE"
-#define ATTACHED_STR						"ATTACHED"
-#define STAGED_STR							"STAGED"
-#define ENGAGE_STR							"ENGAGE"
-#define DISENGAGE_STR						"DISENGAGE"
-#define ON_STR								"ON"
-#define OFF_STR								"OFF"
-
 #define LOGIN_STR							"{\"success\":false,\"msg\":\"authorization_required\",\"data_type\":\"command_response\"}\0"
 #define LOGIN_SUCCESS						"{\"success\":true,\"msg\":\"user_authorized\",\"data_type\":\"command_response\"}\0"
 #define INVALID_JSON						"{\"success\":true,\"msg\":\"invalid_message_format\",\"data_type\":\"command_response\"}\0"
 #define MAIN_COMPUTER_RESPONSE_TEMPLATE		"{\"success\":%s,\"msg\":\"%s\",\"data_type\":\"command_response\"}\0"
+#define NEW_USER_STR						"{\"success\":true,\"msg\":\"%s\",\"data_type\":\"new_user\"}\0"
+#define DEL_USER_STR						"{\"success\":true,\"msg\":\"%s\",\"data_type\":\"del_user\"}\0"
 
 extern char									app_path[ MAX_PATH_LENGTH ];
 extern char									app_auth[ SMALL_BUFF_SIZE ];
@@ -269,6 +260,7 @@ struct CONNECTED_CLIENT {
 	short				binded;
 	short				authorized;
 	vCONTROL_MODE		mode;
+	char				name[ STD_BUFF_SIZE ];
 };
 
 CONNECTED_CLIENT			connected_clients[ MAX_CLIENTS ];

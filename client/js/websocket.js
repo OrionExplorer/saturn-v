@@ -28,6 +28,7 @@ function connectToVoyager7(address) {
 
 	Socket.onmessage = function(evt) {
 		var json = null;
+		var currentTime = document.getElementById('voyager7_timeInfo').innerHTML;
 		try {
 			json = JSON.parse(evt.data, reviewer);//eval('(' + evt.data + ')');
 		} catch(ex) {
@@ -49,21 +50,28 @@ function connectToVoyager7(address) {
 					updateInformation('Access to remote computer granted');
 					setAllButtonsDisabled(false);
 					sendCommand('', 'data', 'live');
-				} else {
-					//updateInformation(json.msg);
 				}
 			} else {
 				if(json.msg == 'authorization_required') {
 					updateInformation('Remote computer requires authorization');
-					var pass = '';
-					pass = prompt('Please enter authorization key', '');
-					if(pass != null && pass != '') {
-						sendCommand(pass, 'authorization');
+					var username = '';
+					username = prompt('Please enter your name', '');
+					if(username != null && username != '') {
+						var pass = '';
+						pass = prompt('Please enter authorization token', '');
+						if(pass != null && pass != '') {
+							sendCommand(username, 'username');	
+							sendCommand(pass, 'authorization');
+						}
 					}
-				} else {
-					//updateInformation(json.msg);
 				}
 			}
+		} else if(json.data_type == 'chat_message') {
+			updateInformation('<'+currentTime+'> '+json.data.user+': '+json.data.text);
+		} else if(json.data_type == 'new_user') {
+			updateInformation('<'+currentTime+'> New user: '+ json.msg);
+		} else if(json.data_type == 'del_user') {
+			updateInformation('<'+currentTime+'> User left: '+ json.msg);
 		}
 	}
 }

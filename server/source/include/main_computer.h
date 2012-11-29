@@ -18,6 +18,8 @@ ROCKET_ENGINE main_engine;
 
 void MAIN_COMPUTER_init( void );
 void compute_all( void );
+void SYS_MESSAGE_send_to_all( char *msg );
+void CHAT_send_to_all( char *msg, CONNECTED_CLIENT *client );
 void TELEMETRY_update( void );
 void* TELEMETRY_send_live_data( void* data );
 void TELEMETRY_send_ondemand_data( CONNECTED_CLIENT *client );

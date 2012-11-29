@@ -254,10 +254,20 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					if( strncmp( app_auth, command, STD_BUFF_SIZE ) == 0 ) {
 						client->authorized = 1;
 						SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
+
+						main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
+						snprintf( main_computer_response_str, STD_BUFF_SIZE, NEW_USER_STR, client->name );
+						SYS_MESSAGE_send_to_all( main_computer_response_str );
+
+						free( main_computer_response_str );
+						main_computer_response_str = NULL;
+
 					} else {
 						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 					}
-				} else {
+				} else if( strncmp( "username", command_type, STD_BUFF_SIZE ) == 0 ) {
+					strncpy( client->name, command, STD_BUFF_SIZE );
+				}else {
 					SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 				}
 			} else {
@@ -285,6 +295,8 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 				if( strncmp( "status", command, STD_BUFF_SIZE ) == 0 ) {
 					TELEMETRY_send_ondemand_data( client );
 				}
+			} else if( strncmp( "chat_message", command_type, STD_BUFF_SIZE ) == 0 ) {
+				CHAT_send_to_all( command, client );
 			}
 		}
 
@@ -329,6 +341,7 @@ static void SOCKET_process( int socket_fd ) {
 	int websocket_recv_data_len;
 	int websocket_send_data_len;
 	unsigned char websocket_encoded_data[ MAX_BUFFER ];
+	char *main_computer_response_str;
 
 	memset( websocket_encoded_data, '\0', MAX_BUFFER );
 	errno = 0;
@@ -353,6 +366,13 @@ static void SOCKET_process( int socket_fd ) {
 	} else {
 		if ( communication_session_.data_length <= 0 ) {
 			/* ...ale to jednak by³o roz³¹czenie */
+			main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
+			snprintf( main_computer_response_str, STD_BUFF_SIZE, DEL_USER_STR, client->name );
+			SYS_MESSAGE_send_to_all( main_computer_response_str );
+
+			free( main_computer_response_str );
+			main_computer_response_str = NULL;
+
 			SOCKET_unregister_client( socket_fd );
 			SOCKET_close( socket_fd );
 		} else {
@@ -520,6 +540,7 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
+			strncpy( connected_clients[ i ].name, "", STD_BUFF_SIZE );
 			//LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			return;
 		}
@@ -541,6 +562,7 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
+			strncpy( connected_clients[ i ].name, "", STD_BUFF_SIZE );
 			//LOG_print("[%s] client disconnected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			break;
 		}

@@ -46,7 +46,7 @@ function setAllButtonsDisabled(bool) {
 
 function updateInformation(status) {
     var infoPanel = document.getElementById('message-box');
-    var _status = status.toString().toUpperCase();
+    var _status = status.toString()/*.toUpperCase()*/;
     infoPanel.value += '\n'+_status;
     infoPanel.scrollTop = 99999;
 }

@@ -11,9 +11,6 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 
 /* Program komputerowy */
-char *COMPUTER_PROGRAM_get_possible_action( COMPUTER_PROGRAM *cp ) {
-	return ( cp->running ? STOP_STR : START_STR );
-}
 
 void COMPUTER_PROGRAM_start( COMPUTER_PROGRAM *cp ) {
 	cp->start_time = get_current_epoch();
@@ -36,10 +33,6 @@ int ROCKET_STAGE_get_fuel( ROCKET_STAGE *rs ) {
 
 int ROCKET_STAGE_get_total_mass( ROCKET_STAGE *rs ) {
 	return ( rs->fuel + rs->dry_mass + rs->instrument_mass );
-}
-
-char* ROCKET_STAGE_get_fuel_possible_action( ROCKET_STAGE *rs ) {
-	return ( rs->fuel < rs->max_fuel ? TANK_STR : RELEASE_STR );
 }
 
 short ROCKET_STAGE_get_attached( ROCKET_STAGE *rs ) {
@@ -74,10 +67,6 @@ int ROCKET_ENGINE_get_thrust( ROCKET_ENGINE *re ) {
 
 void ROCKET_ENGINE_set_thrust( ROCKET_ENGINE *re, int value ) {
 	re->thrust = value;
-}
-
-char* ROCKET_ENGINE_get_possible_action( ROCKET_ENGINE *re ) {
-	return ( re->engaged == 1 ? DISENGAGE_STR : ENGAGE_STR );
 }
 
 short ROCKET_ENGINE_get_engaged( ROCKET_ENGINE *re ) {
