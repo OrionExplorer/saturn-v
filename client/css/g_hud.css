@@ -39,3 +39,21 @@
 	color: #999999;
 	width: 130px;
 }
+
+.container {
+	width: 300px;
+	height: 150px;
+	background-color: #999999;
+	border-radius: 5px;
+	-moz-border-radius: 5px;
+	position:absolute;
+	left: 50%;
+	top: 50%;
+	margin-left: -150px;
+	margin-top: -75px;
+	opacity:1;
+	font-family: Helvetica;
+	text-align: center;
+	table-layout:fixed;
+	font-size: 9pt;
+}

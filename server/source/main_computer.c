@@ -826,7 +826,7 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
 	}
 
-	if( system_s1.fuel <= 10000 && system_s1.attached == 1 ) {
+	if( system_s1.fuel <= 11000 && system_s1.attached == 1 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S1, DETACH, 0 );

@@ -1,5 +1,21 @@
 var Socket = undefined;
 
+function performUserLogin(event) {
+	var key = event.keyCode || event.which;
+	var userLogin = document.getElementById('usernameField');
+	var userPassword = document.getElementById('passwordField');
+
+	document.getElementById('incorrectDataInfo').style.display = 'none';
+
+	if(key == 13) {
+		if( userLogin.value.length == 0 || userPassword.value.length == 0 ) {
+			alert('Please enter username and token!');
+		} else if(userLogin.value.length > 0 & userPassword.value.length > 0) {
+			sendLoginData(userLogin.value, userPassword.value);
+		}
+	}
+}
+
 function connectToVoyager7(address) {
 	/*
 	Funkcja pomocnicza do metody JSON.parse
@@ -28,9 +44,9 @@ function connectToVoyager7(address) {
 
 	Socket.onmessage = function(evt) {
 		var json = null;
-		var currentTime = document.getElementById('voyager7_timeInfo').innerHTML;
+		var currentTime = document.getElementById('voyager7_mission_time').innerHTML;
 		try {
-			json = JSON.parse(evt.data, reviewer);//eval('(' + evt.data + ')');
+			json = JSON.parse(evt.data, reviewer);
 		} catch(ex) {
 			updateInformation('Error: Unable to read received data.');
 			console.log(ex);
@@ -45,8 +61,13 @@ function connectToVoyager7(address) {
 				
 			}
 		} else if(json.data_type == 'command_response') {
+			var loadMask = document.getElementById('loadMask');
+			var loginForm = document.getElementById('loginForm');
+
 			if(json.success) {
 				if(json.msg == 'user_authorized') {
+					loadMask.style.display = 'none';
+					loginForm.style.display = 'none';
 					updateInformation('Access to remote computer granted');
 					setAllButtonsDisabled(false);
 					sendCommand('', 'data', 'live');
@@ -54,15 +75,14 @@ function connectToVoyager7(address) {
 			} else {
 				if(json.msg == 'authorization_required') {
 					updateInformation('Remote computer requires authorization');
-					var username = '';
-					username = prompt('Please enter your name', '');
-					if(username != null && username != '') {
-						var pass = '';
-						pass = prompt('Please enter authorization token', '');
-						if(pass != null && pass != '') {
-							sendCommand(username, 'username');	
-							sendCommand(pass, 'authorization');
-						}
+					
+					if(loadMask.style.display == 'none') {
+						loadMask.style.display = 'block';
+						loadMask.style.height = '100%';
+						loginForm.style.display = 'block';
+						document.getElementById('usernameField').focus();
+					} else {
+						document.getElementById('incorrectDataInfo').style.display = 'block';
 					}
 				}
 			}
@@ -95,6 +115,22 @@ function checkBrowserForHTML5() {
 	return ('WebSocket' in window && 'localStorage' in window);
 }
 
+function sendLoginData(username, password) {
+	var sendData = {
+		command_type : 'authorization',
+	};
+
+	if(username) {
+		sendData['username'] = username;
+	}
+	if(password) {
+		sendData['password'] = password;
+	}
+
+	var sendDataStr = JSON.stringify(sendData);
+	Socket.send(sendDataStr);
+}
+
 function sendCommand( command, commandType, responseMode ) {
 	var sendData = {};
 	
@@ -108,9 +144,6 @@ function sendCommand( command, commandType, responseMode ) {
 		sendData['response_mode'] = responseMode;
 	}
 	
-	var sendDataStr = JSON.stringify(sendData);
-	
-	console.log('sendDataStr = '+sendDataStr);
-	
+	var sendDataStr = JSON.stringify(sendData);	
 	Socket.send(sendDataStr);
 }

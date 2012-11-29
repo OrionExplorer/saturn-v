@@ -215,9 +215,14 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	cJSON *command_type_json;
 	cJSON *response_mode_json;
 
+	cJSON *username_json;
+	cJSON *password_json;
+
 	char *command = NULL;// = ( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
 	char *command_type = NULL;//( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
 	char *response_mode = NULL;//( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
+	char *username = NULL;
+	char *password = NULL;
 	char *main_computer_response_str = NULL;
 	short main_computer_response_success = 0;
 
@@ -249,25 +254,38 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 			client->authorized = 1;
 			SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
 		} else {
-			if( command_type && command ) {
+			if( command_type ) {
 				if( strncmp( "authorization", command_type, STD_BUFF_SIZE ) == 0 ) {
-					if( strncmp( app_auth, command, STD_BUFF_SIZE ) == 0 ) {
-						client->authorized = 1;
-						SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
+					username_json = cJSON_GetObjectItem( json, "username" );
+					password_json = cJSON_GetObjectItem( json, "password" );
 
-						main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
-						snprintf( main_computer_response_str, STD_BUFF_SIZE, NEW_USER_STR, client->name );
-						SYS_MESSAGE_send_to_all( main_computer_response_str );
+					if( username_json ) {
+						username = username_json->valuestring;
+					}
+					if( password_json ) {
+						password = password_json->valuestring;
+					}
 
-						free( main_computer_response_str );
-						main_computer_response_str = NULL;
+					if( username && password ) {
+						if( strncmp( app_auth, password, STD_BUFF_SIZE ) == 0 ) {
+							client->authorized = 1;
+							strncpy( client->name, username, STD_BUFF_SIZE );
+							SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
 
+							main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
+							snprintf( main_computer_response_str, STD_BUFF_SIZE, NEW_USER_STR, client->name );
+							SYS_MESSAGE_send_to_all( main_computer_response_str );
+
+							free( main_computer_response_str );
+							main_computer_response_str = NULL;
+
+						} else {
+							SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
+						}
 					} else {
 						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 					}
-				} else if( strncmp( "username", command_type, STD_BUFF_SIZE ) == 0 ) {
-					strncpy( client->name, command, STD_BUFF_SIZE );
-				}else {
+				} else {
 					SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 				}
 			} else {
@@ -327,6 +345,16 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		free( response_mode );
 		response_mode = NULL;
 	}
+
+	if( username ) {
+		free( username );
+		username = NULL;
+	}
+
+	if( password ) {
+		free( password );
+		password = NULL;
+	}
 }
 
 /*
@@ -366,9 +394,11 @@ static void SOCKET_process( int socket_fd ) {
 	} else {
 		if ( communication_session_.data_length <= 0 ) {
 			/* ...ale to jednak by³o roz³¹czenie */
-			main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
-			snprintf( main_computer_response_str, STD_BUFF_SIZE, DEL_USER_STR, client->name );
-			SYS_MESSAGE_send_to_all( main_computer_response_str );
+			if( strlen( client->name ) > 0 ) {
+				main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
+				snprintf( main_computer_response_str, STD_BUFF_SIZE, DEL_USER_STR, client->name );
+				SYS_MESSAGE_send_to_all( main_computer_response_str );
+			}
 
 			free( main_computer_response_str );
 			main_computer_response_str = NULL;

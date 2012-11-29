@@ -56,7 +56,7 @@ caption {
 		font-size: 9pt;
 }
 
-input[type=text] {
+input[type=text],input[type=password] {
 	display: block;
 	border: 0px;
 	font-family: Helvetica, monaco;
