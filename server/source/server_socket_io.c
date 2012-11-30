@@ -218,9 +218,9 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	cJSON *username_json;
 	cJSON *password_json;
 
-	char *command = NULL;// = ( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
-	char *command_type = NULL;//( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
-	char *response_mode = NULL;//( char * )calloc( SMALL_BUFF_SIZE, sizeof( char ) );
+	char *command = NULL;
+	char *command_type = NULL;
+	char *response_mode = NULL;
 	char *username = NULL;
 	char *password = NULL;
 	char *main_computer_response_str = NULL;
@@ -266,7 +266,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 						password = password_json->valuestring;
 					}
 
-					if( username && password ) {
+					if( username != NULL && password != NULL ) {
 						if( strncmp( app_auth, password, STD_BUFF_SIZE ) == 0 ) {
 							client->authorized = 1;
 							strncpy( client->name, username, STD_BUFF_SIZE );
@@ -316,6 +316,11 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 			} else if( strncmp( "chat_message", command_type, STD_BUFF_SIZE ) == 0 ) {
 				CHAT_send_to_all( command, client );
 			}
+
+			if( command != NULL ) {
+                free( command );
+                command = NULL;
+            }
 		}
 
 		if( response_mode ) {
@@ -327,31 +332,22 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		}
 	}
 
-	if( json ) {
-		//cJSON_Delete( json );
-	}
-
-	if( command ) {
-		free( command );
-		command = NULL;
-	}
-
-	if( command_type ) {
+	if( command_type != NULL ) {
 		free( command_type );
 		command_type = NULL;
 	}
 
-	if( response_mode ) {
+	if( response_mode != NULL ) {
 		free( response_mode );
 		response_mode = NULL;
 	}
 
-	if( username ) {
+	if( username != NULL ) {
 		free( username );
 		username = NULL;
 	}
 
-	if( password ) {
+	if( password != NULL ) {
 		free( password );
 		password = NULL;
 	}
