@@ -223,6 +223,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	char *response_mode = NULL;
 	char *username = NULL;
 	char *password = NULL;
+	char *login_response = NULL;
 	char *main_computer_response_str = NULL;
 	short main_computer_response_success = 0;
 
@@ -232,7 +233,6 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		SOCKET_send( &communication_session_, client, INVALID_JSON, -1 );
 		return;
 	}
-
 	command_json = cJSON_GetObjectItem( json, "command" );
 	command_type_json = cJSON_GetObjectItem( json, "command_type" );
 	response_mode_json = cJSON_GetObjectItem( json, "response_mode" );
@@ -249,7 +249,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		response_mode = response_mode_json->valuestring;
 	}
 
-	if( client->authorized == 0 ) {
+    if( client->authorized == 0 ) {
 		if( strlen( app_auth ) == 0 ) {
 			client->authorized = 1;
 			SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
@@ -259,10 +259,10 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					username_json = cJSON_GetObjectItem( json, "username" );
 					password_json = cJSON_GetObjectItem( json, "password" );
 
-					if( username_json ) {
+					if( username_json != NULL ) {
 						username = username_json->valuestring;
 					}
-					if( password_json ) {
+					if( password_json != NULL ) {
 						password = password_json->valuestring;
 					}
 
@@ -272,16 +272,28 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 							strncpy( client->name, username, STD_BUFF_SIZE );
 							SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
 
-							main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
-							snprintf( main_computer_response_str, STD_BUFF_SIZE, NEW_USER_STR, client->name );
-							SYS_MESSAGE_send_to_all( main_computer_response_str );
+							login_response = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
+							snprintf( login_response, STD_BUFF_SIZE, NEW_USER_STR, client->name );
+							SYS_MESSAGE_send_to_all( login_response );
 
-							free( main_computer_response_str );
-							main_computer_response_str = NULL;
+                            if( login_response != NULL ) {
+                                free( login_response );
+                                login_response = NULL;
+                            }
 
 						} else {
 							SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 						}
+
+						if( username != NULL ) {
+                            free( username );
+                            username = NULL;
+                        }
+
+                        if( password != NULL ) {
+                            free( password );
+                            password = NULL;
+                        }
 					} else {
 						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 					}
@@ -293,7 +305,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 			}
 		}
 	} else {
-		if( command && command_type ) {
+		if( command != NULL && command_type != NULL ) {
 			if(strncmp( "computer", command_type, STD_BUFF_SIZE ) == 0 ) {
 				if( sscanf( command, "%d %d %d", ( int * )&rocket_device, ( int * )&rocket_command, &rocket_value ) == 3 ) {
 					main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
@@ -303,8 +315,10 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					snprintf( main_computer_response_str, STD_BUFF_SIZE, MAIN_COMPUTER_RESPONSE_TEMPLATE, ( main_computer_response_success == 1 ? "true" : "false" ), result->message );
 					SOCKET_send( &communication_session_, client, main_computer_response_str, -1 );
 
-					free( main_computer_response_str );
-					main_computer_response_str = NULL;
+					if( main_computer_response_str != NULL ) {
+                        free( main_computer_response_str );
+                        main_computer_response_str = NULL;
+                    }
 
 				} else {
 					SOCKET_send( &communication_session_, client, "ILLEGAL COMMAND", -1 );
@@ -323,7 +337,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
             }
 		}
 
-		if( response_mode ) {
+		if( response_mode != NULL ) {
 			if(strncmp( "live", response_mode, STD_BUFF_SIZE ) == 0 ) {
 				client->binded = 1;
 			} else if ( strncmp( "on-demand", response_mode, STD_BUFF_SIZE ) == 0 ) {
@@ -340,16 +354,6 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	if( response_mode != NULL ) {
 		free( response_mode );
 		response_mode = NULL;
-	}
-
-	if( username != NULL ) {
-		free( username );
-		username = NULL;
-	}
-
-	if( password != NULL ) {
-		free( password );
-		password = NULL;
 	}
 }
 
@@ -394,10 +398,10 @@ static void SOCKET_process( int socket_fd ) {
 				main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
 				snprintf( main_computer_response_str, STD_BUFF_SIZE, DEL_USER_STR, client->name );
 				SYS_MESSAGE_send_to_all( main_computer_response_str );
-			}
 
-			free( main_computer_response_str );
-			main_computer_response_str = NULL;
+				free( main_computer_response_str );
+                main_computer_response_str = NULL;
+			}
 
 			SOCKET_unregister_client( socket_fd );
 			SOCKET_close( socket_fd );
@@ -566,7 +570,7 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			strncpy( connected_clients[ i ].name, "", STD_BUFF_SIZE );
+            memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
 			//LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			return;
 		}
@@ -588,7 +592,7 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-			strncpy( connected_clients[ i ].name, "", STD_BUFF_SIZE );
+			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
 			//LOG_print("[%s] client disconnected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			break;
 		}
@@ -601,6 +605,7 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i + 1 ].authorized = 0;
 			connected_clients[ i + 1 ].binded = 0;
 			connected_clients[ i + 1 ].mode = CONNECTION;
+			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
 		}
 	}
 }
