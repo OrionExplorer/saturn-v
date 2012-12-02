@@ -1,6 +1,6 @@
 /*******************************************************************
 
-Projekt Voyager 7 Board Computer
+Projekt Saturn V Main Computer
 
 Plik: spacecraft_components.h
 
@@ -11,7 +11,9 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 #define MAX_THRUST					100.0
 
-/* Program komputerowy */
+/**
+ Program komputerowy
+**/
 typedef struct COMPUTER_PROGRAM		COMPUTER_PROGRAM;
 struct COMPUTER_PROGRAM {
 	short running;
@@ -28,7 +30,9 @@ void COMPUTER_PROGRAM_start( COMPUTER_PROGRAM *cp );
 void COMPUTER_PROGRAM_stop( COMPUTER_PROGRAM *cp );
 
 
-/* Człon rakiety */
+/**
+ Człon rakiety
+**/
 typedef struct ROCKET_STAGE			ROCKET_STAGE;
 struct ROCKET_STAGE {
 	short id;
@@ -46,6 +50,7 @@ struct ROCKET_STAGE {
 	int burn_start;
 	double burn_time;
 	short center_engine_available;
+	char name[ MICRO_BUFF_SIZE ];
 };
 
 int ROCKET_STAGE_get_burn_time( ROCKET_STAGE *rs );
@@ -57,7 +62,9 @@ void ROCKET_STAGE_do_attach( ROCKET_STAGE *rs );
 void ROCKET_STAGE_do_detach( ROCKET_STAGE *rs );
 void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value );
 
-/* Silnik */
+/**
+ Silnik
+**/
 typedef struct ROCKET_ENGINE		ROCKET_ENGINE;
 struct ROCKET_ENGINE {
 	short engaged;
@@ -69,7 +76,6 @@ void ROCKET_ENGINE_do_engage( ROCKET_ENGINE *re );
 void ROCKET_ENGINE_do_disengage( ROCKET_ENGINE *re );
 void ROCKET_ENGINE_set_thrust( ROCKET_ENGINE *re, int value );
 int ROCKET_ENGINE_get_thrust( ROCKET_ENGINE *re );
-char* ROCKET_ENGINE_get_possible_action( ROCKET_ENGINE *re );
 short ROCKET_ENGINE_get_engaged( ROCKET_ENGINE *re );
 
 /**

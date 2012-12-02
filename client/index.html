@@ -1,141 +1,142 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<!-- Project start: 25 Sept. 2011 -->
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<meta name="author" content="Marcin Kelar">
-		<link href="css/app.css" rel="stylesheet" type="text/css">
-		<link href="css/g_hud.css" rel="stylesheet" type="text/css">
-		<link rel="SHORTCUT ICON" href="favicon.ico">
-		<title>SATURN V</title>
-	</head>
-	<body>
-		<script type="text/javascript" src="js/websocket.js"></script>
-		<script type="text/javascript" src="js/main_computer.js"></script>
+<head>
+	<!-- Project start: 25 Sept. 2011 -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="author" content="Marcin Kelar">
+	<link href="css/app.css" rel="stylesheet" type="text/css">
+	<link href="css/g_hud.css" rel="stylesheet" type="text/css">
+	<link rel="SHORTCUT ICON" href="favicon.ico">
+	<title>SATURN V</title>
+</head>
+<body>
+	<script type="text/javascript" src="js/websocket.js"></script>
+	<script type="text/javascript" src="js/main_computer.js"></script>
 
-		<!-- Login form -->
-		<div id="loadMask" style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:black; display:none;"></div>
-		<div id="loginForm" class="container" style="display:none;">
-			<table style="width:100%; height:70%;">
-				<div style="border-radius:2px; -moz-border-radius:2px;background-color:grey; height:25px; vertical-align:middle; width:100%;"></div>
-				<tbody>
-					<tr>
-						<td>USERNAME</td>
-						<td>
-							<input autocomplete="on" style="background-color: black; color:#999999;" onkeypress="performUserLogin(event);" type="text" id="usernameField">
-						</td>
-					</tr>
-					<tr>
-						<td>TOKEN</td>
-						<td>
-							<input autocomplete="on" style="background-color: black; color:#999999;" onkeypress="performUserLogin(event);" type="password" id="passwordField">
-						</td>
-					</tr>
-				</tbody>
-			</table>
-			<div id="incorrectDataInfo" style="border-radius:2px; -moz-border-radius:2px; background-color:grey; width:100%; display:none;">TOKEN IS INCORRECT</div>
+	<!-- Login form -->
+	<div id="loadMask" style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:black; display:none;"></div>
+	<div id="loginForm" class="container" style="display:none;">
+		<table style="width:100%; height:70%;">
+			<div style="border-radius:2px; -moz-border-radius:2px;background-color:grey; height:25px; vertical-align:middle; width:100%;"></div>
+			<tbody>
+				<tr>
+					<td>USERNAME</td>
+					<td>
+						<input autocomplete="on" style="background-color: black; color:#999999;" onkeypress="performUserLogin(event);" type="text" id="usernameField">
+					</td>
+				</tr>
+				<tr>
+					<td>TOKEN</td>
+					<td>
+						<input autocomplete="on" style="background-color: black; color:#999999;" onkeypress="performUserLogin(event);" type="password" id="passwordField">
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div id="incorrectDataInfo" style="border-radius:2px; -moz-border-radius:2px; background-color:grey; width:100%; display:none;">TOKEN IS INCORRECT</div>
+	</div>
+	<!-- Main form -->
+	<div class="terminal">
+		<div class="reports-1-panel">
+			<div class="box-info">
+				<table style="width: 100%;">
+					<tbody>
+						<tr>
+							<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:10px;">
+								SATURN V SA-514
+							</td>
+							<td class="title" style="text-align:center; border-left:0px; font-weight:bold; width:30%; padding:10px;">
+								<span id="voyager7_mission_time">T-00:00:00</span>
+							</td>
+							<td class="title" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:10px;">
+								<span id="voyager7_timeInfo"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+			</div>
 		</div>
-		<!-- Main form -->
-		<div class="terminal">
+		<!-- APOLLO CSM -->
+		<div id="apolloCSM_control" style="display:none;">
 			<div class="reports-1-panel">
 				<div class="box-info">
-					<table style="width: 100%;">
+					<table style="width:100%; margin-top:2px;">
 						<tbody>
 							<tr>
-								<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:10px;">
-									SATURN V SA-514
+								<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+									<strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
 								</td>
-								<td class="title" style="text-align:center; border-left:0px; font-weight:bold; width:30%; padding:10px;">
-									<span id="voyager7_mission_time">T-00:00:00</span>
+								<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+									Command/Service Module
 								</td>
-								<td class="title" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:10px;">
-									<span id="voyager7_timeInfo"></span>
+								<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
+									<strong class="link" onclick="javascript:showApolloLMControlPanel();">LM</strong>
 								</td>
 							</tr>
 						</tbody>
 					</table>
-					
 				</div>
 			</div>
-			<!-- APOLLO CSM -->
-			<div id="apolloCSM_control" style="display:none;">
-				 <div class="reports-1-panel">
-					<div class="box-info">
-						<table style="width:100%; margin-top:2px;">
-							<tbody>
-								<tr>
-									<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-										<strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
-									</td>
-									<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-										Command/Service Module
-									</td>
-									<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
-										<strong class="link" onclick="javascript:showApolloLMControlPanel();">LM</strong>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="terminal">
-					<div class="reports-1-panel">
-						<div class="box-info">
-							Apollo Command/Service Module not yet available
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- APOLLO LM -->
-			<div id="apolloLM_control" style="display:none;">
-				 <div class="reports-1-panel">
-					<div class="box-info">
-						<table style="width:100%; margin-top:2px;">
-							<tbody>
-								<tr>
-									<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-										<strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
-									</td>
-									<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-										Lunar Module
-									</td>
-									<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
-										<strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
-									</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-				<div class="terminal">
-					<div class="reports-1-panel">
-						<div class="box-info">
-							Apollo Lunar Module not yet available
-						</div>
-					</div>
-				</div>
-			</div>
-			<!-- SA-514 -->
-			<div id="sa514_control">
+			<div class="terminal">
 				<div class="reports-1-panel">
 					<div class="box-info">
-						<table style="width:100%; margin-top:2px;">
-							<tbody>
-								<tr>
-									<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-										<strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
-									</td>
-									<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
-										SA-514
-									</td>
-									<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
-										<strong class="link" onclick="javascript:showApolloLMControlPanel();">LM</strong>
-									</td>
-								</tr>
-							</tbody>
-						</table>
+						Apollo Command/Service Module not yet available
 					</div>
 				</div>
+			</div>
+		</div>
+		<!-- APOLLO LM -->
+		<div id="apolloLM_control" style="display:none;">
+			<div class="reports-1-panel">
+				<div class="box-info">
+					<table style="width:100%; margin-top:2px;">
+						<tbody>
+							<tr>
+								<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+									<strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
+								</td>
+								<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+									Lunar Module
+								</td>
+								<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
+									<strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="terminal">
+				<div class="reports-1-panel">
+					<div class="box-info">
+						Apollo Lunar Module not yet available
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- MISSION CONTROL -->
+		<div id="houstonMC_control" style="display:none;">
+			<div class="reports-1-panel">
+				<div class="box-info">
+					<table style="width:100%; margin-top:2px;">
+						<tbody>
+							<tr>
+								<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+									<strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
+								</td>
+								<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+									Mission Control
+								</td>
+								<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
+									<strong class="link" onclick="javascript:showApolloSA514ControlPanel();">SA-514</strong>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="terminal">
 				<div class="reports-1-panel">
 					<div class="box-1-info">
 						<table>
@@ -148,7 +149,7 @@
 										<strong>VELOCITY</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_velocity">0</span>
+										<span name="voyager7_velocity">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -156,7 +157,7 @@
 										<strong>ACCELERATION</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_acceleration">0</span>
+										<span name="voyager7_acceleration">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -164,7 +165,7 @@
 										<strong>G-FORCE</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_gForce">0</span>
+										<span name="voyager7_gForce">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -172,7 +173,7 @@
 										<strong>ALTITUDE</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_altitude">0</span>
+										<span name="voyager7_altitude">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -180,7 +181,7 @@
 										<strong>TOTAL</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_distance">0</span>
+										<span name="voyager7_distance">0</span>
 									</td>
 								</tr>
 							</tbody>
@@ -198,7 +199,7 @@
 										<strong>PITCH</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_pitch">0 / 0</span>
+										<span name="voyager7_pitch">0 / 0</span>
 									</td>
 								</tr>
 								<tr>
@@ -206,7 +207,7 @@
 										<strong>ROLL</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_rollAzimuth">90 / 90</span>
+										<span name="voyager7_rollAzimuth">90 / 90</span>
 									</td>
 								</tr>
 								<tr>
@@ -214,7 +215,7 @@
 										<strong>YAW</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_yaw">0</span>
+										<span name="voyager7_yaw">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -222,7 +223,7 @@
 										<strong>MAX Q</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_dynamicPressure">0</span>
+										<span name="voyager7_dynamicPressure">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -230,7 +231,7 @@
 										<strong>THRUST</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_thrust">0</span>
+										<span name="voyager7_thrust">0</span>
 									</td>
 								</tr>
 							</tbody>
@@ -263,13 +264,13 @@
 										<strong>FUEL</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s3_fuel">0</span>
+										<span name="voyager7_s3_fuel">0</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s2_fuel">0</span>
+										<span name="voyager7_s2_fuel">0</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s1_fuel">0</span>
+										<span name="voyager7_s1_fuel">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -277,13 +278,13 @@
 										<strong>STATUS</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s3_status">STAGED</span>
+										<span name="voyager7_s3_status">STAGED</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s2_status">STAGED</span>
+										<span name="voyager7_s2_status">STAGED</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s1_status">STAGED</span>
+										<span name="voyager7_s1_status">STAGED</span>
 									</td>
 								</tr>
 								<tr>
@@ -291,13 +292,13 @@
 										<strong>THRUST</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s3_thrust">0</span>
+										<span name="voyager7_s3_thrust">0</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s2_thrust">0</span>
+										<span name="voyager7_s2_thrust">0</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s1_thrust">0</span>
+										<span name="voyager7_s1_thrust">0</span>
 									</td>
 								</tr>
 								<tr>
@@ -305,13 +306,250 @@
 										<strong>BURN TIME</strong>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s3_burnTime">0</span>
+										<span name="voyager7_s3_burnTime">0</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s2_burnTime">0</span>
+										<span name="voyager7_s2_burnTime">0</span>
 									</td>
 									<td class="background-value-cell">
-										<span id="voyager7_s1_burnTime">0</span>
+										<span name="voyager7_s1_burnTime">0</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="reports-1-panel">
+				<div class="box-1-info">
+					<!-- Mission Control Module not yet available -->
+					<table>
+						<tbody>
+							<tr>
+								<td class="background-property-cell">
+									<strong>COUNTDOWN</strong>
+								</td>
+								<td class="background-value-cell">
+									<input type="button" id="countdownButton" value="START" onclick="countdownButtonButtonController('countdownButton');" disabled="">
+								</td>
+							</tr>
+							<tr>
+								<td class="background-property-cell">
+									<strong>INTERNAL GUIDANCE</strong>
+								</td>
+								<td class="background-value-cell">
+									<input type="button" id="mainEngineEngageButton" value="ENGAGE" onclick="mainEngineEngageButtonController('mainEngineEngageButton');" disabled="">
+								</td>
+							</tr>
+							<tr>
+								<td class="background-property-cell">
+									<strong>HOLDDOWN ARMS</strong>
+								</td>
+								<td class="background-value-cell">
+									<input type="button" id="holddownArmsButton" value="RELEASE" onclick="holddownArmsButtonController('holddownArmsButton');" disabled="">
+								</td>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- SA-514 -->
+			<div id="sa514_control">
+				<div class="reports-1-panel">
+					<div class="box-info">
+						<table style="width:100%; margin-top:2px;">
+							<tbody>
+								<tr>
+									<td class="title" style="text-align:left; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+										<strong class="link" onclick="javascript:showApolloCSMControlPanel();">CSM</strong>
+									</td>
+									<td class="title" style="text-align:center; border-right:0px; font-weight:bold; width:30%; padding:2px;">
+										SA-514
+									</td>
+									<td class="title-link" style="text-align:right; border-left:0px; font-weight:bold; width:30%; padding:2px;">
+										<strong class="link" onclick="javascript:showHoustonMCControlPanel();">MC</strong>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="reports-1-panel">
+					<div class="box-1-info">
+						<table>
+							<!-- <caption>
+								<strong>VELOCITY</strong>
+							</caption> -->
+							<tbody>
+								<tr>
+									<td class="background-property-cell">
+										<strong>VELOCITY</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_velocity">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>ACCELERATION</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_acceleration">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>G-FORCE</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_gForce">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>ALTITUDE</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_altitude">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>TOTAL</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_distance">0</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					
+					<div class="box-1-info">
+						<table>
+							<!-- <caption>
+								<strong>VEHICLE</strong>
+							</caption> -->
+							<tbody>
+								<tr>
+									<td class="background-property-cell">
+										<strong>PITCH</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_pitch">0 / 0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>ROLL</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_rollAzimuth">90 / 90</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>YAW</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_yaw">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>MAX Q</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_dynamicPressure">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>THRUST</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_thrust">0</span>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div class="reports-1-panel">
+					<div class="box-1-info">
+						<table>
+							<!-- <caption>
+								<strong>STAGES</strong>
+							</caption> -->
+							<tbody>
+								<tr>
+									<td class="background-property-cell">
+										<strong>STAGE</strong>
+									</td>
+									<td class="background-property-cell">
+										<strong>S-IVB</strong>
+									</td>
+									<td class="background-property-cell">
+										<strong>S-II</strong>
+									</td>
+									<td class="background-property-cell">
+										<strong>S-IC</strong>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>FUEL</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s3_fuel">0</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s2_fuel">0</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s1_fuel">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>STATUS</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s3_status">STAGED</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s2_status">STAGED</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s1_status">STAGED</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>THRUST</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s3_thrust">0</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s2_thrust">0</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s1_thrust">0</span>
+									</td>
+								</tr>
+								<tr>
+									<td class="background-property-cell">
+										<strong>BURN TIME</strong>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s3_burnTime">0</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s2_burnTime">0</span>
+									</td>
+									<td class="background-value-cell">
+										<span name="voyager7_s1_burnTime">0</span>
 									</td>
 								</tr>
 							</tbody>
@@ -359,14 +597,7 @@
 								<strong>ENGINES CONTROL PANEL</strong>
 							</caption> -->
 							<tbody>
-								<tr>
-									<td class="background-property-cell">
-										<strong>INTERNAL GUIDANCE</strong>
-									</td>
-									<td class="background-value-cell">
-										<input type="button" id="mainEngineEngageButton" value="ENGAGE" onclick="mainEngineEngageButtonController('mainEngineEngageButton');" disabled="">
-									</td>
-								</tr>
+								
 								<tr>
 									<td class="background-property-cell">
 										<strong>THRUST</strong>
@@ -420,12 +651,25 @@
 										</ul>
 									</td>
 								</tr>
-							</tbody>
-						</table>
-					</div>
-					<div style="width:100%">
-						<div class="box-1-info">
-							<table>
+								<tr>
+								</td>
+								<td class="background-property-cell">
+									<strong>AUTOPILOT</strong>
+								</td>
+								<td class="background-value-cell">
+									<ul>
+										<li>
+											<input type="button" id="autoPilotButton" value="OFF" onclick="autoPilotButtonController('autoPilotButton');" disabled="">
+										</li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div style="width:100%">
+					<div class="box-1-info">
+						<table>
 								<!-- <caption>
 									<strong>S-IVB STAGE CONTROL PANEL</strong>
 								</caption> -->
@@ -502,15 +746,15 @@
 				</div>
 			</div>
 			<div class="reports-1-panel" style="margin-top:10px;">
-							<div class="box-info">
-								<textarea id="message-box" readonly="readonly" style="height:100px; width:100%">INTERFACE READY</textarea>
-								<input id="chat-input" type="text" onkeypress="chatInputController(event)"style="width:100%; height:25px; margin-top:2px;"/>
-							</div>
-						</div>
+				<div class="box-info">
+					<textarea id="message-box" readonly="readonly" style="height:100px; width:100%">INTERFACE READY</textarea>
+					<input id="chat-input" type="text" onkeypress="chatInputController(event)"style="width:100%; height:25px; margin-top:2px;"/>
+				</div>
+			</div>
 		</div>
 
 		<script type="text/javascript" src="js/app.js"></script>
 
 	</body>
-</html>
+	</html>
 	

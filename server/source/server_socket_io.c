@@ -400,7 +400,7 @@ static void SOCKET_process( int socket_fd ) {
 				SYS_MESSAGE_send_to_all( main_computer_response_str );
 
 				free( main_computer_response_str );
-                main_computer_response_str = NULL;
+				main_computer_response_str = NULL;
 			}
 
 			SOCKET_unregister_client( socket_fd );

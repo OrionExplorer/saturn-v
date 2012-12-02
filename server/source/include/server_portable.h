@@ -1,6 +1,6 @@
 /*******************************************************************
 
-Projekt Voyager 7 Board Computer
+Projekt Saturn V Main Computer
 
 Plik: server_portable.h
 

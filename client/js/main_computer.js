@@ -114,6 +114,43 @@ function systemS3ButtonController(id) {
 	}
 }
 
+function autoPilotButtonController(id) {
+	var button = document.getElementById(id);
+	switch(button.id) {
+		case 'autoPilotButton' : {
+			if(button.value == 'OFF') {
+				execCommand('AUTOPILOT', 'STOP');
+			} else if(button.value == 'ON') {
+				execCommand('AUTOPILOT', 'START');
+			}
+		} break;
+	}
+}
+
+function holddownArmsButtonController(id) {
+	var button = document.getElementById(id);
+	switch(button.id) {
+		case 'holddownArmsButton' : {
+			if(button.value == 'RELEASE') {
+				execCommand('HOLDDOWN_ARMS', 'STOP');
+			}
+		} break;
+	}
+}
+
+function countdownButtonButtonController(id) {
+	var button = document.getElementById(id);
+	switch(button.id) {
+		case 'countdownButton' : {
+			if(button.value == 'START') {
+				execCommand('COUNTDOWN', 'START');
+			} else if(button.value == 'STOP') {
+				execCommand('COUNTDOWN', 'STOP');
+			}
+		} break;
+	}
+}
+
 function chatInputController(event) {
 	var key = event.keyCode || event.which;
 	var chatInput = document.getElementById('chat-input');
@@ -129,30 +166,33 @@ function execCommand(device, command, value) {
 	
 	var devices = {
 		INTERNAL_GUIDANCE : 0,
-	S1 : 1,
-	S2 : 2,
-	S3 : 3,
-	MAIN_ENGINE : 4,
-	THRUST : 5,
-	PITCH_PROGRAM : 6,
-	ROLL_PROGRAM : 7,
-	YAW_PROGRAM : 8,
-	LET : 9
+		S1 : 1,
+		S2 : 2,
+		S3 : 3,
+		MAIN_ENGINE : 4,
+		THRUST : 5,
+		PITCH_PROGRAM : 6,
+		ROLL_PROGRAM : 7,
+		YAW_PROGRAM : 8,
+		LET : 9,
+		AUTOPILOT : 10,
+		HOLDDOWN_ARMS : 11,
+		COUNTDOWN : 12
 	};
 	
 	var commands = {
 		START : 0,
-	STOP : 1,
-	TANK : 2,
-	ATTACH : 3,
-	DETACH : 4,
-	CENTER_ENGINE_CUTOFF : 5,
-	RESTART : 6,
-	FULL_THRUST : 7,
-	NULL_THRUST : 8,
-	INCREASE : 9,
-	DECREASE : 10,
-	JETTISON : 11
+		STOP : 1,
+		TANK : 2,
+		ATTACH : 3,
+		DETACH : 4,
+		CENTER_ENGINE_CUTOFF : 5,
+		RESTART : 6,
+		FULL_THRUST : 7,
+		NULL_THRUST : 8,
+		INCREASE : 9,
+		DECREASE : 10,
+		JETTISON : 11
 	};
 	
 	if(Socket) {
@@ -163,7 +203,7 @@ function execCommand(device, command, value) {
 
 function parseRemoteData(json) {
 	
-	if(json.computer_message != lastComputerMessage) {
+	if(json.computer_message != lastComputerMessage && json.computer_message.length > 0) {
 		var message = '<'+secondsToHms(json.mission_time)+'> '+json.computer_message;
 		lastComputerMessage = json.computer_message;
 		updateInformation(message);
@@ -246,7 +286,20 @@ function parseRemoteData(json) {
 		enableEl('towerJettisonEngageButton');
 	}
 	
+	updateEl('autoPilotButton', (json.auto_pilot_enabled ? 'OFF' : 'ON'));
+	if(json.holddown_arms_released) {
+		disableEl('holddownArmsButton');
+	} else {
+		enableEl('holddownArmsButton');
+	}
 
+	updateEl('countdownButton', (json.countdown_in_progress ? 'STOP' : 'START'));
+
+	if(json.countdown_in_progress && json.mission_time > -8 ) {
+		disableEl('countdownButton');
+	}
+
+	
 	if(json.s_ii_center_engine_available == 0) {
 		disableEl('systemS2CenterEngineCutoffButton');
 	} else {

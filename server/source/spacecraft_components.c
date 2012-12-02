@@ -1,6 +1,6 @@
 /*******************************************************************
 
-Projekt Voyager 7 Board Computer
+Projekt Saturn V Main Computer
 
 Plik: spacecraft_components.c
 
@@ -95,6 +95,7 @@ void STAGE_1_init( void ) {
 	system_s1.burn_start = 0;
 	system_s1.burn_time = 0;
 	system_s1.center_engine_available = 1;
+	strncpy( system_s1.name, "S-IC", MICRO_BUFF_SIZE );
 
 	current_system = &system_s1;
 
@@ -121,6 +122,7 @@ void STAGE_2_init( void ) {
 	system_s2.burn_start = 0;
 	system_s2.burn_time = 0;
 	system_s2.center_engine_available = 1;
+	strncpy( system_s2.name, "S-II", MICRO_BUFF_SIZE );
 
 	printf( "done.\n" );
 
@@ -145,6 +147,7 @@ void STAGE_3_init( void ) {
 	system_s3.burn_start = 0;
 	system_s3.burn_time = 0;
 	system_s3.center_engine_available = 0;
+	strncpy( system_s3.name, "S-IVB", MICRO_BUFF_SIZE );
 
 	printf( "done.\n" );
 

@@ -1,6 +1,6 @@
 /*******************************************************************
 
-Projekt Voyager 7 Board Computer
+Projekt Saturn V Main Computer
 
 Plik: main_computer.c
 
@@ -39,7 +39,7 @@ int						current_thrust = 0;
 double					current_altitude = 0.0;
 double					total_distance = 0.0;
 double					last_velocity = 0.0;
-double					mission_time = -7.0;
+double					mission_time = -20.0;
 double					ascending_time = -1;
 short					max_q_achieved = 0;
 int						current_dynamic_pressure = 0;
@@ -63,6 +63,8 @@ short					launch_escape_tower_ready = 1;
 /**
 Pozostałe
 **/
+short					countdown_in_progress = 0;
+short					holddown_arms_released = 0;
 short					computing_all = 0;
 pthread_t				sthread;
 
@@ -158,11 +160,29 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "stable_orbit_achieved", telemetry_data.stable_orbit_achieved );
 	cJSON_AddNumberToObject( data, "launch_escape_tower_ready", telemetry_data.launch_escape_tower_ready );
 
+	if( auto_pilot_enabled == 1 ) {
+		cJSON_AddTrueToObject( data, "auto_pilot_enabled" );
+	} else {
+		cJSON_AddFalseToObject( data, "auto_pilot_enabled" );
+	}
+
 	cJSON_AddNumberToObject( data, "pitch", telemetry_data.pitch );
 	cJSON_AddNumberToObject( data, "dest_pitch", telemetry_data.dest_pitch );
 	cJSON_AddNumberToObject( data, "roll", telemetry_data.roll );
 	cJSON_AddNumberToObject( data, "dest_roll", telemetry_data.dest_roll );
 	cJSON_AddNumberToObject( data, "yaw", telemetry_data.yaw );
+
+	if( holddown_arms_released == 0 ) {
+		cJSON_AddFalseToObject( data, "holddown_arms_released" );
+	} else {
+		cJSON_AddTrueToObject( data, "holddown_arms_released" );
+	}
+
+	if( countdown_in_progress == 0 ) {
+		cJSON_AddFalseToObject( data, "countdown_in_progress" );
+	} else {
+		cJSON_AddTrueToObject( data, "countdown_in_progress" );
+	}
 
 	cJSON_AddStringToObject( data, "destination", telemetry_data.destination );
 	cJSON_AddNumberToObject( data, "destination_altitude", telemetry_data.destination_altitude );
@@ -529,14 +549,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
 							ROCKET_ENGINE_do_engage( &main_engine );
 							success = 1;
-							strncpy( message, "MAIN ENGINE ENGAGED", BIG_BUFF_SIZE );
-							if( computing_all == 0 ) {
-								/* Uruchomienie w¹tku wysy³aj¹cego dane do pod³¹czonych klientów */
-								pthread_create(&sthread, NULL, run_simulation, NULL );
-								strncpy( message, "IGNITION SEQUENCE START", BIG_BUFF_SIZE );
-								computing_all = 1;
-								EXEC_COMMAND( THRUST, INCREASE, 15 );
-							}
+							memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO START MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
@@ -552,7 +565,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_thrust( &main_engine ) == 0 ) {
 							ROCKET_ENGINE_do_disengage( &main_engine );
 							success = 1;
-							strncpy( message, "MAIN ENGINE DISENGAGED", BIG_BUFF_SIZE );
+							memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO STOP MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
@@ -573,7 +586,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, MAX_THRUST );
 							success = 1;
-							strncpy( message, "THRUST SET TO 100%", BIG_BUFF_SIZE );
+							memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
@@ -584,7 +597,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, 0 );
 							success = 1;
-							strncpy( message, "THRUST TERMINATED", BIG_BUFF_SIZE );
+							memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
@@ -596,7 +609,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							if( ROCKET_ENGINE_get_thrust( &main_engine) + value <= MAX_THRUST ) {
 								ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) + value );
 								success = 1;
-								sprintf( message, "THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
+								memset( message, '\0', BIG_BUFF_SIZE );
 							} else {
 								success = 0;
 								sprintf( message, "ERROR: UNABLE TO INCREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &main_engine ) + value) );
@@ -612,7 +625,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							if( ROCKET_ENGINE_get_thrust( &main_engine ) - value >= 0 ) {
 								ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine) - value );
 								success = 1;
-								sprintf( message, "THRUST SET TO %d%%", ROCKET_ENGINE_get_thrust( &main_engine ) );
+								memset( message, '\0', BIG_BUFF_SIZE );
 							} else {
 								success = 0;
 								sprintf( message, "ERROR: UNABLE TO DECREASE THRUST TO %d%%", (ROCKET_ENGINE_get_thrust( &main_engine ) - value) );
@@ -708,6 +721,73 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 				}
 			}
 		} break;
+
+		case AUTO_PILOT : {
+			switch( command ) {
+				default : /* Nic */ break;
+				case START : {
+					auto_pilot_enabled = 1;
+					success = 1;
+					strncpy( message, "AUTOPILOT IS ON", BIG_BUFF_SIZE );
+				} break;
+				case STOP : {
+					auto_pilot_enabled = 0;
+					success = 1;
+					strncpy( message, "AUTOPILOT IS OFF", BIG_BUFF_SIZE );
+				} break;
+			}
+		} break;
+
+		case HOLDDOWN_ARMS : {
+			switch( command ) {
+				default : /* Nic */ break;
+				case STOP : {
+					if( holddown_arms_released == 0 ) {
+						holddown_arms_released = 1;
+						success = 1;
+						strncpy( message, "HOLDDOWN ARMS RELEASED", BIG_BUFF_SIZE );
+					} else {
+						success = 0;
+						strncpy( message, "ERROR: UNABLE TO RELEASE HOLDDOWN ARMS. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+					}
+				} break;
+			}
+		} break;
+
+		case COUNTDOWN : {
+			switch( command ) {
+				default : /* Nic */ break;
+				case START : {
+					if( countdown_in_progress == 1 ) {
+						success = 0;
+						strncpy( message, "ERROR: COUNTDOWN IS IN PROGRESS ALREADY", BIG_BUFF_SIZE );
+					} else {
+						countdown_in_progress = 1;
+						success = 1;
+						strncpy( message, "COUNTDOWN IS CONTINUED", BIG_BUFF_SIZE );
+						if( computing_all == 0 ) {
+							pthread_create(&sthread, NULL, run_simulation, NULL );
+							computing_all = 1;
+						}
+					}
+				} break;
+				case STOP : {
+					if( countdown_in_progress == 0 ) {
+						success = 0;
+						strncpy( message, "ERROR: COUNTDOWN IS ON HOLD ALREADY", BIG_BUFF_SIZE );
+					} else {
+						if( mission_time > -8 ) {
+							success = 0;
+							strncpy( message, "ERROR: UNABLE TO HOLD COUNTDOWN. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						} else {
+							countdown_in_progress = 0;
+							success = 1;
+							strncpy( message, "COUNTDOWN IS ON HOLD", BIG_BUFF_SIZE );
+						}
+					}
+				} break;
+			}
+		} break;
 	}
 
 	if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
@@ -717,10 +797,11 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	interpreter_result.success = success;
 	strncpy( interpreter_result.message, message, BIG_BUFF_SIZE );
 
-	LOG_print( "[%s] %s.\n", get_actual_time_gmt(), message );
-	printf( "[%s] %s.\n", get_actual_time_gmt(), message );
-
-	strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
+	if( strlen( message ) > 0 ) {
+		LOG_print( "[%s] %s.\n", get_actual_time_gmt(), message );
+		printf( "[%s] %s.\n", get_actual_time_gmt(), message );
+		strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
+	}
 
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
@@ -733,8 +814,6 @@ double get_dynamic_pressure_force( double altitude ) {
 	double dynamic_pressure = ( 0.5 * current_air_destiny) * pow( last_velocity, 2 );
 	double result = dynamic_pressure;
 
-	/*double vel = sqrt( ( ( 2 * dynamic_pressure ) / current_air_destiny));*/
-
 	if( max_q_achieved == 1 ) {
 		if( round( result ) == 0 ) {
 			return round( result );
@@ -745,12 +824,13 @@ double get_dynamic_pressure_force( double altitude ) {
 			return round( result );
 		} else {
 			max_q_achieved = 1;
+			strncpy( telemetry_data.computer_message, "MAXIMUM DYNAMIC PRESSURE", STD_BUFF_SIZE );
 			current_dynamic_pressure = round( current_dynamic_pressure );
 			return current_dynamic_pressure;
 		}
 	}
 
-	return 0;
+	return ( result >= 0 ? result : -1 );
 }
 
 double get_pitch_step( void ) {
@@ -808,10 +888,10 @@ void auto_pilot( double real_second ) {
 
 	if( stable_orbit_achieved == 1 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
-				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-			}
-			return;
+			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
+			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+		}
+		return;
 	}
 
 	if( yaw_program.current_value <= 0 && liftoff_yaw_achieved == 1 && yaw_program.running == 1 ) {
@@ -826,7 +906,7 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
 	}
 
-	if( system_s1.fuel <= 11000 && system_s1.attached == 1 ) {
+	if( system_s1.fuel <= 15000 && system_s1.attached == 1 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S1, DETACH, 0 );
@@ -834,6 +914,21 @@ void auto_pilot( double real_second ) {
 
 	switch( second ) {
 		default : /* Nic */ break;
+		case -10 : {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 ) {
+				EXEC_COMMAND( INTERNAL_GUIDANCE, START, 0 );
+			}
+		} break;
+		case -8 : {
+			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
+				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+			}
+		} break;
+		case 0 : {
+			if( holddown_arms_released == 0 ) {
+				EXEC_COMMAND( HOLDDOWN_ARMS, STOP, 0 );
+			}
+		} break;
 		case 2 : {
 			if( yaw_program.running == 0 ) {
 				EXEC_COMMAND( YAW_PROGRAM, START, 0 );
@@ -857,14 +952,6 @@ void auto_pilot( double real_second ) {
 				EXEC_COMMAND( S1, CENTER_ENGINE_CUTOFF, 0 );
 			}
 		} break;
-
-		/*case 161 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 80 && current_system->id == 1 ) {
-				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-				EXEC_COMMAND( S1, DETACH, 0 );
-			}
-		} break;*/
 
 		case 166 : {
 			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
@@ -910,16 +997,21 @@ void auto_pilot( double real_second ) {
 
 void instrument_unit_calculations( void ) {
 
-	if( mission_time > -7 && mission_time < 0 && current_thrust < 100 ) {
-		EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod);
-	} else if( mission_time > 0 && mission_time < 1 && current_thrust < 100 ) {
-		EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+	/* Informacje o postępie lotu*/
+	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
+		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
+	}
+	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 ) {
+		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
+	}
+	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
+		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
 	}
 
 	if( current_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
 		if( stable_orbit_achieved == 0 ) {
 			stable_orbit_achieved = 1;
-			/*printf("EARTH ORBIT INSERTION\n");*/
+			strncpy( telemetry_data.computer_message, "ORBIT INSERTION", STD_BUFF_SIZE );
 			if( pitch_program.current_value > 90 ) {
 				pitch_program.current_value = 90;
 			}
@@ -973,7 +1065,7 @@ void compute_launch_physics( void ) {
 			current_system->burn_start = get_current_epoch();
 		}
 	} else {
-		if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+		if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ROCKET_ENGINE_get_thrust( &main_engine ) >= 10 ) {
 			current_system->burn_time += time_tick;
 		}
 	}
@@ -992,12 +1084,20 @@ void compute_launch_physics( void ) {
 		total_mass += ROCKET_STAGE_get_total_mass( &system_s3 );
 	}
 
-	mission_time += time_tick;
+	if( countdown_in_progress == 1 ) {
+		if( mission_time < 0 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+			if( mission_time > -8 && mission_time <= 0 && current_thrust < 100 ) {
+				EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod );
+			}
+		} else if( mission_time > 0 && mission_time < 1 && current_thrust < 100 ) {
+			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+		}
+		mission_time += time_tick;
+	}
 
 	if( auto_pilot_enabled == 1 ) {
 		auto_pilot( mission_time );
 	}
-
 
 	if( current_altitude == 0 ) {
 		ascending_time = 0;
@@ -1039,7 +1139,7 @@ void compute_launch_physics( void ) {
 	if( max_q_achieved == 0 ) {
 		fw = thrust_newtons - ( total_mass * CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) );
 	} else {
-		fw = thrust_newtons - ( total_mass * ( CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude) / (time_mod) ) ) + dynamic_pressure_newtons * ( 1000 );
+		fw = thrust_newtons - ( total_mass * ( CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude) / (time_mod) ) );
 	}
 
 	current_acceleration = ( fw / total_mass );
@@ -1054,7 +1154,13 @@ void compute_launch_physics( void ) {
 		}
 	}
 
-	current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
+	if( holddown_arms_released == 1 ) {
+		current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
+	} else {
+		if( current_acceleration >= 3 ) {
+			current_system = &system_null;
+		}
+	}
 
 	if( pitch_program.running == 1 ) {
 		pitch_program.running_time += time_tick;
@@ -1149,6 +1255,10 @@ void TELEMETRY_update( void ) {
 	telemetry_data.roll = roll_program.current_value;
 	telemetry_data.dest_roll = roll_program.dest_value;
 	telemetry_data.yaw = yaw_program.current_value;
+
+	telemetry_data.holddown_arms_released = holddown_arms_released;
+	telemetry_data.countdown_in_progress = countdown_in_progress;
+
 	strncpy( telemetry_data.destination, AO_current->ground_destination, SMALL_BUFF_SIZE );
 	telemetry_data.destination_altitude = AO_current->ground_destination_altitude;
 
@@ -1158,6 +1268,7 @@ void TELEMETRY_update( void ) {
 	telemetry_data.internal_guidance_engaged = ROCKET_ENGINE_get_engaged( &internal_guidance );
 	telemetry_data.main_engine_engaged = ROCKET_ENGINE_get_engaged( &main_engine );
 
+	telemetry_data.auto_pilot_enabled = auto_pilot_enabled;
 	telemetry_data.pitch_program_engaged = pitch_program.running;
 	telemetry_data.roll_program_engaged = roll_program.running;
 	telemetry_data.yaw_program_engaged = yaw_program.running;

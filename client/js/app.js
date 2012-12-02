@@ -7,22 +7,34 @@ function getDocHeight() {
 	);
 }
 
+function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
 function updateEl(id, val, callback) {
-	id = document.getElementById(id);
-	switch(id.type) {
-		case 'button' : {
-				id.value = val;
-		}break;
-		case undefined : {
-				id.innerHTML = val;
-		}break;
-		default : {
-				id.innerHTML = val;
-		}break;
-	}
-	
-	if(callback != undefined) {
-		eval(callback);
+	objId = document.getElementById(id);
+
+	if(objId == undefined || objId == null) {
+		objId = document.getElementsByName(id);
+		for(var i = 0; i < objId.length; i++) {
+			if(objId[i] && objId[i].type && objId[i].type == 'button') {
+				objId[i].value = val;
+			} else {
+				objId[i].innerHTML = val;
+			}
+		}
+	} else {
+		switch(objId.type) {
+			case 'button' : {
+					objId.value = val;
+			}break;
+			case undefined : {
+					objId.innerHTML = val;
+			}break;
+			default : {
+					objId.innerHTML = val;
+			}break;
+		}
 	}
 }
 
@@ -75,6 +87,8 @@ function showApolloLMControlPanel() {
 	var apolloCSM_control = document.getElementById('apolloCSM_control');
 	var apolloLM_control = document.getElementById('apolloLM_control');
 	var sa514_control = document.getElementById('sa514_control');
+	var houstonMC_control = document.getElementById('houstonMC_control');
+	houstonMC_control.style.display = 'none';
 	apolloCSM_control.style.display = 'none';
 	sa514_control.style.display = 'none';
 	apolloLM_control.style.display = 'block';
@@ -84,6 +98,8 @@ function showApolloCSMControlPanel() {
 	var apolloCSM_control = document.getElementById('apolloCSM_control');
 	var apolloLM_control = document.getElementById('apolloLM_control');
 	var sa514_control = document.getElementById('sa514_control');
+	var houstonMC_control = document.getElementById('houstonMC_control');
+	houstonMC_control.style.display = 'none';
 	apolloLM_control.style.display = 'none';
 	sa514_control.style.display = 'none';
 	apolloCSM_control.style.display = 'block';
@@ -93,9 +109,22 @@ function showApolloSA514ControlPanel() {
 	var apolloCSM_control = document.getElementById('apolloCSM_control');
 	var apolloLM_control = document.getElementById('apolloLM_control');
 	var sa514_control = document.getElementById('sa514_control');
+	var houstonMC_control = document.getElementById('houstonMC_control');
+	houstonMC_control.style.display = 'none';
 	apolloLM_control.style.display = 'none';
 	apolloCSM_control.style.display = 'none';
 	sa514_control.style.display = 'block';
+}
+
+function showHoustonMCControlPanel() {
+	var apolloCSM_control = document.getElementById('apolloCSM_control');
+	var apolloLM_control = document.getElementById('apolloLM_control');
+	var sa514_control = document.getElementById('sa514_control');
+	var houstonMC_control = document.getElementById('houstonMC_control');
+	apolloLM_control.style.display = 'none';
+	apolloCSM_control.style.display = 'none';
+	sa514_control.style.display = 'none';
+	houstonMC_control.style.display = 'block';
 }
 
 setAllButtonsDisabled(true);

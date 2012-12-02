@@ -144,6 +144,9 @@ struct TELEMETRY {
 	double					roll;
 	double					dest_roll;
 	double					yaw;
+	short					countdown_in_progress;
+	short					holddown_arms_released;
+	short					auto_pilot_enabled;
 	char					destination[ SMALL_BUFF_SIZE ];
 	int						destination_altitude;
 	short					internal_guidance_engaged;
@@ -217,7 +220,10 @@ enum vDEVICE {
 	PITCH_PROGRAM,
 	ROLL_PROGRAM,
 	YAW_PROGRAM,
-	LET
+	LET,
+	AUTO_PILOT,
+	HOLDDOWN_ARMS,
+	COUNTDOWN
 };
 
 enum vCOMMAND {
