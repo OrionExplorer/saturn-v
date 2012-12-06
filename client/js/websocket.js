@@ -31,6 +31,10 @@ function connectToVoyager7(address) {
 		return value;
 	}
 
+	if(Socket) {
+		Socket.close();
+	}
+
 	Socket = new WebSocket(address);
 	
 	Socket.onclose = function() {
@@ -96,8 +100,12 @@ function connectToVoyager7(address) {
 	}
 }
 
-function getVoyager7RemoteAddress() {
-	var voyager7_address = localStorage.getItem('voyager7computer');
+function getVoyager7RemoteAddress(override) {
+	var voyager7_address = undefined;
+	if(override == undefined) {
+		voyager7_address = localStorage.getItem('voyager7computer');
+	}
+
 	if(voyager7_address) {
 		connectToVoyager7(voyager7_address);
 	} else {
@@ -106,7 +114,9 @@ function getVoyager7RemoteAddress() {
 			localStorage.setItem('voyager7computer', voyager7_address);
 			connectToVoyager7(voyager7_address);
 		} else {
-			updateInformation('Error: Unable to connect to Saturn V Main Computer');
+			if(override == undefined) {
+				updateInformation('Error: Unable to connect to Saturn V Main Computer');
+			}
 		}
 	}
 }
