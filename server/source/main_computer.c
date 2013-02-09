@@ -275,7 +275,6 @@ void MAIN_COMPUTER_init( void ) {
 	EXEC_COMMAND( S2, TANK, 0 );
 	EXEC_COMMAND( S3, ATTACH, 0 );
 	EXEC_COMMAND( S3, TANK, 0 );
-	//EXEC_COMMAND( INTERNAL_GUIDANCE, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
@@ -1001,7 +1000,7 @@ void instrument_unit_calculations( void ) {
 	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
 	}
-	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 ) {
+	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_distance < 10 ) {
 		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
@@ -1148,7 +1147,7 @@ void compute_launch_physics( void ) {
 		current_acceleration = 0;
 	}
 
-	if( last_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
+	if( stable_orbit_achieved == 1 ) {
 		if( current_acceleration < 0 ) {
 			current_acceleration = 0;
 		}
