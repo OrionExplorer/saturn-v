@@ -797,8 +797,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	strncpy( interpreter_result.message, message, BIG_BUFF_SIZE );
 
 	if( strlen( message ) > 0 ) {
-		LOG_print( "[%s] %s.\n", get_actual_time_gmt(), message );
-		printf( "[%s] %s.\n", get_actual_time_gmt(), message );
+		LOG_print( "[%s] %s.\n", get_actual_time(), message );
+		printf( "[%s] %s.\n", get_actual_time(), message );
 		strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
 	}
 
@@ -1245,7 +1245,7 @@ void TELEMETRY_update( void ) {
 	telemetry_data.last_velocity = last_velocity;
 	telemetry_data.max_q_achieved = max_q_achieved;
 	telemetry_data.mission_time = mission_time;
-	strncpy( telemetry_data.current_time_gmt, get_actual_time_gmt(), TIME_BUFF_SIZE );
+	strncpy( telemetry_data.current_time_gmt, get_actual_time(), TIME_BUFF_SIZE );
 	telemetry_data.thrust_newtons = thrust_newtons;
 	telemetry_data.total_distance = total_distance;
 	telemetry_data.total_mass = total_mass;

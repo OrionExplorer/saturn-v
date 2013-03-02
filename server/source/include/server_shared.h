@@ -52,7 +52,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define APP_VER								"0.1"
 #define SERVER_NAME							APP_NAME"/"APP_VER
 
-#define LOGS_PATH							"logs"SLASH
+#define LOGS_PATH							""SLASH
 
 #define DEFAULT_PORT						1217
 
@@ -60,8 +60,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define MAX_BUFFER_CHAR						65535*sizeof( char )
 #define UPLOAD_BUFFER						16384
 #define UPLOAD_BUFFER_CHAR					16384*sizeof( char )
-#define LOG_BUFFER							10240
-#define LOG_BUFFER_CHAR						10240*sizeof( char )
+#define LOG_BUFFER							128
+#define LOG_BUFFER_CHAR						128*sizeof( char )
 #define BIG_BUFF_SIZE						2048
 #define BIG_BUFF_SIZE_CHAR					2048*sizeof( char )
 #define MEDIUM_BUFF_SIZE					1024
@@ -86,6 +86,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define MAX_CLIENTS							FD_SETSIZE
 
 #define RFC1123FMT							"%a, %d %b %Y %H:%M:%S GMT"
+#define DATETIME							"%d-%m-%Y %H:%M:%S"
 
 #define LOGIN_STR							"{\"success\":false,\"msg\":\"authorization_required\",\"data_type\":\"command_response\"}\0"
 #define LOGIN_SUCCESS						"{\"success\":true,\"msg\":\"user_authorized\",\"data_type\":\"command_response\"}\0"
