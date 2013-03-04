@@ -29,7 +29,7 @@
 	border-right: 1px solid black;
 	background: #999999;
 	color: black;
-	width: 130px;
+	width: 100px;
 }
 .background-value-cell {
 	border: 1px solid;
@@ -37,7 +37,7 @@
 	border-right: 1px solid #999999;
 	background: black;
 	color: #999999;
-	width: 130px;
+	width: 100px;
 }
 
 .container {

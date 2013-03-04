@@ -676,20 +676,27 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-IVB RESTART</strong>
+											<strong>S-IVB ENGINE</strong>
 										</td>
 										<td class="background-value-cell">
-											<input type="button" id="systemS3Restart" value="ENGAGE" onclick="systemS3ButtonController('systemS3Restart');" disabled="">
+											<ul>
+												<li>
+													<input type="button" id="systemS3Restart" value="RESTART" onclick="systemS3ButtonController('systemS3Restart');" disabled="">
+												</li>
+												<li>
+													<input type="button" id="systemS3ActionButton" value="OUTBOARD" onclick="systemS3ButtonController('systemS3ActionButton');" disabled="">
+												</li>
+											</ul>
 										</td>
 									</tr>
-									<tr>
+									<!-- <tr>
 										<td class="background-property-cell">
 											<strong>S-IVB ENGINE CUTOFF</strong>
 										</td>
 										<td class="background-value-cell">
-											<input type="button" id="systemS3ActionButton" value="OUTBOARD" onclick="systemS3ButtonController('systemS3ActionButton');" disabled="">
+											
 										</td>
-									</tr>
+									</tr> -->
 								</tbody>
 							</table>
 						</div>
@@ -701,12 +708,12 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-II ENGINE CUTOFF</strong>
+											<strong>S-II ENGINE</strong>
 										</td>
 										<td class="background-value-cell">
 											<ul>
 												<li>
-													<input type="button" id="systemS2CenterEngineCutoffButton" value="CENTER" onclick="systemS2ButtonController('systemS2CenterEngineCutoffButton');" disabled="">
+													<input type="button" id="systemS2CenterEngineCutoffButton" value="INBOARD" onclick="systemS2ButtonController('systemS2CenterEngineCutoffButton');" disabled="">
 												</li>
 												<li>
 													<input type="button" id="systemS2ActionButton" value="OUTBOARD" onclick="systemS2ButtonController('systemS2ActionButton');" disabled="">  
@@ -726,12 +733,12 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-IC ENGINE CUTOFF</strong>
+											<strong>S-IC ENGINE</strong>
 										</td>
 										<td class="background-value-cell">
 											<ul>
 												<li>
-													<input type="button" id="systemS1CenterEngineCutoffButton" value="CENTER" onclick="systemS1ButtonController('systemS1CenterEngineCutoffButton');" disabled="">
+													<input type="button" id="systemS1CenterEngineCutoffButton" value="INBOARD" onclick="systemS1ButtonController('systemS1CenterEngineCutoffButton');" disabled="">
 												</li>
 												<li>
 													<input type="button" id="systemS1ActionButton" value="OUTBOARD" onclick="systemS1ButtonController('systemS1ActionButton');" disabled="">
