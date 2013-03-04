@@ -129,6 +129,7 @@ short CORE_load_configuration( void ) {
 				}
 			}
 		}
+		fclose( cfg_file );
 	} else {
 		printf("\nWARNING: Remote access to this computer is possible without authorization.\n\n");
 		return 1;
