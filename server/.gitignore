@@ -4,4 +4,4 @@ obj/
 *.layout
 *.cbTemp
 *.conf
-Release/logs
+Release/*.txt

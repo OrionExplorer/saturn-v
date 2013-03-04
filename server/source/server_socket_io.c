@@ -227,7 +227,7 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	char *main_computer_response_str = NULL;
 	short main_computer_response_success = 0;
 
-	LOG_print( "[%s] [%d] Received command: \"%s\".\n", get_actual_time_gmt(), client->socket_descriptor, data );
+	LOG_print( "[%s] [%d] Received command: \"%s\".\n", get_actual_time(), client->socket_descriptor, data );
 
 	if( json == NULL ) {
 		SOCKET_send( &communication_session_, client, INVALID_JSON, -1 );
@@ -271,29 +271,30 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 							client->authorized = 1;
 							strncpy( client->name, username, STD_BUFF_SIZE );
 							SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
+							LOG_print( "[%s] client connected with descriptor %d is %s.\n", get_actual_time(), client->socket_descriptor, username );
 
 							login_response = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
 							snprintf( login_response, STD_BUFF_SIZE, NEW_USER_STR, client->name );
 							SYS_MESSAGE_send_to_all( login_response );
 
-                            if( login_response != NULL ) {
-                                free( login_response );
-                                login_response = NULL;
-                            }
+							if( login_response != NULL ) {
+								free( login_response );
+								login_response = NULL;
+							}
 
 						} else {
 							SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 						}
 
 						if( username != NULL ) {
-                            free( username );
-                            username = NULL;
-                        }
+							free( username );
+							username = NULL;
+						}
 
-                        if( password != NULL ) {
-                            free( password );
-                            password = NULL;
-                        }
+						if( password != NULL ) {
+							free( password );
+							password = NULL;
+						}
 					} else {
 						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 					}
@@ -316,9 +317,9 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					SOCKET_send( &communication_session_, client, main_computer_response_str, -1 );
 
 					if( main_computer_response_str != NULL ) {
-                        free( main_computer_response_str );
-                        main_computer_response_str = NULL;
-                    }
+						free( main_computer_response_str );
+						main_computer_response_str = NULL;
+					}
 
 				} else {
 					SOCKET_send( &communication_session_, client, "ILLEGAL COMMAND", -1 );
@@ -332,9 +333,9 @@ void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 			}
 
 			if( command != NULL ) {
-                free( command );
-                command = NULL;
-            }
+				free( command );
+				command = NULL;
+			}
 		}
 
 		if( response_mode != NULL ) {
@@ -384,7 +385,7 @@ static void SOCKET_process( int socket_fd ) {
 		if( communication_session_.data_length > 0 ) {
 			client->socket_info.connection_status = CCONNECTED;
 		} else {
-			LOG_print("Handshake failed.\n");
+			LOG_print( "[%s] WebSocket handshake failed.\n", get_actual_time() );
 		}
 	}
 
@@ -570,8 +571,8 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
-            memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
-			//LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
+			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
+			LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time(), socket_descriptor );
 			return;
 		}
 	}
@@ -592,8 +593,13 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i ].authorized = 0;
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
+			if( strlen( connected_clients[ i ].name ) > 0 ) {
+				LOG_print("[%s] client disconnected: %s (descriptor %d.)\n", get_actual_time(), connected_clients[ i ].name, socket_descriptor );
+			} else {
+				LOG_print("[%s] client disconnected: %d.\n", get_actual_time(), socket_descriptor );
+			}
+
 			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
-			//LOG_print("[%s] client disconnected with descriptor %d.\n", get_actual_time_gmt(), socket_descriptor );
 			break;
 		}
 	}

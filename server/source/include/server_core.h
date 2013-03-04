@@ -12,6 +12,5 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 void			CORE_initialize( void );
 void			CORE_start( void );
 short			CORE_load_configuration( void );
-short			CORE_load_index_names( const char* filename );
 
 #endif

@@ -275,7 +275,6 @@ void MAIN_COMPUTER_init( void ) {
 	EXEC_COMMAND( S2, TANK, 0 );
 	EXEC_COMMAND( S3, ATTACH, 0 );
 	EXEC_COMMAND( S3, TANK, 0 );
-	//EXEC_COMMAND( INTERNAL_GUIDANCE, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
@@ -798,8 +797,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	strncpy( interpreter_result.message, message, BIG_BUFF_SIZE );
 
 	if( strlen( message ) > 0 ) {
-		LOG_print( "[%s] %s.\n", get_actual_time_gmt(), message );
-		printf( "[%s] %s.\n", get_actual_time_gmt(), message );
+		LOG_print( "[%s] %s.\n", get_actual_time(), message );
+		printf( "[%s] %s.\n", get_actual_time(), message );
 		strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
 	}
 
@@ -1001,7 +1000,7 @@ void instrument_unit_calculations( void ) {
 	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
 	}
-	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 ) {
+	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_distance < 10 ) {
 		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
@@ -1148,7 +1147,7 @@ void compute_launch_physics( void ) {
 		current_acceleration = 0;
 	}
 
-	if( last_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
+	if( stable_orbit_achieved == 1 ) {
 		if( current_acceleration < 0 ) {
 			current_acceleration = 0;
 		}
@@ -1246,7 +1245,7 @@ void TELEMETRY_update( void ) {
 	telemetry_data.last_velocity = last_velocity;
 	telemetry_data.max_q_achieved = max_q_achieved;
 	telemetry_data.mission_time = mission_time;
-	strncpy( telemetry_data.current_time_gmt, get_actual_time_gmt(), TIME_BUFF_SIZE );
+	strncpy( telemetry_data.current_time_gmt, get_actual_time(), TIME_BUFF_SIZE );
 	telemetry_data.thrust_newtons = thrust_newtons;
 	telemetry_data.total_distance = total_distance;
 	telemetry_data.total_mass = total_mass;

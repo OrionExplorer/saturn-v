@@ -57,14 +57,11 @@ static void server_log_prepare( void ) {
 		}
 	}
 
-	LOG_print( "\t- verified: %s.\n", tmp_path );
-
 	/*Dodanie do utworzonej �cie�ki nazwy pliku "log.txt" */
 	strncpy( LOG_filename, tmp_path, MAX_PATH_LENGTH );
 	strncat( LOG_filename, "log.txt", MAX_PATH_LENGTH );
 
-	LOG_print( "NEW SERVER SESSION.\n" );
-	LOG_print( "LOG_filename: %s.\n", LOG_filename );
+	LOG_print( "=======NEW SERVER SESSION [%s]=======\n", get_actual_time() );
 
 	free( tmp_path );
 	tmp_path = NULL;
@@ -77,29 +74,23 @@ static void server_validate_paths( void ) {
 	char *tmp_path = malloc( MAX_PATH_LENGTH_CHAR+1 );
 	int res = -1;
 
-	LOG_print( "Starting server_validate_paths()...\n" );
-
 	/*Przypisanie �cie�ki, z kt�rej uruchamiana jest aplikacja */
 	strncpy( tmp_path, app_path, MAX_PATH_LENGTH );
 
 	/*Dopisanie �cie�ki do pliku "log.txt", bez nazwy pliku */
 	strncat( tmp_path, LOGS_PATH, MAX_PATH_LENGTH );
 	if( directory_exists( tmp_path ) == 0 ) {
-		LOG_print( "Creating path: %s...\n", tmp_path );
 		if( mkdir( tmp_path, 0777 ) != 0 ) {/*Utworzenie �cie�ki */
-			LOG_print( "\t- Error ( %d ) creating path!\n", res );
+			LOG_print( "Error ( %d ) creating path!\n", res );
 		}
 		if( chdir( app_path ) != 0 ) {
 			LOG_print( "Error: chdir().\n" );
 			return;
 		}
 	}
-	LOG_print( "\t- verified: %s\n", tmp_path );
 
 	/*Patrz opis funkcji server_log_prepare() */
 	server_log_prepare();
-
-	LOG_print( "server_validate_paths() done.\n" );
 
 	free( tmp_path );
 	tmp_path = NULL;

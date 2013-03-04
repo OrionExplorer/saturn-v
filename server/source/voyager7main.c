@@ -34,10 +34,11 @@ int main( void ) {
 }
 
 void app_terminate( void ) {
-	LOG_print( "Server is being closed...\n" );
+	LOG_print( "Application terminate command received.\n" );
 	printf( "Service is being closed..." );
 	SOCKET_stop();
 	LOG_print( "Service closed.\n" );
-	printf( "ok.\n" );
 	LOG_save();
+	printf( "ok.\n" );
+	return;
 }
