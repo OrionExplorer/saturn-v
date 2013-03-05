@@ -8,15 +8,37 @@ function kotlecikButtonController(id) {
 
 function pitchRollYawButtonController(id) {
 	var button = document.getElementById(id);
+	var buttonVal = (button.value == 'ON' ? 'START' : 'STOP');
 	switch(button.id) {
+		/* PITCH CONTROL */
 		case 'pitchButton' : {
-				execCommand('PITCH_PROGRAM', button.value);
+				execCommand('PITCH_PROGRAM', buttonVal);
 		} break;
+		case 'pitchIncButton' : {
+				execCommand('PITCH_MOD', 'INCREASE', 1);
+		} break;
+		case 'pitchDecButton' : {
+				execCommand('PITCH_MOD', 'DECREASE', -1);
+		} break;
+		/* ROLL CONTROL */
 		case 'rollButton' : {
-				execCommand('ROLL_PROGRAM', button.value);
+				execCommand('ROLL_PROGRAM', buttonVal);
 		} break;
+		case 'rollIncButton' : {
+				execCommand('ROLL_MOD', 'INCREASE', 1);
+		} break;
+		case 'rollDecButton' : {
+				execCommand('ROLL_MOD', 'DECREASE', -1);
+		} break;
+		/* YAW CONTROL */
 		case 'yawButton' : {
-				execCommand('YAW_PROGRAM', button.value);
+				execCommand('YAW_PROGRAM', buttonVal);
+		} break;
+		case 'yawIncButton' : {
+				execCommand('YAW_MOD', 'INCREASE', 1);
+		} break;
+		case 'yawDecButton' : {
+				execCommand('YAW_MOD', 'DECREASE', -1);
 		} break;
 	}
 }
@@ -177,7 +199,10 @@ function execCommand(device, command, value) {
 		LET : 9,
 		AUTOPILOT : 10,
 		HOLDDOWN_ARMS : 11,
-		COUNTDOWN : 12
+		COUNTDOWN : 12,
+		PITCH_MOD : 13,
+		ROLL_MOD : 14,
+		YAW_MOD : 15
 	};
 	
 	var commands = {
@@ -208,11 +233,13 @@ function parseRemoteData(json) {
 		lastComputerMessage = json.computer_message;
 		updateInformation(message);
 	}
-	updateEl('yawButton', (json.yaw_program_engaged == 1 ? 'STOP' : 'START' ));
-	updateEl('rollButton', (json.roll_program_engaged == 1 ? 'STOP' : 'START' ));
-	updateEl('pitchButton', (json.pitch_program_engaged == 1 ? 'STOP' : 'START' ));
-	updateEl('voyager7_pitch', Math.round(json.pitch)+' / '+json.dest_pitch/*+'°'*/);
-	updateEl('voyager7_rollAzimuth', Math.round(90-json.roll)+' / '+json.dest_roll/*+'°'*/);
+	updateEl('yawButton', (json.yaw_program_engaged == 1 ? 'OFF' : 'ON' ));
+	updateEl('rollButton', (json.roll_program_engaged == 1 ? 'OFF' : 'ON' ));
+	updateEl('pitchButton', (json.pitch_program_engaged == 1 ? 'OFF' : 'ON' ));
+	//updateEl('voyager7_pitch', Math.round(json.pitch)+' / '+json.dest_pitch/*+'°'*/);
+	updateEl('voyager7_pitch', Math.round(json.pitch)/*+'°'*/);
+	//updateEl('voyager7_rollAzimuth', Math.round(90-json.roll)+' / '+json.dest_roll/*+'°'*/);
+	updateEl('voyager7_rollAzimuth', Math.round(json.roll)/*+'°'*/);
 	updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);
 	//updateEl('voyager7_mainEngine', (json.main_engine_engaged == 1 ? 'ON' : 'OFF' ));
 

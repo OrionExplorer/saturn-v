@@ -660,6 +660,28 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 			}
 		} break;
 
+		case PITCH_MOD : {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
+				success = 0;
+				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+			} else {
+				switch( command ) {
+					default : /* Nic */ break;
+					case INCREASE : {
+						pitch_program.current_value++;
+						success = 1;
+						memset( message, '\0', BIG_BUFF_SIZE );
+					} break;
+
+					case DECREASE : {
+						pitch_program.current_value--;
+						success = 1;
+						memset( message, '\0', BIG_BUFF_SIZE );
+					} break;
+				}
+			}
+		} break;
+
 		case ROLL_PROGRAM : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
 				success = 0;
@@ -682,6 +704,28 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 			}
 		} break;
 
+		case ROLL_MOD : {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
+				success = 0;
+				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+			} else {
+				switch( command ) {
+					default : /* Nic */ break;
+					case INCREASE : {
+						roll_program.current_value++;
+						success = 1;
+						memset( message, '\0', BIG_BUFF_SIZE );
+					} break;
+
+					case DECREASE : {
+						roll_program.current_value--;
+						success = 1;
+						memset( message, '\0', BIG_BUFF_SIZE );
+					} break;
+				}
+			}
+		} break;
+
 		case YAW_PROGRAM : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
 				success = 0;
@@ -699,6 +743,28 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						COMPUTER_PROGRAM_stop( &yaw_program );
 						success = 1;
 						strncpy( message, "YAW PROGRAM STOPPED", BIG_BUFF_SIZE );
+					} break;
+				}
+			}
+		} break;
+
+		case YAW_MOD : {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
+				success = 0;
+				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+			} else {
+				switch( command ) {
+					default : /* Nic */ break;
+					case INCREASE : {
+						yaw_program.current_value += 0.1;
+						success = 1;
+						memset( message, '\0', BIG_BUFF_SIZE );
+					} break;
+
+					case DECREASE : {
+						yaw_program.current_value -= 0.1;
+						success = 1;
+						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
 				}
 			}
@@ -1086,7 +1152,7 @@ void compute_launch_physics( void ) {
 	if( countdown_in_progress == 1 ) {
 		if( mission_time < 0 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 			if( mission_time > -8 && mission_time <= 0 && current_thrust < 100 ) {
-				EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod );
+				EXEC_COMMAND( THRUST, INCREASE, 12 / time_mod );
 			}
 		} else if( mission_time > 0 && mission_time < 1 && current_thrust < 100 ) {
 			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
