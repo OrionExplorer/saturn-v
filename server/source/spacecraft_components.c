@@ -46,10 +46,19 @@ void ROCKET_STAGE_do_attach( ROCKET_STAGE *rs ) {
 void ROCKET_STAGE_do_detach( ROCKET_STAGE *rs ) {
 	rs->attached = 0;
 	rs->current_thrust = 0;
+	rs->staging_time = get_current_epoch();
 }
 
 void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value ) {
-	rs->fuel = value;
+    short operation = rand() % 10;
+
+    if( operation == 4 ) {
+        rs->fuel = value - rs->fuel_burn_mod;
+    } else if( operation > 7 ) {
+        rs->fuel = value + rs->fuel_burn_mod;
+    } else {
+        rs->fuel = value;
+    }
 }
 
 /* Silnik */
@@ -83,6 +92,7 @@ void STAGE_1_init( void ) {
 	system_s1.id = 1;
 	system_s1.fuel = 0;
 	system_s1.attached = 0;
+	system_s1.staging_time = -1;
 	system_s1.dry_mass = 132890;
 	system_s1.max_fuel = 2106905 + 20311;
 	system_s1.instrument_mass = 5206;
@@ -95,6 +105,9 @@ void STAGE_1_init( void ) {
 	system_s1.burn_start = 0;
 	system_s1.burn_time = 0;
 	system_s1.center_engine_available = 1;
+
+	system_s1.fuel_burn_mod = system_s1.max_fuel_burn * 0.02;
+
 	strncpy( system_s1.name, "S-IC", MICRO_BUFF_SIZE );
 
 	current_system = &system_s1;
@@ -110,6 +123,7 @@ void STAGE_2_init( void ) {
 	system_s2.id = 2;
 	system_s2.fuel = 0;
 	system_s2.attached = 0;
+	system_s2.staging_time = -1;
 	system_s2.dry_mass = 36729;
 	system_s2.max_fuel = 443235;
 	system_s2.instrument_mass = 3663;
@@ -122,6 +136,9 @@ void STAGE_2_init( void ) {
 	system_s2.burn_start = 0;
 	system_s2.burn_time = 0;
 	system_s2.center_engine_available = 1;
+
+	system_s2.fuel_burn_mod = system_s2.max_fuel_burn * 0.02;
+
 	strncpy( system_s2.name, "S-II", MICRO_BUFF_SIZE );
 
 	printf( "done.\n" );
@@ -135,6 +152,7 @@ void STAGE_3_init( void ) {
 	system_s3.id = 3;
 	system_s3.fuel = 0;
 	system_s3.attached = 0;
+	system_s3.staging_time = -1;
 	system_s3.dry_mass = 12024;
 	system_s3.max_fuel = 107095;
 	system_s3.instrument_mass = 45693+4200;
@@ -147,6 +165,9 @@ void STAGE_3_init( void ) {
 	system_s3.burn_start = 0;
 	system_s3.burn_time = 0;
 	system_s3.center_engine_available = 0;
+
+	system_s3.fuel_burn_mod = system_s3.max_fuel_burn * 0.02;
+
 	strncpy( system_s3.name, "S-IVB", MICRO_BUFF_SIZE );
 
 	printf( "done.\n" );

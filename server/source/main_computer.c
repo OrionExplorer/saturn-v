@@ -971,10 +971,31 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
 	}
 
-	if( system_s1.fuel <= 15000 && system_s1.attached == 1 ) {
+	if( telemetry_data.current_velocity >= 2750 && system_s1.attached == 1 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S1, DETACH, 0 );
+	}
+
+	if( telemetry_data.current_velocity >= 6900 && system_s2.attached == 1 ) {
+		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
+		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+		EXEC_COMMAND( S2, DETACH, 0 );
+	}
+
+	//if( current_system->attached == 0 && current_system->burn_start > 0 && ( get_current_epoch() - current_system->staging_time ) >= 4 ) {
+	if( current_system->id == system_s2.id && system_s1.attached == 0 && system_s1.burn_start > 0 && ( get_current_epoch() - system_s1.staging_time ) >= 4 ) {
+        if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+        }
+	}
+
+	if( current_system->id == system_s3.id && system_s2.attached == 0 && system_s2.burn_start > 0 && ( get_current_epoch() - system_s2.staging_time ) >= 4 ) {
+        if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+        }
 	}
 
 	switch( second ) {
@@ -1018,12 +1039,12 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 166 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-			}
-		} break;
+//		case 166 : {
+//			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+//				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+//				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+//			}
+//		} break;
 
 		case 197 : {
 			if( launch_escape_tower_ready == 1 ) {
@@ -1043,20 +1064,20 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 548 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 60 && current_system->id == 2 ) {
-				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-				EXEC_COMMAND( S2, DETACH, 0 );
-			}
-		} break;
+//		case 548 : {
+//			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 60 && current_system->id == 2 ) {
+//				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
+//				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+//				EXEC_COMMAND( S2, DETACH, 0 );
+//			}
+//		} break;
 
-		case 552 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-			}
-		} break;
+//		case 552 : {
+//			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+//				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+//				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+//			}
+//		} break;
 	}
 }
 
@@ -1169,8 +1190,10 @@ void compute_launch_physics( void ) {
 	}
 
 	if( current_fuel_mass > 0 ) {
-		current_fuel_burn = ( ( current_system->max_fuel_burn * current_thrust ) / 100 ) / time_mod;
-		ROCKET_STAGE_set_fuel( current_system, ( current_fuel_mass - current_fuel_burn) );
+	    if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 0 ) {
+            current_fuel_burn = ( ( current_system->max_fuel_burn * current_thrust ) / 100 ) / time_mod;
+            ROCKET_STAGE_set_fuel( current_system, ( current_fuel_mass - current_fuel_burn) );
+	    }
 	} else {
 		current_fuel_mass = 0;
 	}
