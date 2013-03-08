@@ -144,9 +144,9 @@ void STAGE_3_init( void ) {
 	system_s3.fuel = 0;
 	system_s3.attached = 0;
 	system_s3.staging_time = -1;
-	system_s3.dry_mass = 12024;
+	system_s3.dry_mass = 11943;
 	system_s3.max_fuel = 107095;
-	system_s3.instrument_mass = 45693+4200;
+	system_s3.instrument_mass = 45693+1939;
 	system_s3.max_fuel_burn = 213;
 	system_s3.max_thrust_n = 901223;
 	system_s3.current_thrust = 0;

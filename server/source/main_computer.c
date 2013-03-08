@@ -977,10 +977,18 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( S1, DETACH, 0 );
 	}
 
-	if( telemetry_data.current_velocity >= 6900 && system_s2.attached == 1 ) {
+	if( telemetry_data.current_velocity >= 7000 && system_s2.attached == 1 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S2, DETACH, 0 );
+	}
+
+	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5678 ) {
+		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
+	}
+
+	if( current_system->id == 2 && ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60  && telemetry_data.current_velocity >= 6280 ) {
+		EXEC_COMMAND( THRUST, DECREASE, 20 );
 	}
 
 	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4 ) {
@@ -1044,12 +1052,6 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 460 : {
-			if( system_s2.center_engine_available == 1 ) {
-				EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
-			}
-		} break;
-
 		case 500 : {
 			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60 ) {
 				EXEC_COMMAND( THRUST, DECREASE, 20 );
@@ -1069,6 +1071,10 @@ void instrument_unit_calculations( void ) {
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
 		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
+	}
+
+	if( stable_orbit_achieved == 0 && ( current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
+		strncpy( telemetry_data.computer_message, "PREPARE TO ORBIT INSERTION", STD_BUFF_SIZE );
 	}
 
 	if( current_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {

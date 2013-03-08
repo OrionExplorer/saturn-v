@@ -339,3 +339,19 @@ function parseRemoteData(json) {
 		enableEl('systemS2ActionButton');
 	}
 }
+
+function secondsToHms(d) {
+	var lessThanZero = (d < 0) ? true : false;
+	d = Math.abs(Math.round(Number(d)));
+
+	var h = Math.floor(d / 3600);
+	var m = Math.floor(d % 3600 / 60);
+	var s = Math.floor(d % 3600 % 60);
+	return lessThanZero ? 'T-'+(h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s) : 'T+'+(h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s);
+}
+
+function hmsToSeconds(hms) {
+	var a = hms.split(':');
+	var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]); 
+	return seconds;
+}
