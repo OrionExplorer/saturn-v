@@ -38,10 +38,9 @@ struct ROCKET_STAGE {
 	short id;
 	long double fuel;
 	short attached;
-	long int staging_time;
+	double staging_time;
 	int dry_mass;
 	long double max_fuel;
-	double fuel_burn_mod;
 	int instrument_mass;
 	int max_fuel_burn;
 	long int max_thrust_n;
@@ -62,7 +61,7 @@ char* ROCKET_STAGE_get_fuel_possible_action( ROCKET_STAGE *rs );
 short ROCKET_STAGE_get_attached( ROCKET_STAGE *rs );
 void ROCKET_STAGE_do_attach( ROCKET_STAGE *rs );
 void ROCKET_STAGE_do_detach( ROCKET_STAGE *rs );
-void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value );
+void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value, short do_mod );
 
 /**
  Silnik

@@ -351,7 +351,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					default : /* Nic */ break;
 					case TANK : {
 						if( (ROCKET_STAGE_get_fuel( &system_s1 ) < system_s1.max_fuel) && system_s1.attached == 1 ) {
-							ROCKET_STAGE_set_fuel( &system_s1, system_s1.max_fuel );
+							ROCKET_STAGE_set_fuel( &system_s1, system_s1.max_fuel, 0 );
 							success = 1;
 							strncpy( message, "S-IC STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
@@ -416,7 +416,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					default : /* Nic */ break;
 					case TANK : {
 						if( ROCKET_STAGE_get_fuel( &system_s2 ) < system_s2.max_fuel && system_s2.attached == 1 ) {
-							ROCKET_STAGE_set_fuel( &system_s2, system_s2.max_fuel );
+							ROCKET_STAGE_set_fuel( &system_s2, system_s2.max_fuel, 0 );
 							success = 1;
 							strncpy( message, "S-II STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
@@ -481,7 +481,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					default : /* Nic */ break;
 					case TANK : {
 						if( ROCKET_STAGE_get_fuel( &system_s3 ) < system_s3.max_fuel && system_s3.attached == 1 ) {
-							ROCKET_STAGE_set_fuel( &system_s3, system_s3.max_fuel );
+							ROCKET_STAGE_set_fuel( &system_s3, system_s3.max_fuel, 0 );
 							success = 1;
 							strncpy( message, "S-IVB STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
@@ -639,7 +639,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case PITCH_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_acceleration <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -661,7 +661,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case PITCH_MOD : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_acceleration <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -983,19 +983,18 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( S2, DETACH, 0 );
 	}
 
-	//if( current_system->attached == 0 && current_system->burn_start > 0 && ( get_current_epoch() - current_system->staging_time ) >= 4 ) {
-	if( current_system->id == system_s2.id && system_s1.attached == 0 && system_s1.burn_start > 0 && ( get_current_epoch() - system_s1.staging_time ) >= 4 ) {
-        if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4 ) {
+		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
 			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
 			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-        }
+		}
 	}
 
-	if( current_system->id == system_s3.id && system_s2.attached == 0 && system_s2.burn_start > 0 && ( get_current_epoch() - system_s2.staging_time ) >= 4 ) {
-        if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
+	if( current_system->id == system_s3.id && system_s3.attached == 1 && system_s2.attached == 0 && system_s2.burn_start > 0 && ( telemetry_data.mission_time - system_s2.staging_time ) >= 4 ) {
+		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
 			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
 			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-        }
+		}
 	}
 
 	switch( second ) {
@@ -1039,13 +1038,6 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-//		case 166 : {
-//			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-//				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-//				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-//			}
-//		} break;
-
 		case 197 : {
 			if( launch_escape_tower_ready == 1 ) {
 				EXEC_COMMAND( LET, JETTISON, 0 );
@@ -1063,21 +1055,6 @@ void auto_pilot( double real_second ) {
 				EXEC_COMMAND( THRUST, DECREASE, 20 );
 			}
 		} break;
-
-//		case 548 : {
-//			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 60 && current_system->id == 2 ) {
-//				EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-//				EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-//				EXEC_COMMAND( S2, DETACH, 0 );
-//			}
-//		} break;
-
-//		case 552 : {
-//			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-//				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-//				EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-//			}
-//		} break;
 	}
 }
 
@@ -1098,16 +1075,11 @@ void instrument_unit_calculations( void ) {
 		if( stable_orbit_achieved == 0 ) {
 			stable_orbit_achieved = 1;
 			strncpy( telemetry_data.computer_message, "ORBIT INSERTION", STD_BUFF_SIZE );
-			if( pitch_program.current_value > 90 ) {
-				pitch_program.current_value = 90;
-			}
 			if( auto_pilot_enabled == 1 ) {
 				auto_pilot( mission_time );
 			}
 		}
 	}
-
-	//printf("[%4.0f MET][dV:%2.1f m/s][alt:%6.0f m][vel:%4.0f m/s]             \r", round(telemetry_data.mission_time), (telemetry_data.current_acceleration), (telemetry_data.current_altitude), round(telemetry_data.last_velocity) );
 }
 
 void compute_launch_physics( void ) {
@@ -1131,12 +1103,18 @@ void compute_launch_physics( void ) {
 	current_thrust = ROCKET_ENGINE_get_thrust( &internal_guidance );
 
 	if( ROCKET_STAGE_get_attached( &system_s1 ) == 0) {
+		if( ROCKET_STAGE_get_fuel( &system_s1 ) > 0 ) {
+			ROCKET_STAGE_set_fuel( &system_s1, ( system_s1.fuel - ( system_s1.max_fuel_burn / time_mod / 10 ) ), 0 );
+		}
 		if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
 			current_system = &system_s2;
 		}
 	}
 
 	if( ROCKET_STAGE_get_attached( &system_s2 ) == 0) {
+		if( ROCKET_STAGE_get_fuel( &system_s2 ) > 0 ) {
+			ROCKET_STAGE_set_fuel( &system_s2, ( system_s2.fuel - ( system_s2.max_fuel_burn / time_mod / 10 ) ), 0 );
+		}
 		if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
 			current_system = &system_s3;
 		}
@@ -1151,7 +1129,7 @@ void compute_launch_physics( void ) {
 			current_system->burn_start = get_current_epoch();
 		}
 	} else {
-		if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ROCKET_ENGINE_get_thrust( &main_engine ) >= 10 ) {
+		if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 			current_system->burn_time += time_tick;
 		}
 	}
@@ -1190,10 +1168,10 @@ void compute_launch_physics( void ) {
 	}
 
 	if( current_fuel_mass > 0 ) {
-	    if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 0 ) {
-            current_fuel_burn = ( ( current_system->max_fuel_burn * current_thrust ) / 100 ) / time_mod;
-            ROCKET_STAGE_set_fuel( current_system, ( current_fuel_mass - current_fuel_burn) );
-	    }
+		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 0 ) {
+			current_fuel_burn = ( ( current_system->max_fuel_burn * current_thrust ) / 100 ) / time_mod;
+			ROCKET_STAGE_set_fuel( current_system, ( current_fuel_mass - current_fuel_burn), 1 );
+		}
 	} else {
 		current_fuel_mass = 0;
 	}
@@ -1211,6 +1189,10 @@ void compute_launch_physics( void ) {
 		}
 	} else {
 		thrust_newtons = 0;
+	}
+
+	if( thrust_newtons > 10 ) {
+		thrust_newtons -= ( rand() % (int)( thrust_newtons * 0.1 ) / time_mod );
 	}
 
 	if( ROCKET_STAGE_get_attached( current_system ) == 1 ) {
@@ -1236,7 +1218,7 @@ void compute_launch_physics( void ) {
 		current_acceleration = 0;
 	}
 
-	if( stable_orbit_achieved == 1 ) {
+	if( stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 150000 ) {
 		if( current_acceleration < 0 ) {
 			current_acceleration = 0;
 		}
@@ -1258,9 +1240,6 @@ void compute_launch_physics( void ) {
 	if( pitch_program.current_value > 0 ) {
 		rad2deg = pitch_program.current_value * _PI / 180;
 		current_vertical_velocity = round( ( (last_velocity + current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) ) * cos( rad2deg ) );
-		if( current_vertical_velocity < 0 ) {
-			current_vertical_velocity = 0;
-		}
 
 		if( current_vertical_velocity == 0 ) {
 			current_horizontal_velocity = current_velocity;
@@ -1287,20 +1266,28 @@ void compute_launch_physics( void ) {
 		yaw_program.current_value += get_yaw_step() / time_mod;
 	}
 
-	if( current_distance > 0 ) {
-		if( pitch_program.current_value <= 92 ) {
-			pitch_mod = ( 100 - pitch_program.current_value ) / 100;
+	if( current_distance > 0 && current_acceleration > 0 ) {
+		if( pitch_program.current_value < 90 ) {
 			if( current_system->id == 1 ) {
-				current_altitude += ( ( ( current_distance ) * pitch_mod ) / ( time_mod ) );
-			 } else {
+				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
+				current_altitude +=  ( ( current_distance ) * pitch_mod ) / ( time_mod );
+			} else {
 				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
 				current_altitude += ( ( current_vertical_velocity ) * pitch_mod ) / ( time_mod );
-			 }
+			}
+		} else if( pitch_program.current_value > 90 ) {
+			if( current_system->id == 1 ) {
+				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
+				current_altitude -=  ( ( current_distance ) * pitch_mod ) / ( time_mod );
+			} else {
+				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
+				current_altitude -= abs( ( ( current_vertical_velocity ) * pitch_mod ) / ( time_mod ) );
+			}
 		}
 	}
 
 	if( current_distance < 0 && current_acceleration < 0 && ROCKET_ENGINE_get_thrust( &internal_guidance ) < 100 && max_q_achieved == 0 ) {
-		current_altitude += (current_distance / time_mod);
+		current_altitude += ( current_distance / time_mod );
 	}
 
 	last_velocity = current_velocity;

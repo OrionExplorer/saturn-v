@@ -11,7 +11,6 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 
 /* Program komputerowy */
-
 void COMPUTER_PROGRAM_start( COMPUTER_PROGRAM *cp ) {
 	cp->start_time = get_current_epoch();
 	cp->running = 1;
@@ -46,19 +45,15 @@ void ROCKET_STAGE_do_attach( ROCKET_STAGE *rs ) {
 void ROCKET_STAGE_do_detach( ROCKET_STAGE *rs ) {
 	rs->attached = 0;
 	rs->current_thrust = 0;
-	rs->staging_time = get_current_epoch();
+	rs->staging_time = telemetry_data.mission_time;
 }
 
-void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value ) {
-    short operation = rand() % 10;
+void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value, short do_mod ) {
+	rs->fuel = value;
 
-    if( operation == 4 ) {
-        rs->fuel = value - rs->fuel_burn_mod;
-    } else if( operation > 7 ) {
-        rs->fuel = value + rs->fuel_burn_mod;
-    } else {
-        rs->fuel = value;
-    }
+	if( rs->fuel < 0 ) {
+		rs->fuel = 0;
+	}
 }
 
 /* Silnik */
@@ -106,8 +101,6 @@ void STAGE_1_init( void ) {
 	system_s1.burn_time = 0;
 	system_s1.center_engine_available = 1;
 
-	system_s1.fuel_burn_mod = system_s1.max_fuel_burn * 0.02;
-
 	strncpy( system_s1.name, "S-IC", MICRO_BUFF_SIZE );
 
 	current_system = &system_s1;
@@ -137,8 +130,6 @@ void STAGE_2_init( void ) {
 	system_s2.burn_time = 0;
 	system_s2.center_engine_available = 1;
 
-	system_s2.fuel_burn_mod = system_s2.max_fuel_burn * 0.02;
-
 	strncpy( system_s2.name, "S-II", MICRO_BUFF_SIZE );
 
 	printf( "done.\n" );
@@ -165,8 +156,6 @@ void STAGE_3_init( void ) {
 	system_s3.burn_start = 0;
 	system_s3.burn_time = 0;
 	system_s3.center_engine_available = 0;
-
-	system_s3.fuel_burn_mod = system_s3.max_fuel_burn * 0.02;
 
 	strncpy( system_s3.name, "S-IVB", MICRO_BUFF_SIZE );
 

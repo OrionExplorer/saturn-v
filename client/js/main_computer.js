@@ -70,10 +70,10 @@ function systemMPSButtonController(id) {
 
 function mainEngineThrustButtonController(id) {
 	switch(document.getElementById(id).value) {
-		case 'UP' : {
+		case '+' : {
 				execCommand('THRUST', 'INCREASE', 5, false);
 		} break;
-		case 'DOWN' : {
+		case '-' : {
 				execCommand('THRUST', 'DECREASE', 5, false);
 		} break;
 		case 'FULL' : {
