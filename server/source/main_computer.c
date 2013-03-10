@@ -57,7 +57,7 @@ double					time_mod = 0.0;
 /**
 Zmienne dla auto pilota
 **/
-short					auto_pilot_enabled = 1;
+short					auto_pilot_enabled = 0;
 short					launch_escape_tower_ready = 1;
 
 /**
@@ -74,7 +74,7 @@ void *run_simulation( void ) {
 
 	while(1) {
 		compute_launch_physics();
-		Sleep(100);
+		Sleep( 100 );
 	}
 }
 
@@ -275,6 +275,7 @@ void MAIN_COMPUTER_init( void ) {
 	EXEC_COMMAND( S2, TANK, 0 );
 	EXEC_COMMAND( S3, ATTACH, 0 );
 	EXEC_COMMAND( S3, TANK, 0 );
+	EXEC_COMMAND( AUTO_PILOT, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
@@ -912,7 +913,7 @@ double get_pitch_step( void ) {
 		result = 0.3908333;
 	}
 	if(seconds >= 130 && seconds < 210) {
-		result = (0.1562500*(-1));
+		result = -0.1562500;
 	}
 	if(seconds >= 210 && seconds < 360) {
 		result = 0.0975067;
@@ -971,20 +972,24 @@ void auto_pilot( double real_second ) {
 		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
 	}
 
+	if( system_s1.center_engine_available == 1 && telemetry_data.current_velocity >= 1970 ) {
+		EXEC_COMMAND( S1, CENTER_ENGINE_CUTOFF, 0 );
+	}
+
 	if( telemetry_data.current_velocity >= 2750 && system_s1.attached == 1 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S1, DETACH, 0 );
 	}
 
+	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5678 ) {
+		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
+	}
+
 	if( telemetry_data.current_velocity >= 7000 && system_s2.attached == 1 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S2, DETACH, 0 );
-	}
-
-	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5678 ) {
-		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
 	}
 
 	if( current_system->id == 2 && ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60  && telemetry_data.current_velocity >= 6280 ) {
@@ -1040,12 +1045,6 @@ void auto_pilot( double real_second ) {
 			}
 		} break;
 
-		case 135 : {
-			if( system_s1.center_engine_available == 1 ) {
-				EXEC_COMMAND( S1, CENTER_ENGINE_CUTOFF, 0 );
-			}
-		} break;
-
 		case 197 : {
 			if( launch_escape_tower_ready == 1 ) {
 				EXEC_COMMAND( LET, JETTISON, 0 );
@@ -1066,7 +1065,7 @@ void instrument_unit_calculations( void ) {
 	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
 	}
-	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_distance < 10 ) {
+	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_altitude < 10 ) {
 		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
@@ -1075,6 +1074,21 @@ void instrument_unit_calculations( void ) {
 
 	if( stable_orbit_achieved == 0 && ( current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
 		strncpy( telemetry_data.computer_message, "PREPARE TO ORBIT INSERTION", STD_BUFF_SIZE );
+	}
+
+	/* CRASH */
+	if( current_velocity != 0 && current_altitude <= 0 ) {
+		strncpy( telemetry_data.computer_message, "YOU DIED", STD_BUFF_SIZE );
+		auto_pilot_enabled = 0;
+		/* TODO */
+	}
+
+	if( holddown_arms_released == 0 ) {
+		if( current_acceleration >= 3 ) {
+			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
+			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+			strncpy( telemetry_data.computer_message, "AUTOMATIC ENGINE DISENGAGE", STD_BUFF_SIZE );
+		}
 	}
 
 	if( current_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
@@ -1094,6 +1108,7 @@ void compute_launch_physics( void ) {
 	double dynamic_pressure = 0;
 	double dynamic_pressure_newtons = 0;
 	long double fw = 0;
+	long double real_fw = 0;
 	double rad2deg = pitch_program.current_value * _PI / 180;
 	double pitch_mod = ( 100 - pitch_program.current_value ) / 100;
 
@@ -1155,12 +1170,12 @@ void compute_launch_physics( void ) {
 	}
 
 	if( countdown_in_progress == 1 ) {
-		if( mission_time < 0 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
-			if( mission_time > -8 && mission_time <= 0 && current_thrust < 100 ) {
-				EXEC_COMMAND( THRUST, INCREASE, 12 / time_mod );
+		if( current_system->id == 1 && current_system->burn_time < 15 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+			if( current_thrust < 100 ) {
+				if( EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod )->success == 0) {
+					EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+				}
 			}
-		} else if( mission_time > 0 && mission_time < 1 && current_thrust < 100 ) {
-			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
 		}
 		mission_time += time_tick;
 	}
@@ -1198,7 +1213,11 @@ void compute_launch_physics( void ) {
 	}
 
 	if( thrust_newtons > 10 ) {
-		thrust_newtons -= ( rand() % (int)( thrust_newtons * 0.1 ) / time_mod );
+		if( current_system->id != 3 ) {
+			thrust_newtons -= ( rand() % (int)( thrust_newtons * 0.1 ) / time_mod );
+		} else {
+			thrust_newtons += ( rand() % (int)( thrust_newtons * 0.01 ) / time_mod );
+		}
 	}
 
 	if( ROCKET_STAGE_get_attached( current_system ) == 1 ) {
@@ -1212,13 +1231,19 @@ void compute_launch_physics( void ) {
 	dynamic_pressure_newtons = dynamic_pressure * 4.44;
 
 	fw = 0;
+	real_fw = thrust_newtons - ( total_mass * CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) );
+
 	if( max_q_achieved == 0 ) {
-		fw = thrust_newtons - ( total_mass * CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) );
+		fw = real_fw;
 	} else {
 		fw = thrust_newtons - ( total_mass * ( CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude) / (time_mod) ) );
 	}
 
 	current_acceleration = ( fw / total_mass );
+
+	if( current_acceleration < 0 && current_thrust == 0 && stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4) {
+		current_acceleration = ( real_fw / total_mass );
+	}
 
 	if( current_acceleration < 0 && current_altitude <= 0 ) {
 		current_acceleration = 0;
@@ -1231,10 +1256,14 @@ void compute_launch_physics( void ) {
 	}
 
 	if( holddown_arms_released == 1 ) {
-		current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
-	} else {
-		if( current_acceleration >= 3 ) {
-			current_system = &system_null;
+		if( pitch_program.current_value < 90 || pitch_program.current_value > 270 ) {
+			current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
+		} else if( pitch_program.current_value > 90 && pitch_program.current_value < 270 ) {
+			if( current_acceleration > 0 ) {
+				current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
+			} else {
+				current_velocity = last_velocity - ( current_acceleration / ( time_mod ) );
+			}
 		}
 	}
 
@@ -1256,8 +1285,6 @@ void compute_launch_physics( void ) {
 		current_vertical_velocity = current_velocity;
 	}
 
-	current_distance = current_velocity;
-
 	if( current_velocity > 0 ) {
 		ascending_time += time_tick;
 	} else {
@@ -1272,11 +1299,13 @@ void compute_launch_physics( void ) {
 		yaw_program.current_value += get_yaw_step() / time_mod;
 	}
 
-	if( current_distance > 0 && current_acceleration > 0 ) {
+	current_distance = current_velocity;
+
+	if( current_distance != 0 ) {
 		if( pitch_program.current_value < 90 ) {
 			if( current_system->id == 1 ) {
 				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
-				current_altitude +=  ( ( current_distance ) * pitch_mod ) / ( time_mod );
+				current_altitude += ( ( current_distance ) * pitch_mod ) / ( time_mod );
 			} else {
 				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
 				current_altitude += ( ( current_vertical_velocity ) * pitch_mod ) / ( time_mod );
@@ -1284,7 +1313,7 @@ void compute_launch_physics( void ) {
 		} else if( pitch_program.current_value > 90 ) {
 			if( current_system->id == 1 ) {
 				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
-				current_altitude -=  ( ( current_distance ) * pitch_mod ) / ( time_mod );
+				current_altitude -= ( ( ( current_distance ) ) * pitch_mod ) / ( time_mod );
 			} else {
 				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
 				current_altitude -= abs( ( ( current_vertical_velocity ) * pitch_mod ) / ( time_mod ) );
@@ -1292,20 +1321,16 @@ void compute_launch_physics( void ) {
 		}
 	}
 
-	if( current_distance < 0 && current_acceleration < 0 && ROCKET_ENGINE_get_thrust( &internal_guidance ) < 100 && max_q_achieved == 0 ) {
-		current_altitude += ( current_distance / time_mod );
-	}
-
 	last_velocity = current_velocity;
 
 	if( current_altitude > 0 ) {
-		total_distance += ( current_distance / time_mod );
+		total_distance += ( abs( current_distance ) / time_mod );
 	} else {
 		last_velocity = 0;
 	}
 
 	if( current_altitude < 0 ) {
-		current_altitude = 0;
+		current_altitude = -1;
 	}
 
 	instrument_unit_calculations();

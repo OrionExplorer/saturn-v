@@ -259,6 +259,7 @@ function parseRemoteData(json) {
 	updateEl('voyager7_s3_thrust', Math.round(json.s_ivb_thrust)/*+' N'*/);
 	
 	updateEl('voyager7_mission_time', secondsToHms(json.mission_time));
+	document.title = 'SATURN V ('+secondsToHms(json.mission_time)+')';
 	updateEl('voyager7_timeInfo', json.current_time_gmt.toUpperCase());
 	updateEl('voyager7_velocity', Math.round(json.last_velocity)/* + ' M/S'*/);
 	//updateEl('voyager7_verticalVelocity', Math.round(json.current_vertical_velocity) + ' M/S');
