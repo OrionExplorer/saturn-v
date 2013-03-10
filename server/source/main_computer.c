@@ -1103,7 +1103,6 @@ void instrument_unit_calculations( void ) {
 }
 
 void compute_launch_physics( void ) {
-
 	double time_tick = ( time_interval * 0.001 );
 	double dynamic_pressure = 0;
 	double dynamic_pressure_newtons = 0;
@@ -1301,7 +1300,7 @@ void compute_launch_physics( void ) {
 
 	current_distance = current_velocity;
 
-	if( current_distance != 0 ) {
+	if( current_distance != 0 && current_acceleration != 0 ) {
 		if( pitch_program.current_value < 90 ) {
 			if( current_system->id == 1 ) {
 				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
