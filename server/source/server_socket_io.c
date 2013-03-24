@@ -18,6 +18,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include "include/server_strings_util.h"
 #include "include/cWebSockets.h"
 #include "include/main_computer.h"
+#include "include/server_telemetry.h"
+#include "include/server_communication.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

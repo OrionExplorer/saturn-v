@@ -10,6 +10,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include "include/server_log.h"
 #include "include/spacecraft_components.h"
 #include "include/celestial_objects.h"
+#include "include/server_telemetry.h"
+#include "include/auto_pilot.h"
 #include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -25,236 +27,42 @@ extern ROCKET_STAGE		*current_system;
 /***************************************
 Zmienne globalne
 ***************************************/
-/**TELEMETRIA**/
-int						current_fuel_mass = 0;
-long double				total_mass = 0.0;
-long double				thrust_newtons = 0.0;
-double					current_acceleration = 0.0;
-double					current_distance = 0.0;
-double					current_velocity = 0.0;
-double					current_vertical_velocity = 0.0;
-double					current_horizontal_velocity = 0.0;
-double					current_fuel_burn = 0.0;
-int						current_thrust = 0;
-double					current_altitude = 0.0;
-double					total_distance = 0.0;
-double					last_velocity = 0.0;
-double					mission_time = -20.0;
-double					ascending_time = -1;
-short					max_q_achieved = 0;
 int						current_dynamic_pressure = 0;
-short					stable_orbit_achieved = 0;
+long double				fw;
+long double				real_fw;
+short					computing_all = 0;
 
 /**
 Modyfikatory fizyki
 **/
-double					pitch_modifier = 0.0;
-short					liftoff_yaw_achieved = 0;
 double					normal_atmospheric_pressure = 1013.25;
 int						time_interval = 100;
+double					rad2deg;
+double					time_tick;
 double					time_mod = 0.0;
 
-/**
-Zmienne dla auto pilota
-**/
-short					auto_pilot_enabled = 0;
-short					launch_escape_tower_ready = 1;
-
-/**
-Pozostałe
-**/
-short					countdown_in_progress = 0;
-short					holddown_arms_released = 0;
-short					computing_all = 0;
 pthread_t				sthread;
 
-void *run_simulation( void ) {
-
+void *SIMULATION_progress( void ) {
 	srand ( time(NULL) );
 
 	while(1) {
-		compute_launch_physics();
-		Sleep( 100 );
-	}
-}
+		PHYSICS_shared_calculations();
 
-void SYS_MESSAGE_send_to_all( char *msg ) {
-	int i;
-
-	for( i = 0; i < MAX_CLIENTS; i++ ) {
-		if(connected_clients[ i ].socket_descriptor > 0 ) {
-			if( connected_clients[ i ].authorized == 1 && connected_clients[ i ].binded == 1 ) {
-				SOCKET_send( &communication_session_, &connected_clients[ i ], msg, -1 );
-			}
+		switch( MAIN_FLIGHT_STATUS ) {
+			case LAUNCH_FROM_EARTH : PHYSICS_launch_calculations(); break;
+			case STABLE_ORBIT : { /*TODO*/ } break;
+			case TRANSFER_ORBIT : { /*TODO*/ } break;
+			default : break;
 		}
-	}
-}
 
-void CHAT_send_to_all( char *msg, CONNECTED_CLIENT *client ) {
-	int i;
-	cJSON *root = cJSON_CreateObject();
-	cJSON *data = cJSON_CreateObject();
-	char *output;
+		PHYSICS_instrument_unit_calculations();
 
-	cJSON_AddTrueToObject( root, "success" );
-	cJSON_AddStringToObject( root, "data_type", "chat_message" );
-	cJSON_AddItemToObject( root, "data", data );
-
-	cJSON_AddStringToObject( data, "text", msg );
-	if( strlen( client->name ) > 0 ) {
-		cJSON_AddStringToObject( data, "user", client->name );
-	} else {
-		cJSON_AddNumberToObject( data, "user", client->socket_descriptor );
-	}
-
-	output = cJSON_Print( root );
-
-	for( i = 0; i < MAX_CLIENTS; i++ ) {
-		if(connected_clients[ i ].socket_descriptor > 0 ) {
-			if( connected_clients[ i ].authorized == 1 && connected_clients[ i ].binded == 1 ) {
-				SOCKET_send( &communication_session_, &connected_clients[ i ], output, -1 );
-			}
-		}
-	}
-
-	cJSON_Delete( root );
-	root = NULL;
-
-	free( output );
-	output = NULL;
-}
-
-void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
-	cJSON *root = cJSON_CreateObject();
-	cJSON *data = cJSON_CreateObject();
-	char *output;
-
-	cJSON_AddTrueToObject( root, "success" );
-	cJSON_AddStringToObject( root, "data_type", "telemetry" );
-	cJSON_AddItemToObject( root, "data", data );
-
-	cJSON_AddStringToObject( data, "computer_message", telemetry_data.computer_message );
-	cJSON_AddNumberToObject( data, "mission_time", telemetry_data.mission_time );
-	cJSON_AddStringToObject( data, "current_time_gmt", telemetry_data.current_time_gmt );
-
-	cJSON_AddNumberToObject( data, "current_fuel_mass", telemetry_data.current_fuel_mass );
-	cJSON_AddNumberToObject( data, "total_mass", telemetry_data.total_mass );
-	cJSON_AddNumberToObject( data, "thrust_newtons", telemetry_data.thrust_newtons );
-	cJSON_AddNumberToObject( data, "current_acceleration", telemetry_data.current_acceleration );
-	cJSON_AddNumberToObject( data, "current_gforce", telemetry_data.current_gforce );
-	cJSON_AddNumberToObject( data, "current_distance", telemetry_data.current_distance );
-	cJSON_AddNumberToObject( data, "current_velocity", telemetry_data.current_velocity );
-	cJSON_AddNumberToObject( data, "current_vertical_velocity", telemetry_data.current_vertical_velocity );
-	cJSON_AddNumberToObject( data, "current_horizontal_velocity", telemetry_data.current_horizontal_velocity );
-	cJSON_AddNumberToObject( data, "current_fuel_burn", telemetry_data.current_fuel_burn );
-	cJSON_AddNumberToObject( data, "current_thrust", telemetry_data.current_thrust );
-	cJSON_AddNumberToObject( data, "current_altitude", telemetry_data.current_altitude );
-	cJSON_AddNumberToObject( data, "total_distance", telemetry_data.total_distance );
-	cJSON_AddNumberToObject( data, "last_velocity", telemetry_data.last_velocity );
-
-	cJSON_AddNumberToObject( data, "ascending_time", telemetry_data.ascending_time );
-
-	cJSON_AddNumberToObject( data, "max_q_achieved", telemetry_data.max_q_achieved );
-	cJSON_AddNumberToObject( data, "current_dynamic_pressure", telemetry_data.current_dynamic_pressure );
-
-	cJSON_AddNumberToObject( data, "stable_orbit_achieved", telemetry_data.stable_orbit_achieved );
-	cJSON_AddNumberToObject( data, "launch_escape_tower_ready", telemetry_data.launch_escape_tower_ready );
-
-	if( auto_pilot_enabled == 1 ) {
-		cJSON_AddTrueToObject( data, "auto_pilot_enabled" );
-	} else {
-		cJSON_AddFalseToObject( data, "auto_pilot_enabled" );
-	}
-
-	cJSON_AddNumberToObject( data, "pitch", telemetry_data.pitch );
-	cJSON_AddNumberToObject( data, "dest_pitch", telemetry_data.dest_pitch );
-	cJSON_AddNumberToObject( data, "roll", telemetry_data.roll );
-	cJSON_AddNumberToObject( data, "dest_roll", telemetry_data.dest_roll );
-	cJSON_AddNumberToObject( data, "yaw", telemetry_data.yaw );
-
-	if( holddown_arms_released == 0 ) {
-		cJSON_AddFalseToObject( data, "holddown_arms_released" );
-	} else {
-		cJSON_AddTrueToObject( data, "holddown_arms_released" );
-	}
-
-	if( countdown_in_progress == 0 ) {
-		cJSON_AddFalseToObject( data, "countdown_in_progress" );
-	} else {
-		cJSON_AddTrueToObject( data, "countdown_in_progress" );
-	}
-
-	cJSON_AddStringToObject( data, "destination", telemetry_data.destination );
-	cJSON_AddNumberToObject( data, "destination_altitude", telemetry_data.destination_altitude );
-
-	cJSON_AddNumberToObject( data, "internal_guidance_engaged", telemetry_data.internal_guidance_engaged );
-	cJSON_AddNumberToObject( data, "main_engine_engaged", telemetry_data.main_engine_engaged );
-
-	cJSON_AddNumberToObject( data, "pitch_program_engaged", telemetry_data.pitch_program_engaged );
-	cJSON_AddNumberToObject( data, "roll_program_engaged", telemetry_data.roll_program_engaged );
-	cJSON_AddNumberToObject( data, "yaw_program_engaged", telemetry_data.yaw_program_engaged );
-
-	cJSON_AddNumberToObject( data, "s_ic_fuel", telemetry_data.s_ic_fuel );
-	cJSON_AddNumberToObject( data, "s_ic_attached", telemetry_data.s_ic_attached );
-	cJSON_AddNumberToObject( data, "s_ic_thrust", telemetry_data.s_ic_thrust );
-	cJSON_AddNumberToObject( data, "s_ic_burn_time", telemetry_data.s_ic_burn_time );
-	cJSON_AddNumberToObject( data, "s_ic_center_engine_available", telemetry_data.s_ic_center_engine_available );
-
-	cJSON_AddNumberToObject( data, "s_ii_fuel", telemetry_data.s_ii_fuel );
-	cJSON_AddNumberToObject( data, "s_ii_attached", telemetry_data.s_ii_attached );
-	cJSON_AddNumberToObject( data, "s_ii_thrust", telemetry_data.s_ii_thrust );
-	cJSON_AddNumberToObject( data, "s_ii_burn_time", telemetry_data.s_ii_burn_time );
-	cJSON_AddNumberToObject( data, "s_ii_center_engine_available", telemetry_data.s_ii_center_engine_available );
-
-	cJSON_AddNumberToObject( data, "s_ivb_fuel", telemetry_data.s_ivb_fuel );
-	cJSON_AddNumberToObject( data, "s_ivb_attached", telemetry_data.s_ivb_attached );
-	cJSON_AddNumberToObject( data, "s_ivb_thrust", telemetry_data.s_ivb_thrust );
-	cJSON_AddNumberToObject( data, "s_ivb_burn_time", telemetry_data.s_ivb_burn_time );
-	cJSON_AddNumberToObject( data, "s_ivb_center_engine_available", telemetry_data.s_ivb_center_engine_available );
-
-	output = cJSON_Print( root );
-
-	strncpy( dst, output, dst_len );
-
-	cJSON_Delete( root );
-	root = NULL;
-
-	free( output );
-	output = NULL;
-}
-
-void TELEMETRY_send_ondemand_data( CONNECTED_CLIENT *client) {
-	char *output;
-
-	output = ( char * )calloc( BIG_BUFF_SIZE, sizeof( char ) );
-
-	TELEMETRY_prepare_data( output, BIG_BUFF_SIZE );
-	SOCKET_send( &communication_session_, client, output, -1 );
-
-	free( output );
-	output = NULL;
-}
-/*
-void* TELEMETRY_send_live_data(void* data)
-Funkcja przesyła do wszystkich podłączonych klientów informacje o telemetrii. */
-void* TELEMETRY_send_live_data( void* data ) {
-	int i;
-
-	while(1) {
-		Sleep(200);
-		for( i = 0; i < MAX_CLIENTS; i++ ) {
-			TELEMETRY_update();
-			if(connected_clients[ i ].socket_descriptor > 0 ) {
-				if( connected_clients[ i ].authorized == 1 && connected_clients[ i ].binded == 1 ) {
-					TELEMETRY_send_ondemand_data( &connected_clients[ i ] );
-				}
-			}
-		}
+		Sleep( 10 );
 	}
 }
 
 void MAIN_COMPUTER_init( void ) {
-
 	vDEVICE device;
 	vCOMMAND command;
 	int value;
@@ -279,9 +87,11 @@ void MAIN_COMPUTER_init( void ) {
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
-	pitch_modifier = ( (double)rand()/(double)RAND_MAX ) / 1380;
+	time_tick = ( time_interval * 0.001 );
+	telemetry_data.mission_time = -20.0;
+	AUTOPILOT_init();
 
-
+	MAIN_FLIGHT_STATUS = LAUNCH_FROM_EARTH;
 	/* Uruchomienie sieci */
 	SOCKET_main();
 
@@ -362,7 +172,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case ATTACH : {
-						if( current_altitude > 0 ) {
+						if( telemetry_data.current_altitude > 0 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC ATTACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
@@ -378,7 +188,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DETACH : {
-						if( current_altitude == 0 ) {
+						if( telemetry_data.current_altitude == 0 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
@@ -394,7 +204,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case CENTER_ENGINE_CUTOFF : {
-						if( system_s1.center_engine_available == 1 && current_altitude > 0 ) {
+						if( system_s1.center_engine_available == 1 && telemetry_data.current_altitude > 0 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s1.center_engine_available = 0;
 							success = 1;
@@ -427,7 +237,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case ATTACH : {
-						if( current_altitude > 0 ) {
+						if( telemetry_data.current_altitude > 0 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-II ATTACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
@@ -443,7 +253,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DETACH : {
-						if( current_altitude == 0 ) {
+						if( telemetry_data.current_altitude == 0 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-II DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
@@ -459,7 +269,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case CENTER_ENGINE_CUTOFF : {
-						if( system_s2.center_engine_available == 1 && current_altitude > 0 ) {
+						if( system_s2.center_engine_available == 1 && telemetry_data.current_altitude > 0 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
 							system_s2.center_engine_available = 0;
 							success = 1;
@@ -492,7 +302,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case ATTACH : {
-						if( current_altitude > 0 ) {
+						if( telemetry_data.current_altitude > 0 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB ATTACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
@@ -508,7 +318,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case DETACH : {
-						if( current_altitude == 0 ) {
+						if( telemetry_data.current_altitude == 0 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
@@ -524,7 +334,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} break;
 
 					case RESTART : {
-						if( current_system->id == system_s3.id && current_altitude > 0 ) {
+						if( current_system->id == system_s3.id && telemetry_data.current_altitude > 0 ) {
 							system_s3.burn_start = 0;
 							system_s3.burn_time = 0;
 							success = 1;
@@ -684,7 +494,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case ROLL_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -706,7 +516,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case ROLL_MOD : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -728,7 +538,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case YAW_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -750,7 +560,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case YAW_MOD : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || current_altitude <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -772,14 +582,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case LET : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ( current_altitude <= 0 || launch_escape_tower_ready == 0 ) ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ( telemetry_data.current_altitude <= 0 || telemetry_data.launch_escape_tower_ready == 0 ) ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO ENGAGE LAUNCH ESCAPE TOWER SYSTEM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
 					case JETTISON : {
-						launch_escape_tower_ready = 0;
+						telemetry_data.launch_escape_tower_ready = 0;
 						system_s3.instrument_mass -= 4200;
 						success = 1;
 						strncpy( message, "LAUNCH ESCAPE TOWER JETTISONED", BIG_BUFF_SIZE );
@@ -792,12 +602,12 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 			switch( command ) {
 				default : /* Nic */ break;
 				case START : {
-					auto_pilot_enabled = 1;
+					telemetry_data.auto_pilot_enabled = 1;
 					success = 1;
 					strncpy( message, "AUTOPILOT IS ON", BIG_BUFF_SIZE );
 				} break;
 				case STOP : {
-					auto_pilot_enabled = 0;
+					telemetry_data.auto_pilot_enabled = 0;
 					success = 1;
 					strncpy( message, "AUTOPILOT IS OFF", BIG_BUFF_SIZE );
 				} break;
@@ -808,8 +618,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 			switch( command ) {
 				default : /* Nic */ break;
 				case STOP : {
-					if( holddown_arms_released == 0 ) {
-						holddown_arms_released = 1;
+					if( telemetry_data.holddown_arms_released == 0 ) {
+						telemetry_data.holddown_arms_released = 1;
 						success = 1;
 						strncpy( message, "HOLDDOWN ARMS RELEASED", BIG_BUFF_SIZE );
 					} else {
@@ -824,29 +634,29 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 			switch( command ) {
 				default : /* Nic */ break;
 				case START : {
-					if( countdown_in_progress == 1 ) {
+					if( telemetry_data.countdown_in_progress == 1 ) {
 						success = 0;
 						strncpy( message, "ERROR: COUNTDOWN IS IN PROGRESS ALREADY", BIG_BUFF_SIZE );
 					} else {
-						countdown_in_progress = 1;
+						telemetry_data.countdown_in_progress = 1;
 						success = 1;
 						strncpy( message, "COUNTDOWN IS CONTINUED", BIG_BUFF_SIZE );
 						if( computing_all == 0 ) {
-							pthread_create(&sthread, NULL, run_simulation, NULL );
+							pthread_create(&sthread, NULL, SIMULATION_progress, NULL );
 							computing_all = 1;
 						}
 					}
 				} break;
 				case STOP : {
-					if( countdown_in_progress == 0 ) {
+					if( telemetry_data.countdown_in_progress == 0 ) {
 						success = 0;
 						strncpy( message, "ERROR: COUNTDOWN IS ON HOLD ALREADY", BIG_BUFF_SIZE );
 					} else {
-						if( mission_time > -8 ) {
+						if( telemetry_data.mission_time > -8 ) {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO HOLD COUNTDOWN. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						} else {
-							countdown_in_progress = 0;
+							telemetry_data.countdown_in_progress = 0;
 							success = 1;
 							strncpy( message, "COUNTDOWN IS ON HOLD", BIG_BUFF_SIZE );
 						}
@@ -872,26 +682,26 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
 
-double get_dynamic_pressure_force( double altitude ) {
+double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 	double current_temperature = 288.15 - (0.0065 * altitude );
 	long double gas_constant = 8.3144621;
 	double current_atmospheric_pressure = normal_atmospheric_pressure * exp( ( -1 * ( 0.0289644 * CELESTIAL_OBJECT_get_gravity_value( AO_current, altitude ) * altitude ) ) / (gas_constant * current_temperature ) );
 	double current_air_destiny = current_atmospheric_pressure / ( gas_constant * current_temperature );
-	double dynamic_pressure = ( 0.5 * current_air_destiny) * pow( last_velocity, 2 );
+	double dynamic_pressure = ( 0.5 * current_air_destiny) * pow( telemetry_data.last_velocity, 2 );
 	double result = dynamic_pressure;
 
-	if( max_q_achieved == 1 ) {
+	if( telemetry_data.max_q_achieved == 1 ) {
 		if( round( result ) == 0 ) {
 			return round( result );
 		}
 	} else {
-		if( result >= current_dynamic_pressure ) {
-			current_dynamic_pressure = result;
+		if( result >= telemetry_data.current_dynamic_pressure ) {
+			telemetry_data.current_dynamic_pressure = result;
 			return round( result );
 		} else {
-			max_q_achieved = 1;
+			telemetry_data.max_q_achieved = 1;
 			strncpy( telemetry_data.computer_message, "MAXIMUM DYNAMIC PRESSURE", STD_BUFF_SIZE );
-			current_dynamic_pressure = round( current_dynamic_pressure );
+			telemetry_data.current_dynamic_pressure = round( telemetry_data.current_dynamic_pressure );
 			return current_dynamic_pressure;
 		}
 	}
@@ -899,168 +709,7 @@ double get_dynamic_pressure_force( double altitude ) {
 	return ( result >= 0 ? result : -1 );
 }
 
-double get_pitch_step( void ) {
-	int seconds = round(pitch_program.running_time);
-	double result = 0.0;
-
-	if(seconds >= 1 && seconds < 30) {
-		result = 0.8965517;
-	}
-	if(seconds >= 30 && seconds < 70) {
-		result = 0.5212500;
-	}
-	if(seconds >= 70 && seconds < 130 ) {
-		result = 0.3908333;
-	}
-	if(seconds >= 130 && seconds < 210) {
-		result = -0.1562500;
-	}
-	if(seconds >= 210 && seconds < 360) {
-		result = 0.0975067;
-	}
-	if(seconds >= 360 && seconds < 510) {
-		result = 0.0487867;
-	}
-	if(seconds >= 510 && seconds < 590) {
-		result = 0.0194500;
-	}
-	if(seconds >= 590 && seconds < 670) {
-		result = 0.1262500;
-	}
-
-	return ( result + pitch_modifier );
-}
-
-double get_roll_step( void ) {
-	return 0.94;
-}
-
-double get_yaw_step( void ) {
-	if( yaw_program.current_value >= yaw_program.dest_value ) {
-		liftoff_yaw_achieved = 1;
-	}
-
-	if( current_altitude < 130 && liftoff_yaw_achieved == 0 ) {
-		return 0.15625;
-	} else if( current_altitude > 130 ) {
-		return -0.10625;
-	}
-
-	return 0;
-}
-
-void auto_pilot( double real_second ) {
-	int second = round( real_second );
-
-	if( stable_orbit_achieved == 1 ) {
-		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
-			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-		}
-		return;
-	}
-
-	if( yaw_program.current_value <= 0 && liftoff_yaw_achieved == 1 && yaw_program.running == 1 ) {
-		EXEC_COMMAND( YAW_PROGRAM, STOP, 0 );
-	}
-
-	if( ( 90 - roll_program.current_value ) <= roll_program.dest_value && roll_program.running == 1 ) {
-		EXEC_COMMAND( ROLL_PROGRAM, STOP, 0 );
-	}
-
-	if( pitch_program.current_value >= pitch_program.dest_value && pitch_program.running == 1 ) {
-		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
-	}
-
-	if( system_s1.center_engine_available == 1 && telemetry_data.current_velocity >= 1970 ) {
-		EXEC_COMMAND( S1, CENTER_ENGINE_CUTOFF, 0 );
-	}
-
-	if( telemetry_data.current_velocity >= 2750 && system_s1.attached == 1 ) {
-		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-		EXEC_COMMAND( S1, DETACH, 0 );
-	}
-
-	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5678 ) {
-		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
-	}
-
-	if( telemetry_data.current_velocity >= 7000 && system_s2.attached == 1 ) {
-		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-		EXEC_COMMAND( S2, DETACH, 0 );
-	}
-
-	if( current_system->id == 2 && ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60  && telemetry_data.current_velocity >= 6280 ) {
-		EXEC_COMMAND( THRUST, DECREASE, 20 );
-	}
-
-	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4 ) {
-		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-		}
-	}
-
-	if( current_system->id == system_s3.id && system_s3.attached == 1 && system_s2.attached == 0 && system_s2.burn_start > 0 && ( telemetry_data.mission_time - system_s2.staging_time ) >= 4 ) {
-		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-		}
-	}
-
-	switch( second ) {
-		default : /* Nic */ break;
-		case -10 : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 ) {
-				EXEC_COMMAND( INTERNAL_GUIDANCE, START, 0 );
-			}
-		} break;
-		case -8 : {
-			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
-				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-			}
-		} break;
-		case 0 : {
-			if( holddown_arms_released == 0 ) {
-				EXEC_COMMAND( HOLDDOWN_ARMS, STOP, 0 );
-			}
-		} break;
-		case 2 : {
-			if( yaw_program.running == 0 ) {
-				EXEC_COMMAND( YAW_PROGRAM, START, 0 );
-			}
-		} break;
-
-		case 13 : {
-			if( roll_program.running == 0 ) {
-				EXEC_COMMAND( ROLL_PROGRAM, START, 0 );
-			}
-		} break;
-
-		case 31 : {
-			if( pitch_program.running == 0 ) {
-				EXEC_COMMAND( PITCH_PROGRAM, START, 0 );
-			}
-		} break;
-
-		case 197 : {
-			if( launch_escape_tower_ready == 1 ) {
-				EXEC_COMMAND( LET, JETTISON, 0 );
-			}
-		} break;
-
-		case 500 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60 ) {
-				EXEC_COMMAND( THRUST, DECREASE, 20 );
-			}
-		} break;
-	}
-}
-
-void instrument_unit_calculations( void ) {
-
+void PHYSICS_instrument_unit_calculations( void ) {
 	/* Informacje o postępie lotu*/
 	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
@@ -1072,80 +721,59 @@ void instrument_unit_calculations( void ) {
 		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
 	}
 
-	if( stable_orbit_achieved == 0 && ( current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
+	if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
 		strncpy( telemetry_data.computer_message, "PREPARE TO ORBIT INSERTION", STD_BUFF_SIZE );
 	}
 
 	/* CRASH */
-	if( current_velocity != 0 && current_altitude <= 0 ) {
+	if( telemetry_data.current_velocity != 0 && telemetry_data.current_altitude <= 0 ) {
 		strncpy( telemetry_data.computer_message, "YOU DIED", STD_BUFF_SIZE );
-		auto_pilot_enabled = 0;
+		telemetry_data.auto_pilot_enabled = 0;
 		/* TODO */
 	}
 
-	if( holddown_arms_released == 0 ) {
-		if( current_acceleration >= 3 ) {
+	if( telemetry_data.holddown_arms_released == 0 ) {
+		if( telemetry_data.current_acceleration >= 3 ) {
 			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 			strncpy( telemetry_data.computer_message, "AUTOMATIC ENGINE DISENGAGE", STD_BUFF_SIZE );
 		}
 	}
 
-	if( current_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, current_altitude ) ) {
-		if( stable_orbit_achieved == 0 ) {
-			stable_orbit_achieved = 1;
+	if( telemetry_data.current_velocity >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
+		if( telemetry_data.stable_orbit_achieved == 0 ) {
+			telemetry_data.stable_orbit_achieved = 1;
 			strncpy( telemetry_data.computer_message, "ORBIT INSERTION", STD_BUFF_SIZE );
-			if( auto_pilot_enabled == 1 ) {
-				auto_pilot( mission_time );
-			}
+			MAIN_FLIGHT_STATUS = STABLE_ORBIT;
 		}
 	}
 }
 
-void compute_launch_physics( void ) {
-	double time_tick = ( time_interval * 0.001 );
-	double dynamic_pressure = 0;
-	double dynamic_pressure_newtons = 0;
-	long double fw = 0;
-	long double real_fw = 0;
-	double rad2deg = pitch_program.current_value * _PI / 180;
-	double pitch_mod = ( 100 - pitch_program.current_value ) / 100;
+void PHYSICS_shared_calculations( void ) {
+	double pitch_mod = ( telemetry_data.stable_orbit_achieved ? 0 : ( ( 100 - pitch_program.current_value ) / 100 ) );
 
-	current_fuel_mass = 0;
-	total_mass = 0;
-	thrust_newtons = 0;
-	current_acceleration = 0;
-	current_distance = 0;
-	current_velocity = 0;
-	current_vertical_velocity = 0;
-	current_horizontal_velocity = 0;
-	current_fuel_burn = 0;
-	current_thrust = ROCKET_ENGINE_get_thrust( &internal_guidance );
+	fw = 0;
+	real_fw = 0;
+	rad2deg = pitch_program.current_value * _PI / 180;
+	telemetry_data.current_fuel_mass = 0;
+	telemetry_data.total_mass = 0;
+	telemetry_data.thrust_newtons = 0;
+	telemetry_data.current_acceleration = 0;
+	telemetry_data.current_distance = 0;
+	telemetry_data.current_velocity = 0;
+	telemetry_data.current_vertical_velocity = 0;
+	telemetry_data.current_horizontal_velocity = 0;
+	telemetry_data.current_fuel_burn = 0;
+	telemetry_data.current_thrust = ROCKET_ENGINE_get_thrust( &internal_guidance );
 
-	if( ROCKET_STAGE_get_attached( &system_s1 ) == 0) {
-		if( ROCKET_STAGE_get_fuel( &system_s1 ) > 0 ) {
-			ROCKET_STAGE_set_fuel( &system_s1, ( system_s1.fuel - ( system_s1.max_fuel_burn / time_mod / 10 ) ), 0 );
-		}
-		if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
-			current_system = &system_s2;
-		}
-	}
+	current_system = ROCKET_STAGE_get_active();
 
-	if( ROCKET_STAGE_get_attached( &system_s2 ) == 0) {
-		if( ROCKET_STAGE_get_fuel( &system_s2 ) > 0 ) {
-			ROCKET_STAGE_set_fuel( &system_s2, ( system_s2.fuel - ( system_s2.max_fuel_burn / time_mod / 10 ) ), 0 );
-		}
-		if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
-			current_system = &system_s3;
-		}
-	}
-
-	if( ( ROCKET_STAGE_get_attached( &system_s1 ) == 0 ) && ( ROCKET_STAGE_get_attached( &system_s2 ) == 0 ) && ( ROCKET_STAGE_get_attached( &system_s3 ) == 0 ) ) {
-		current_system = &system_null;
+	if( telemetry_data.countdown_in_progress == 1 ) {
+		telemetry_data.mission_time += time_tick;
 	}
 
 	if( current_system->burn_start == 0 ) {
-		if( current_thrust > 0 ) {
+		if( telemetry_data.current_thrust > 0 ) {
 			current_system->burn_start = get_current_epoch();
 		}
 	} else {
@@ -1154,245 +782,179 @@ void compute_launch_physics( void ) {
 		}
 	}
 
-	current_fuel_mass = ROCKET_STAGE_get_fuel( current_system );
+	telemetry_data.current_fuel_mass = ROCKET_STAGE_get_fuel( current_system );
 
 	if( ROCKET_STAGE_get_attached( &system_s1 ) == 1 ) {
-		total_mass += ROCKET_STAGE_get_total_mass( &system_s1 );
+		telemetry_data.total_mass += ROCKET_STAGE_get_total_mass( &system_s1 );
 	}
 
 	if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
-		total_mass += ROCKET_STAGE_get_total_mass( &system_s2 );
+		telemetry_data.total_mass += ROCKET_STAGE_get_total_mass( &system_s2 );
 	}
 
 	if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
-		total_mass += ROCKET_STAGE_get_total_mass( &system_s3 );
+		telemetry_data.total_mass += ROCKET_STAGE_get_total_mass( &system_s3 );
 	}
 
-	if( countdown_in_progress == 1 ) {
-		if( current_system->id == 1 && current_system->burn_time < 15 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
-			if( current_thrust < 100 ) {
-				if( EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod )->success == 0) {
-					EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
-				}
-			}
-		}
-		mission_time += time_tick;
-	}
-
-	if( auto_pilot_enabled == 1 ) {
-		auto_pilot( mission_time );
-	}
-
-	if( current_altitude == 0 ) {
-		ascending_time = 0;
-	}
-
-	if( current_fuel_mass > 0 ) {
+	if( telemetry_data.current_fuel_mass > 0 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 0 ) {
-			current_fuel_burn = ( ( current_system->max_fuel_burn * current_thrust ) / 100 ) / time_mod;
-			ROCKET_STAGE_set_fuel( current_system, ( current_fuel_mass - current_fuel_burn), 1 );
+			telemetry_data.current_fuel_burn = ( ( current_system->max_fuel_burn * telemetry_data.current_thrust ) / 100 ) / time_mod;
+			ROCKET_STAGE_set_fuel( current_system, ( telemetry_data.current_fuel_mass - telemetry_data.current_fuel_burn), 1 );
 		}
 	} else {
-		current_fuel_mass = 0;
+		telemetry_data.current_fuel_mass = 0;
 	}
 
-	if( current_fuel_burn > 0 ) {
+	if( telemetry_data.current_fuel_burn > 0 ) {
 		if( current_system->variable_thrust == 1 && ( current_system->initial_thrust < current_system->max_thrust_n ) ) {
-			if( current_thrust == 100 ) {
+			if( telemetry_data.current_thrust == 100 ) {
 				current_system->initial_thrust += ( current_system->thrust_step ) / ( time_mod );
-				thrust_newtons = ( long double )( ( current_system->initial_thrust * current_thrust ) / 100 );
+				telemetry_data.thrust_newtons = ( long double )( ( current_system->initial_thrust * telemetry_data.current_thrust ) / 100 );
 			} else {
-				thrust_newtons = ( long double )( current_thrust * current_system->initial_thrust ) / 100;
+				telemetry_data.thrust_newtons = ( long double )( telemetry_data.current_thrust * current_system->initial_thrust ) / 100;
 			}
 		} else {
-			thrust_newtons = ( long double )( current_thrust * current_system->max_thrust_n ) / 100;
+			telemetry_data.thrust_newtons = ( long double )( telemetry_data.current_thrust * current_system->max_thrust_n ) / 100;
 		}
 	} else {
-		thrust_newtons = 0;
-	}
-
-	if( thrust_newtons > 10 ) {
-		if( current_system->id != 3 ) {
-			thrust_newtons -= ( rand() % (int)( thrust_newtons * 0.1 ) / time_mod );
-		} else {
-			thrust_newtons += ( rand() % (int)( thrust_newtons * 0.01 ) / time_mod );
-		}
+		telemetry_data.thrust_newtons = 0;
 	}
 
 	if( ROCKET_STAGE_get_attached( current_system ) == 1 ) {
-		current_system->current_thrust = thrust_newtons;
+		current_system->current_thrust = telemetry_data.thrust_newtons;
 	}
-
-	if( ROCKET_ENGINE_get_thrust( &internal_guidance ) >= 60 ) {
-		dynamic_pressure = get_dynamic_pressure_force( current_altitude );
-	}
-
-	dynamic_pressure_newtons = dynamic_pressure * 4.44;
 
 	fw = 0;
-	real_fw = thrust_newtons - ( total_mass * CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) );
+	real_fw = telemetry_data.thrust_newtons - ( telemetry_data.total_mass * CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) );
 
-	if( max_q_achieved == 0 ) {
+	if( telemetry_data.max_q_achieved == 0 ) {
 		fw = real_fw;
 	} else {
-		fw = thrust_newtons - ( total_mass * ( CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude) / (time_mod) ) );
+		fw = telemetry_data.thrust_newtons - ( telemetry_data.total_mass * ( CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude) / (time_mod) ) );
 	}
 
-	current_acceleration = ( fw / total_mass );
+	telemetry_data.current_acceleration = ( fw / telemetry_data.total_mass );
 
-	if( current_acceleration < 0 && current_thrust == 0 && stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4) {
-		current_acceleration = ( real_fw / total_mass );
+	if( telemetry_data.current_acceleration < 0 && telemetry_data.current_thrust == 0 && telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4) {
+		telemetry_data.current_acceleration = ( real_fw / telemetry_data.total_mass );
 	}
 
-	if( current_acceleration < 0 && current_altitude <= 0 ) {
-		current_acceleration = 0;
+	if( telemetry_data.current_acceleration < 0 && telemetry_data.current_altitude <= 0 ) {
+		telemetry_data.current_acceleration = 0;
 	}
 
-	if( stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 150000 ) {
-		if( current_acceleration < 0 ) {
-			current_acceleration = 0;
+	if( telemetry_data.stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 100000 ) {
+		if( telemetry_data.current_acceleration < 0 ) {
+			telemetry_data.current_acceleration = 0;
 		}
 	}
 
-	if( holddown_arms_released == 1 ) {
+	if( telemetry_data.holddown_arms_released == 1 ) {
 		if( pitch_program.current_value < 90 || pitch_program.current_value > 270 ) {
-			current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
+			telemetry_data.current_velocity = telemetry_data.last_velocity + ( telemetry_data.current_acceleration / ( time_mod ) );
 		} else if( pitch_program.current_value > 90 && pitch_program.current_value < 270 ) {
-			if( current_acceleration > 0 ) {
-				current_velocity = last_velocity + ( current_acceleration / ( time_mod ) );
+			if( telemetry_data.current_acceleration > 0 ) {
+				telemetry_data.current_velocity = telemetry_data.last_velocity + ( telemetry_data.current_acceleration / ( time_mod ) );
 			} else {
-				current_velocity = last_velocity - ( current_acceleration / ( time_mod ) );
+				telemetry_data.current_velocity = telemetry_data.last_velocity - ( telemetry_data.current_acceleration / ( time_mod ) );
 			}
 		}
 	}
 
 	if( pitch_program.running == 1 ) {
 		pitch_program.running_time += time_tick;
-		pitch_program.current_value += get_pitch_step() / time_mod;
+		pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
 	}
 
 	if( pitch_program.current_value > 0 ) {
 		rad2deg = pitch_program.current_value * _PI / 180;
-		current_vertical_velocity = round( ( (last_velocity + current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, current_altitude ) ) * cos( rad2deg ) );
+		telemetry_data.current_vertical_velocity = round( ( ( telemetry_data.last_velocity + telemetry_data.current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) ) * cos( rad2deg ) );
 
-		if( current_vertical_velocity == 0 ) {
-			current_horizontal_velocity = current_velocity;
+		if( telemetry_data.current_vertical_velocity == 0 ) {
+			telemetry_data.current_horizontal_velocity = telemetry_data.current_velocity;
 		} else {
-			current_horizontal_velocity = round( last_velocity * sin( rad2deg ) );
+			telemetry_data.current_horizontal_velocity = round( telemetry_data.last_velocity * sin( rad2deg ) );
 		}
 	} else {
-		current_vertical_velocity = current_velocity;
-	}
-
-	if( current_velocity > 0 ) {
-		ascending_time += time_tick;
-	} else {
-		ascending_time = -1;
+		telemetry_data.current_vertical_velocity = telemetry_data.current_velocity;
 	}
 
 	if( roll_program.running == 1 ) {
-		roll_program.current_value += get_roll_step() / time_mod;
+		roll_program.current_value += _AUTOPILOT_get_roll_step() / time_mod;
 	}
 
 	if( yaw_program.running == 1 ) {
-		yaw_program.current_value += get_yaw_step() / time_mod;
+		yaw_program.current_value += _AUTOPILOT_get_yaw_step() / time_mod;
 	}
 
-	current_distance = current_velocity;
+	telemetry_data.current_distance = telemetry_data.current_velocity;
 
-	if( current_distance != 0 && current_acceleration != 0 ) {
+	if( telemetry_data.current_distance != 0 && telemetry_data.current_acceleration != 0 ) {
 		if( pitch_program.current_value < 90 ) {
 			if( current_system->id == 1 ) {
 				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
-				current_altitude += ( ( current_distance ) * pitch_mod ) / ( time_mod );
+				telemetry_data.current_altitude += ( ( telemetry_data.current_distance ) * pitch_mod ) / ( time_mod );
 			} else {
 				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
-				current_altitude += ( ( current_vertical_velocity ) * pitch_mod ) / ( time_mod );
+				telemetry_data.current_altitude += ( ( telemetry_data.current_vertical_velocity ) * pitch_mod ) / ( time_mod );
 			}
 		} else if( pitch_program.current_value > 90 ) {
 			if( current_system->id == 1 ) {
 				pitch_mod = ( 100 - pitch_program.current_value ) / 100;
-				current_altitude -= ( ( ( current_distance ) ) * pitch_mod ) / ( time_mod );
+				telemetry_data.current_altitude -= ( ( ( telemetry_data.current_distance ) ) * pitch_mod ) / ( time_mod );
 			} else {
 				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
-				current_altitude -= abs( ( ( current_vertical_velocity ) * pitch_mod ) / ( time_mod ) );
+				telemetry_data.current_altitude -= abs( ( ( telemetry_data.current_vertical_velocity ) * pitch_mod ) / ( time_mod ) );
 			}
 		}
 	}
 
-	last_velocity = current_velocity;
+	telemetry_data.last_velocity = telemetry_data.current_velocity;
 
-	if( current_altitude > 0 ) {
-		total_distance += ( abs( current_distance ) / time_mod );
+	if( telemetry_data.current_altitude > 0 ) {
+		telemetry_data.total_distance += ( abs( telemetry_data.current_distance ) / time_mod );
 	} else {
-		last_velocity = 0;
+		telemetry_data.last_velocity = 0;
 	}
 
-	if( current_altitude < 0 ) {
-		current_altitude = -1;
+	if( telemetry_data.current_altitude < 0 ) {
+		telemetry_data.current_altitude = -1;
 	}
 
-	instrument_unit_calculations();
+	if( telemetry_data.auto_pilot_enabled == 1 ) {
+		AUTOPILOT_progress( telemetry_data.mission_time );
+	}
 }
 
-void TELEMETRY_update( void ) {
-	telemetry_data.ascending_time = ascending_time;
-	telemetry_data.current_acceleration = current_acceleration;
-	telemetry_data.current_gforce = round( current_acceleration / 10 );
-	telemetry_data.current_altitude = current_altitude;
-	telemetry_data.current_distance = current_distance;
-	telemetry_data.current_dynamic_pressure = current_dynamic_pressure;
-	telemetry_data.current_fuel_burn = current_fuel_burn;
-	telemetry_data.current_fuel_mass = current_fuel_mass;
-	telemetry_data.current_horizontal_velocity = current_horizontal_velocity;
-	telemetry_data.current_thrust = current_thrust;
-	telemetry_data.current_velocity = current_velocity;
-	telemetry_data.current_vertical_velocity = current_vertical_velocity;
-	telemetry_data.last_velocity = last_velocity;
-	telemetry_data.max_q_achieved = max_q_achieved;
-	telemetry_data.mission_time = mission_time;
-	strncpy( telemetry_data.current_time_gmt, get_actual_time(), TIME_BUFF_SIZE );
-	telemetry_data.thrust_newtons = thrust_newtons;
-	telemetry_data.total_distance = total_distance;
-	telemetry_data.total_mass = total_mass;
-	telemetry_data.pitch = pitch_program.current_value;
-	telemetry_data.dest_pitch = pitch_program.dest_value;
-	telemetry_data.roll = roll_program.current_value;
-	telemetry_data.dest_roll = roll_program.dest_value;
-	telemetry_data.yaw = yaw_program.current_value;
+void PHYSICS_launch_calculations( void ) {
+	double dynamic_pressure = 0;
+	double dynamic_pressure_newtons = 0;
 
-	telemetry_data.holddown_arms_released = holddown_arms_released;
-	telemetry_data.countdown_in_progress = countdown_in_progress;
+	if( telemetry_data.countdown_in_progress == 1 ) {
+		if( current_system->id == 1 && current_system->burn_time < 15 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
+			if( telemetry_data.current_thrust < 100 ) {
+				if( EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod )->success == 0) {
+					EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+				}
+			}
+		}
+	}
 
-	strncpy( telemetry_data.destination, AO_current->ground_destination, SMALL_BUFF_SIZE );
-	telemetry_data.destination_altitude = AO_current->ground_destination_altitude;
+	if(current_system->id == 2) {
+		if( ROCKET_STAGE_get_fuel( &system_s1 ) > 0 ) {
+			ROCKET_STAGE_set_fuel( &system_s1, ( system_s1.fuel - ( system_s1.max_fuel_burn / time_mod / 10 ) ), 0 );
+		}
+	}
 
-	telemetry_data.stable_orbit_achieved = stable_orbit_achieved;
-	telemetry_data.launch_escape_tower_ready = launch_escape_tower_ready;
+	if(current_system->id == 3) {
+		if( ROCKET_STAGE_get_fuel( &system_s2 ) > 0 ) {
+			ROCKET_STAGE_set_fuel( &system_s2, ( system_s2.fuel - ( system_s2.max_fuel_burn / time_mod / 10 ) ), 0 );
+		}
+	}
 
-	telemetry_data.internal_guidance_engaged = ROCKET_ENGINE_get_engaged( &internal_guidance );
-	telemetry_data.main_engine_engaged = ROCKET_ENGINE_get_engaged( &main_engine );
+	if( ROCKET_ENGINE_get_thrust( &internal_guidance ) >= 95 ) {
+		dynamic_pressure = _PHYSICS_get_dynamic_pressure_force( telemetry_data.current_altitude );
+	}
 
-	telemetry_data.auto_pilot_enabled = auto_pilot_enabled;
-	telemetry_data.pitch_program_engaged = pitch_program.running;
-	telemetry_data.roll_program_engaged = roll_program.running;
-	telemetry_data.yaw_program_engaged = yaw_program.running;
-
-	telemetry_data.s_ic_fuel = system_s1.fuel;
-	telemetry_data.s_ic_attached = ROCKET_STAGE_get_attached( &system_s1 );
-	telemetry_data.s_ic_thrust = system_s1.current_thrust;
-	telemetry_data.s_ic_burn_time = system_s1.burn_time;
-	telemetry_data.s_ic_center_engine_available = system_s1.center_engine_available;
-
-	telemetry_data.s_ii_fuel = system_s2.fuel;
-	telemetry_data.s_ii_attached = ROCKET_STAGE_get_attached( &system_s2 );
-	telemetry_data.s_ii_thrust = system_s2.current_thrust;
-	telemetry_data.s_ii_burn_time = system_s2.burn_time;
-	telemetry_data.s_ii_center_engine_available = system_s2.center_engine_available;
-
-	telemetry_data.s_ivb_fuel = system_s3.fuel;
-	telemetry_data.s_ivb_attached = ROCKET_STAGE_get_attached( &system_s3 );
-	telemetry_data.s_ivb_thrust = system_s3.current_thrust;
-	telemetry_data.s_ivb_burn_time = system_s3.burn_time;
-	telemetry_data.s_ivb_center_engine_available = system_s3.center_engine_available;
+	dynamic_pressure_newtons = dynamic_pressure * 4.44;
 }

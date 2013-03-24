@@ -9,6 +9,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #ifndef SPACECRAFT_COMPONENTS_H
 #define SPACECRAFT_COMPONENTS_H
 
+#include "server_shared.h"
+
 #define MAX_THRUST					100.0
 
 /**
@@ -62,6 +64,8 @@ short ROCKET_STAGE_get_attached( ROCKET_STAGE *rs );
 void ROCKET_STAGE_do_attach( ROCKET_STAGE *rs );
 void ROCKET_STAGE_do_detach( ROCKET_STAGE *rs );
 void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value, short do_mod );
+ROCKET_STAGE *ROCKET_STAGE_get_active( void );
+ROCKET_STAGE *ROCKET_STAGE_get_by_id( short id );
 
 /**
  Silnik
@@ -106,5 +110,11 @@ void PITCH_init( void );
 void ROLL_init( void );
 void YAW_init( void );
 void COMPUTER_PROGRAMS_init( void );
+
+/**
+ Główny silnik
+**/
+ROCKET_ENGINE internal_guidance;
+ROCKET_ENGINE main_engine;
 
 #endif

@@ -1,0 +1,14 @@
+=======NEW SERVER SESSION [24-03-2013 14:51:10]=======
+Service start path:
+C:\MARCIN\Programowanie\saturn-v\server\
+[24-03-2013 14:51:10] S-IC STAGE ATTACHED.
+[24-03-2013 14:51:10] S-IC STAGE PROPELLANT IS LOADED.
+[24-03-2013 14:51:10] S-II STAGE ATTACHED.
+[24-03-2013 14:51:10] S-II STAGE PROPELLANT IS LOADED.
+[24-03-2013 14:51:10] S-IVB STAGE ATTACHED.
+[24-03-2013 14:51:10] S-IVB STAGE PROPELLANT IS LOADED.
+[24-03-2013 14:51:10] AUTOPILOT IS ON.
+Waiting for socket server initialization...ok.
+Socket server is running:
+- Port: 1217.
+Communication Interface ready...

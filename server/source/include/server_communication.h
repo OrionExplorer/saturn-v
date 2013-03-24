@@ -2,17 +2,16 @@
 
 Projekt Saturn V Main Computer
 
-Plik: main_computer.h
+Plik: server_communication.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #ifndef MAIN_COMPUTER_H
 #define MAIN_COMPUTER_H
 
-#include "celestial_objects.h"
-#include "spacecraft_components.h"
+#include "server_shared.h"
 
-void MAIN_COMPUTER_init( void );
-INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int value );
+void SYS_MESSAGE_send_to_all( char *msg );
+void CHAT_send_to_all( char *msg, CONNECTED_CLIENT *client );
 
 #endif

@@ -108,6 +108,7 @@ typedef enum vCOMMAND						vCOMMAND;
 typedef enum vCONTROL_MODE					vCONTROL_MODE;
 typedef enum vCONNECTION_TYPE				vCONNECTION_TYPE;
 typedef enum vCONNECTION_STATUS				vCONNECTION_STATUS;
+typedef enum FLIGHT_STATUS					FLIGHT_STATUS;
 
 
 /* Struktura przechowuj¹ca informacjê zwrotn¹ z interpretera poleceñ */
@@ -135,7 +136,6 @@ struct TELEMETRY {
 	double					last_velocity;
 	double					mission_time;
 	char					current_time_gmt[ TIME_BUFF_SIZE ];
-	double					ascending_time;
 	short					max_q_achieved;
 	int						current_dynamic_pressure;
 	short					stable_orbit_achieved;
@@ -205,6 +205,7 @@ extern COMMUNICATION_SESSION			communication_session_;
 extern fd_set				master;
 char*						server_get_remote_hostname( COMMUNICATION_SESSION *communication_session );
 TELEMETRY					telemetry_data;
+FLIGHT_STATUS				MAIN_FLIGHT_STATUS;
 
 enum vCONTROL_MODE {
 	COMPUTER,
@@ -255,6 +256,12 @@ enum vCONNECTION_STATUS {
 	CDISCONNECTED,
 	CCONNECTED,
 	CPENDING
+};
+
+enum FLIGHT_STATUS {
+	LAUNCH_FROM_EARTH,
+	STABLE_ORBIT,
+	TRANSFER_ORBIT
 };
 
 /* Struktura przechowująca informacje o sockecie */

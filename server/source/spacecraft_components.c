@@ -56,6 +56,37 @@ void ROCKET_STAGE_set_fuel( ROCKET_STAGE *rs, long double value, short do_mod ) 
 	}
 }
 
+ROCKET_STAGE *ROCKET_STAGE_get_active( void ) {
+	if( ROCKET_STAGE_get_attached( &system_s1 ) == 0) {
+		if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
+			return &system_s2;
+		}
+	}
+
+	if( ROCKET_STAGE_get_attached( &system_s2 ) == 0) {
+		if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
+			return &system_s3;
+		}
+	}
+
+	if( ( ROCKET_STAGE_get_attached( &system_s1 ) == 0 ) && ( ROCKET_STAGE_get_attached( &system_s2 ) == 0 ) && ( ROCKET_STAGE_get_attached( &system_s3 ) == 0 ) ) {
+		return &system_null;
+	}
+
+	return &system_s1;
+}
+
+ROCKET_STAGE *ROCKET_STAGE_get_by_id( short id ) {
+	switch( id ) {
+		case 1 : { return &system_s1; } break;
+		case 2 : { return &system_s2; } break;
+		case 3 : { return &system_s3; } break;
+		default : { return &system_null; } break;
+	}
+
+	return &system_null;
+}
+
 /* Silnik */
 void ROCKET_ENGINE_do_engage( ROCKET_ENGINE *re ) {
 	re->engaged = 1;
