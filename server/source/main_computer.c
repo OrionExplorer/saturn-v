@@ -58,7 +58,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 10 );
+		Sleep( 100 );
 	}
 }
 
