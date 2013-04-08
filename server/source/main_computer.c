@@ -56,6 +56,9 @@ void *SIMULATION_progress( void ) {
 			default : break;
 		}
 
+		//printf("%f\t%f\n", _PHYSICS_get_orbit_eccentrity( 200000, 7850 ), _PHYSICS_get_orbit_semi_major_axis( 250000, 7900 ));
+		//printf("APOGEE: %f\tPERIGEE:%f\n", _PHYSICS_get_orbit_apogee( 6700000, 0.01 ), _PHYSICS_get_orbit_perigee( 6700000, 0.01 ));
+
 		PHYSICS_instrument_unit_calculations();
 
 		Sleep( 100 );
@@ -680,6 +683,22 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	}
 
 	return ( INTERPRETER_RESULT * )&interpreter_result;
+}
+
+double _PHYSICS_get_orbit_eccentrity( double altitude, double velocity ) {
+	return ( AO_current->radius + altitude ) * pow( velocity, 2 ) / ( 3.986005*pow( 10, 14 ) ) -1;
+}
+
+double _PHYSICS_get_orbit_semi_major_axis( double altitude, double velocity ) {
+	return ( 1 / ( 2 / ( AO_current->radius+altitude ) - pow( velocity, 2 ) / (3.986005*pow( 10,14 ) ) ) );
+}
+
+double _PHYSICS_get_orbit_perigee( double semi_major_axis, double eccentrity ) {
+	return semi_major_axis * ( 1 - eccentrity ) - AO_current->radius;
+}
+
+double _PHYSICS_get_orbit_apogee( double semi_major_axis, double eccentrity ) {
+	return semi_major_axis * ( 1 + eccentrity ) - AO_current->radius;
 }
 
 double _PHYSICS_get_dynamic_pressure_force( double altitude ) {

@@ -17,7 +17,7 @@ void CELESTIAL_OBJECTS_load( void ) {
 	strncpy( AO_Earth.name, "EARTH", SMALL_BUFF_SIZE );
 	AO_Earth.gravitation = 9.82;
 	AO_Earth.mass = (5.98 * pow( 10, 24 ));
-	AO_Earth.radius = 6378159;
+	AO_Earth.radius = 6378140;
 	AO_Earth.orbit_radius = 924375700;
 	strncpy( AO_Earth.ground_destination, "EPO", SMALL_BUFF_SIZE );
 	AO_Earth.ground_destination_altitude = 190756;
