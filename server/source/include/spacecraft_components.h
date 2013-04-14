@@ -43,6 +43,7 @@ struct ROCKET_STAGE {
 	double staging_time;
 	int dry_mass;
 	long double max_fuel;
+	int interstage_mass;
 	int instrument_mass;
 	int max_fuel_burn;
 	long int max_thrust_n;

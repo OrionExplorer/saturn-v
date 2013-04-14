@@ -16,6 +16,7 @@ function updateEl(id, val, callback) {
 
 	if(objId == undefined || objId == null) {
 		objId = document.getElementsByName(id);
+		if(!objId) { return; }
 		for(var i = 0; i < objId.length; i++) {
 			if(objId[i] && objId[i].type && objId[i].type == 'button') {
 				objId[i].value = val;

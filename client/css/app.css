@@ -1,5 +1,6 @@
 body {
 		background-color: black;
+		padding: 0px;
 }
 
 ul {margin:0; padding:0;}
@@ -25,8 +26,9 @@ input[type="button"] {
 	padding: 5px;
 	text-align: center;
 	text-shadow: 0 1px 0 #eee;
-	width: 100px; }
-	input[type="button"]:hover {
+	width: 100px; 
+}
+input[type="button"]:hover {
 		background-color: #dddddd;
 		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dddddd), color-stop(100%, #bbbbbb));
 		background-image: -webkit-linear-gradient(top, #dddddd, #bbbbbb);
@@ -37,16 +39,25 @@ input[type="button"] {
 		border: 1px solid #bbb;
 		border-bottom: 1px solid #999;
 		cursor: pointer;
-		text-shadow: 0 1px 0 #ddd; }
-	input[type="button"]:active {
+		text-shadow: 0 1px 0 #ddd;
+}
+input[type="button"]:active {
 		border: 1px solid #aaa;
 		border-bottom: 1px solid #888;
 		-webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
-		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee; }
+		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+}
+input[type="button"][disabled] {
+		border: 1px solid #aaa;
+		border-bottom: 1px solid #888;
+		-webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
+		color: #bfbfbf;
+}
 
 
 caption {
-		margin: 5px;
+		margin: 0px;
 		color: #999999;
 }
 
@@ -102,7 +113,7 @@ table, td {
 		font-family: Helvetica;
 		text-align: center;
 		/*width: auto;*/
-		-moz-border-radius: 5px;
+		-moz-border-radius: 3px;
 		padding: 3px;
 		table-layout:fixed;
 }​

@@ -243,6 +243,11 @@ function parseRemoteData(json) {
 	updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);
 	//updateEl('voyager7_mainEngine', (json.main_engine_engaged == 1 ? 'ON' : 'OFF' ));
 
+	//updateEl('voyager7_orbitAP', ( Math.round(json.orbit_apoapsis/100)/10)+' x '+(Math.round(json.orbit_periapsis/100)/10));
+	updateEl('voyager7_orbitA', Math.round(json.orbit_apoapsis/100)/10);
+	updateEl('voyager7_orbitP', Math.round(json.orbit_periapsis/100)/10);
+	updateEl('voyager7_orbitInclination', Math.round(json.orbit_inclination));
+
 	updateEl('voyager7_s1_fuel', Math.round(json.s_ic_fuel)/*+' KG'*/);
 	updateEl('voyager7_s1_burnTime', Math.round(json.s_ic_burn_time)/*+' S'*/);
 	updateEl('voyager7_s1_status', (json.s_ic_attached == 1 ? 'OPERATIONAL' : 'STAGED'));

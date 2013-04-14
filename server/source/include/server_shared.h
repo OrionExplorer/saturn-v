@@ -95,6 +95,9 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define NEW_USER_STR						"{\"success\":true,\"msg\":\"%s\",\"data_type\":\"new_user\"}\0"
 #define DEL_USER_STR						"{\"success\":true,\"msg\":\"%s\",\"data_type\":\"del_user\"}\0"
 
+#define DEG2RAD								( _PI / 180 )
+#define RAD2DEG								( 180 / _PI ) //_PI / 180
+
 extern char									app_path[ MAX_PATH_LENGTH ];
 extern char									app_auth[ SMALL_BUFF_SIZE ];
 
@@ -139,6 +142,11 @@ struct TELEMETRY {
 	short					max_q_achieved;
 	int						current_dynamic_pressure;
 	short					stable_orbit_achieved;
+	double					orbit_semi_major_axis;
+	double					orbit_eccentrity;
+	double					orbit_periapsis;
+	double					orbit_apoapsis;
+	double					orbit_inclination;
 	short					launch_escape_tower_ready;
 	double					pitch;
 	double					dest_pitch;
@@ -243,7 +251,8 @@ enum vCOMMAND {
 	NULL_THRUST,
 	INCREASE,
 	DECREASE,
-	JETTISON
+	JETTISON,
+	INTERSTAGE_JETTISON
 };
 
 enum vCONNECTION_TYPE {

@@ -31,7 +31,7 @@ int ROCKET_STAGE_get_fuel( ROCKET_STAGE *rs ) {
 }
 
 int ROCKET_STAGE_get_total_mass( ROCKET_STAGE *rs ) {
-	return ( rs->fuel + rs->dry_mass + rs->instrument_mass );
+	return ( rs->fuel + rs->dry_mass + rs->instrument_mass + rs->interstage_mass );
 }
 
 short ROCKET_STAGE_get_attached( ROCKET_STAGE *rs ) {
@@ -119,9 +119,10 @@ void STAGE_1_init( void ) {
 	system_s1.fuel = 0;
 	system_s1.attached = 0;
 	system_s1.staging_time = -1;
-	system_s1.dry_mass = 132890;
-	system_s1.max_fuel = 2106905 + 20311;
-	system_s1.instrument_mass = 5206;
+	system_s1.dry_mass = 130422;//132890;
+	system_s1.max_fuel = 2145798;//2106905 + 20311;
+	system_s1.instrument_mass = 2469;//7674;//5206;
+	system_s1.interstage_mass = 0;//5205;
 	system_s1.max_fuel_burn = 13232;
 	system_s1.max_thrust_n = 39782855;
 	system_s1.current_thrust = 0;
@@ -148,9 +149,10 @@ void STAGE_2_init( void ) {
 	system_s2.fuel = 0;
 	system_s2.attached = 0;
 	system_s2.staging_time = -1;
-	system_s2.dry_mass = 36729;
+	system_s2.dry_mass = 36157;//36729;
 	system_s2.max_fuel = 443235;
-	system_s2.instrument_mass = 3663;
+	system_s2.instrument_mass = 5205;//571;//4234;//3663;
+	system_s2.interstage_mass = 3663;
 	system_s2.max_fuel_burn = 1224;
 	system_s2.max_thrust_n = 5095279;
 	system_s2.variable_thrust = 1;
@@ -175,9 +177,17 @@ void STAGE_3_init( void ) {
 	system_s3.fuel = 0;
 	system_s3.attached = 0;
 	system_s3.staging_time = -1;
-	system_s3.dry_mass = 11943;
+	system_s3.dry_mass = 11272;//11943;
 	system_s3.max_fuel = 107095;
-	system_s3.instrument_mass = 45693+1939;
+	/*
+	Spacecraft/Lunar Module Adapter: 3,951 lbm
+	Lunar Module: 33,278 lbm
+	Command and Service Module: 63,507 lbm
+	Total Launch Escape System: 8,910 lbm
+	Total Spacecraft (CSM): 109,646 lbm
+	*/
+	system_s3.instrument_mass = 49734;//45693+1939;
+	system_s3.interstage_mass = 571;
 	system_s3.max_fuel_burn = 213;
 	system_s3.max_thrust_n = 901223;
 	system_s3.current_thrust = 0;

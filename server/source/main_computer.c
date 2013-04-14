@@ -31,6 +31,7 @@ int						current_dynamic_pressure = 0;
 long double				fw;
 long double				real_fw;
 short					computing_all = 0;
+double					launch_pad_latitude = 28.500;
 
 /**
 Modyfikatory fizyki
@@ -55,9 +56,6 @@ void *SIMULATION_progress( void ) {
 			case TRANSFER_ORBIT : { /*TODO*/ } break;
 			default : break;
 		}
-
-		//printf("%f\t%f\n", _PHYSICS_get_orbit_eccentrity( 200000, 7850 ), _PHYSICS_get_orbit_semi_major_axis( 250000, 7900 ));
-		//printf("APOGEE: %f\tPERIGEE:%f\n", _PHYSICS_get_orbit_apogee( 6700000, 0.01 ), _PHYSICS_get_orbit_perigee( 6700000, 0.01 ));
 
 		PHYSICS_instrument_unit_calculations();
 
@@ -91,7 +89,8 @@ void MAIN_COMPUTER_init( void ) {
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
 	time_tick = ( time_interval * 0.001 );
-	telemetry_data.mission_time = -20.0;
+	telemetry_data.mission_time = -12.0;
+	telemetry_data.launch_escape_tower_ready = 1;
 	AUTOPILOT_init();
 
 	MAIN_FLIGHT_STATUS = LAUNCH_FROM_EARTH;
@@ -222,7 +221,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case S2 : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && command != CENTER_ENGINE_CUTOFF ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ( command != CENTER_ENGINE_CUTOFF && command != INTERSTAGE_JETTISON ) ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-II OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -282,12 +281,23 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "ERROR: UNABLE TO PERFORM S-II CENTER ENGINE CUTOFF. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					} break;
+
+					case INTERSTAGE_JETTISON : {
+						if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 && system_s2.interstage_mass > 0 ) {
+							system_s2.interstage_mass = 0;
+							success = 1;
+							strncpy( message, "S-IC/S-II INTERSTAGE JETTISONED", BIG_BUFF_SIZE );
+						} else {
+							success = 0;
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC/S-II INTERSTAGE JETTISON. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						}
+					} break;
 				}
 			}
 		} break;
 
 		case S3 : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && command != CENTER_ENGINE_CUTOFF ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ( command != CENTER_ENGINE_CUTOFF && command != INTERSTAGE_JETTISON ) ) {
 				success = 0;
 				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IVB OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 			} else {
@@ -345,6 +355,17 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: UNABLE TO RESTART S-IVB BURN. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						}
+					} break;
+
+					case INTERSTAGE_JETTISON : {
+						if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 && system_s3.interstage_mass > 0 ) {
+							system_s3.interstage_mass = 0;
+							success = 1;
+							strncpy( message, "S-II/S-IVB INTERSTAGE JETTISONED", BIG_BUFF_SIZE );
+						} else {
+							success = 0;
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II/S-IVB INTERSTAGE JETTISON. CHECK CONFIGURATION", BIG_BUFF_SIZE );
 						}
 					} break;
 				}
@@ -593,7 +614,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					default : /* Nic */ break;
 					case JETTISON : {
 						telemetry_data.launch_escape_tower_ready = 0;
-						system_s3.instrument_mass -= 4200;
+						system_s3.instrument_mass -= 4041.50802;
 						success = 1;
 						strncpy( message, "LAUNCH ESCAPE TOWER JETTISONED", BIG_BUFF_SIZE );
 					} break;
@@ -701,6 +722,10 @@ double _PHYSICS_get_orbit_apogee( double semi_major_axis, double eccentrity ) {
 	return semi_major_axis * ( 1 + eccentrity ) - AO_current->radius;
 }
 
+double _PHYSICS_get_orbit_inclination( double latitude, double current_roll ) {
+	return ( acos( cos( latitude * DEG2RAD ) * sin( ( 90-current_roll ) * DEG2RAD ) ) ) * 57.29577;
+}
+
 double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 	double current_temperature = 288.15 - (0.0065 * altitude );
 	long double gas_constant = 8.3144621;
@@ -770,6 +795,7 @@ void PHYSICS_instrument_unit_calculations( void ) {
 
 void PHYSICS_shared_calculations( void ) {
 	double pitch_mod = ( telemetry_data.stable_orbit_achieved ? 0 : ( ( 100 - pitch_program.current_value ) / 100 ) );
+	double tmp;
 
 	fw = 0;
 	real_fw = 0;
@@ -942,6 +968,27 @@ void PHYSICS_shared_calculations( void ) {
 
 	if( telemetry_data.auto_pilot_enabled == 1 ) {
 		AUTOPILOT_progress( telemetry_data.mission_time );
+	}
+
+	if( pitch_program.current_value == 0 ) {
+		telemetry_data.orbit_inclination = _PHYSICS_get_orbit_inclination( launch_pad_latitude, roll_program.current_value );
+	}
+
+	telemetry_data.orbit_semi_major_axis = _PHYSICS_get_orbit_semi_major_axis( telemetry_data.current_altitude, telemetry_data.current_velocity );
+	telemetry_data.orbit_eccentrity = _PHYSICS_get_orbit_eccentrity( telemetry_data.current_altitude, telemetry_data.current_velocity );
+	telemetry_data.orbit_apoapsis = _PHYSICS_get_orbit_apogee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
+	if( telemetry_data.orbit_apoapsis < 0 ) {
+		telemetry_data.orbit_apoapsis = 0;
+	}
+	telemetry_data.orbit_periapsis = _PHYSICS_get_orbit_perigee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
+	if( telemetry_data.orbit_periapsis < 0 ) {
+		telemetry_data.orbit_periapsis = 0;
+	}
+
+	if( telemetry_data.orbit_periapsis > telemetry_data.orbit_apoapsis ) {
+		tmp = telemetry_data.orbit_apoapsis;
+		telemetry_data.orbit_apoapsis = telemetry_data.orbit_periapsis;
+		telemetry_data.orbit_periapsis = tmp;
 	}
 }
 

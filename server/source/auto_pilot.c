@@ -162,6 +162,12 @@ void AUTOPILOT_progress( double real_second ) {
 			}
 		} break;
 
+		case 192 : {
+			if( system_s2.interstage_mass > 0 ) {
+				EXEC_COMMAND( S2, INTERSTAGE_JETTISON, 0 );
+			}
+		} break;
+
 		case 197 : {
 			if( telemetry_data.launch_escape_tower_ready == 1 ) {
 				EXEC_COMMAND( LET, JETTISON, 0 );
