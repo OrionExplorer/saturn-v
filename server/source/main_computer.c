@@ -977,13 +977,7 @@ void PHYSICS_shared_calculations( void ) {
 	telemetry_data.orbit_semi_major_axis = _PHYSICS_get_orbit_semi_major_axis( telemetry_data.current_altitude, telemetry_data.current_velocity );
 	telemetry_data.orbit_eccentrity = _PHYSICS_get_orbit_eccentrity( telemetry_data.current_altitude, telemetry_data.current_velocity );
 	telemetry_data.orbit_apoapsis = _PHYSICS_get_orbit_apogee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
-	if( telemetry_data.orbit_apoapsis < 0 ) {
-		telemetry_data.orbit_apoapsis = 0;
-	}
 	telemetry_data.orbit_periapsis = _PHYSICS_get_orbit_perigee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
-	if( telemetry_data.orbit_periapsis < 0 ) {
-		telemetry_data.orbit_periapsis = 0;
-	}
 
 	if( telemetry_data.orbit_periapsis > telemetry_data.orbit_apoapsis ) {
 		tmp = telemetry_data.orbit_apoapsis;

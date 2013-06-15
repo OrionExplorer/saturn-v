@@ -131,7 +131,7 @@ void* TELEMETRY_send_live_data( void* data ) {
 	int i;
 
 	while(1) {
-		Sleep( 200 );
+		Sleep( 100 );
 		for( i = 0; i < MAX_CLIENTS; i++ ) {
 			TELEMETRY_update();
 			if( connected_clients[ i ].socket_descriptor > 0 ) {

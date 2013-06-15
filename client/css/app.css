@@ -9,6 +9,7 @@ li {list-style: none;}
 /* clean gray from http://hellohappy.org/css3-buttons/
 *******************************************************************************/
 input[type="button"] {
+	height: 20px;
 	clear: right;
 	background-color: #eeeeee;
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc));
@@ -23,7 +24,7 @@ input[type="button"] {
 	border-radius: 3px;
 	color: #333;
 	font: bold 10px/1 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-	padding: 5px;
+	padding: 2px;
 	text-align: center;
 	text-shadow: 0 1px 0 #eee;
 	width: 100px; 

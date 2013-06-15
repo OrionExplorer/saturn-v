@@ -8,6 +8,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #include "include/server_shared.h"
 #include "include/spacecraft_components.h"
+#include <stdlib.h>
 
 double					pitch_modifier = 0.0;
 short					liftoff_yaw_achieved = 0;
@@ -107,10 +108,6 @@ void AUTOPILOT_progress( double real_second ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S2, DETACH, 0 );
-	}
-
-	if( current_system->id == 2 && ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60  && telemetry_data.current_velocity >= 6280 ) {
-		EXEC_COMMAND( THRUST, DECREASE, 20 );
 	}
 
 	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4 ) {
