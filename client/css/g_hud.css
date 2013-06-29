@@ -13,14 +13,15 @@
 	margin: 5px;
 	display: inline-block;
 	vertical-align: middle;
+	white-space: nowrap;
 }
 
 .reports-1-panel {
 	width: 100%;
 	text-align: center;
-	white-space: nowrap;
 	line-height: 12px;
 	height: auto;
+	float: left;
 }
 
 .background-property-cell {
