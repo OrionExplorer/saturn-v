@@ -11,7 +11,7 @@ Features:
 • Built-in chat
 • Separated GUI sections for Saturn V, Apollo CSM and Apollo LM modules
 • Live flight data
-• Current simulation ends with Earth Parking Orbit is reached
+• Current simulation ends when Earth Parking Orbit is reached
 
 TODO:
 • Separate user accounts with authorization
