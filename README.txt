@@ -1,5 +1,5 @@
 saturn-v
-Copyright (C) 2011-2013
+Copyright (C) 2011 - 2013
 Marcin Kelar (marcin.kelar@gmail.com)
 ========
 
