@@ -13,6 +13,7 @@ Features:
 * Current simulation ends when Earth Parking Orbit is reached
 
 TODO:
+- [ ] Rebuild client code with [JSMVC framework](https://github.com/OrionExplorer/js-mvc)
 - [ ] Separate user accounts with authorization
 - [ ] Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
 - [ ] Apollo CSM/LM coasting to the Moon
