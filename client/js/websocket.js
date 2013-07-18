@@ -35,6 +35,7 @@ function connectToVoyager7(address) {
 		Socket.close();
 	}
 
+	updateInformation('Connection with Saturn V Main Computer is being established...');
 	Socket = new WebSocket(address);
 	
 	Socket.onclose = function() {

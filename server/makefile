@@ -8,58 +8,58 @@ saturn-v: auto_pilot.o server_communication.o server_telemetry.o base64.o server
 	gcc auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o voyager7main.o server_socket_io.o main_computer.o server_strings_util.o -o saturn-v $(LIBS)
 
 voyager7main.o: source/voyager7main.c
-	gcc -c source/voyager7main.c $(LIBS)
+	gcc -c source/voyager7main.c
 
 auto_pilot.o: source/auto_pilot.c
-	gcc -c source/auto_pilot.c -lm $(LIBS)
+	gcc -c source/auto_pilot.c
 
 server_communication.o: source/server_communication.c
-	gcc -c source/server_communication.c $(LIBS)
+	gcc -c source/server_communication.c
 
 server_telemetry.o: source/server_telemetry.c
-	gcc -c source/server_telemetry.c $(LIBS)
+	gcc -c source/server_telemetry.c
 
 base64.o: source/base64.c
-	gcc -c source/base64.c $(LIBS)
+	gcc -c source/base64.c
 
 server_core.o: source/server_core.c
-	gcc -c source/server_core.c $(LIBS)
+	gcc -c source/server_core.c
 
 server_time_util.o: source/server_time_util.c
-	gcc -c source/server_time_util.c $(LIBS)
+	gcc -c source/server_time_util.c
 
 celestial_objects.o: source/celestial_objects.c
-	gcc -c source/celestial_objects.c $(LIBS)
+	gcc -c source/celestial_objects.c
 
 server_files_io.o: source/server_files_io.c
-	gcc -c source/server_files_io.c $(LIBS)
+	gcc -c source/server_files_io.c
 
 sha1.o: source/sha1.c
-	gcc -c source/sha1.c $(LIBS)
+	gcc -c source/sha1.c
 
 cJSON.o: source/cJSON.c
-	gcc -c source/cJSON.c $(LIBS)
+	gcc -c source/cJSON.c
 
 server_log.o: source/server_log.c
-	gcc -c source/server_log.c $(LIBS)
+	gcc -c source/server_log.c
 
 spacecraft_components.o: source/spacecraft_components.c
-	gcc -c source/spacecraft_components.c $(LIBS)
+	gcc -c source/spacecraft_components.c
 
 cWebSockets.o: source/cWebSockets.c
-	gcc -c source/cWebSockets.c $(LIBS)
+	gcc -c source/cWebSockets.c
 
 server_mem_manager.o: source/server_mem_manager.c
-	gcc -c source/server_mem_manager.c $(LIBS)
+	gcc -c source/server_mem_manager.c
 
 server_socket_io.o: source/server_socket_io.c
-	gcc -c source/server_socket_io.c $(LIBS)
+	gcc -c source/server_socket_io.c
 
 main_computer.o: source/main_computer.c
-	gcc -c source/main_computer.c -lm $(LIBS)
+	gcc -c source/main_computer.c
 
 server_strings_util.o: source/server_strings_util.c
-	gcc -c source/server_strings_util.c $(LIBS)
+	gcc -c source/server_strings_util.c
 
 clean:
 	rm *.o
