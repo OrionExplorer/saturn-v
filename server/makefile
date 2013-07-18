@@ -1,5 +1,5 @@
 CC=gcc 
-CFLAGS=--std=c99 -g -pedantic -Wall -lm
+CFLAGS=-std=c99 -g -pedantic -Wall -lm
 LIBS =-lm -lpthread
 
 all: saturn-v
