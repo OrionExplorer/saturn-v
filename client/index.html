@@ -10,8 +10,7 @@
 	<title>SATURN V</title>
 </head>
 <body>
-	<script type="text/javascript" src="js/websocket.js"></script>
-	<script type="text/javascript" src="js/main_computer.js"></script>
+	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
 
 	<!-- Login form -->
 	<div id="loadMask" style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:black; display:none;"></div>
@@ -22,13 +21,13 @@
 				<tr>
 					<td>USERNAME</td>
 					<td>
-						<input autocomplete="on" style="background-color: black; color:#999999;" onkeypress="performUserLogin(event);" type="text" id="usernameField">
+						<input autocomplete="on" style="background-color: black; color:#999999;" type="text" id="usernameField">
 					</td>
 				</tr>
 				<tr>
 					<td>TOKEN</td>
 					<td>
-						<input autocomplete="on" style="background-color: black; color:#999999;" onkeypress="performUserLogin(event);" type="password" id="passwordField">
+						<input autocomplete="on" style="background-color: black; color:#999999;" type="password" id="passwordField">
 					</td>
 				</tr>
 			</tbody>
@@ -603,9 +602,11 @@
 			</div>
 		</div>
 	</div>
-
-	<script type="text/javascript" src="js/app.js"></script>
-
+	<script type="text/javascript">
+		window.onload = function() {
+			JSMVC.Utils.loadJSFile('js/Init');
+		};
+	</script>
 	</body>
-	</html>
+</html>
 	
