@@ -68,8 +68,6 @@ JSMVC.define('SATURN_V.controller.Network.Network', {
 			userPassword = document.getElementById('passwordField'),
 			me = this;
 
-		console.log(event);
-
 		document.getElementById('incorrectDataInfo').style.display = 'none';
 
 		if(key == 13) {

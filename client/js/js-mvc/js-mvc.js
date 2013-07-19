@@ -3,6 +3,11 @@
 
 	global.JSMVC = {
 		application : function(originalPath, config) {
+			window.onload = function() {
+				JSMVC._init(originalPath,config);
+			}
+		},
+		_init : function(originalPath, config) {
 			var launchFunction = null,
 				controllers = [],
 				requires = [],
