@@ -8,23 +8,25 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 		infoPanel.scrollTop = 99999;
 	},
 
-	updateEl : function(id, val, callback) {
+	updateEl : function(id, val) {
 		var objId = document.getElementById(id),
 			i = 0;
 
 		if(objId == undefined || objId == null) {
-			objId = document.getElementsByName(id);
+			objId = document.querySelectorAll('[data-name]');
 			if(!objId) { return; }
 			for(i = 0; i < objId.length; i++) {
-				if(objId[i] && objId[i].type && objId[i].type == 'button') {
-					objId[i].value = val;
-				} else {
-					objId[i].innerHTML = val;
+				if(objId[i].getAttribute('data-name') === id) {
+					if(objId[i] && objId[i].tagName && objId[i].tagName == 'BUTTON') {
+						objId[i].value = val;
+					} else if(objId[i] != undefined) {
+						objId[i].innerHTML = val;
+					}
 				}
 			}
 		} else {
-			switch(objId.type) {
-				case 'button' : {
+			switch(objId.tagName) {
+				case 'BUTTON' : {
 						objId.value = val;
 				}break;
 				case undefined : {

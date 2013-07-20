@@ -12,7 +12,7 @@
 					if(JSMVC.InternalData.loadedFiles[file]['loaded'] === true && JSMVC.InternalData.loadedFiles[file]['initialized'] === false) {
 						fileObject = file.replace(/(\/)/g,'.');
 						initFunction = JSMVC.Utils.getObjectValue(fileObject, 'init', global);
-						if(typeof initFunction == 'function') {
+						if(typeof initFunction === 'function') {
 							initFunction.call(JSMVC.Utils.getObjectValue(fileObject, null, global)); //scope!
 							JSMVC.InternalData.loadedFiles[file]['initialized'] = true;
 						}
@@ -37,7 +37,7 @@
 			global.JSMVC['name'] = originalPath;
 
 			appPath = global[originalPath].appPath;
-			if(typeof appPath != 'string') {
+			if(typeof appPath !== 'string') {
 				appPath = '';
 			}
 			global.JSMVC['appPath'] = appPath;
