@@ -2,7 +2,7 @@ JSMVC.define('SATURN_V.utils.Shared', {
 	name : 'Shared',
 
 	secondsToHms : function (d) {
-		var lessThanZero = (d < 0) ? true : false,
+		var lessThanZero = (d < 0),
 			d = Math.abs(Math.round(Number(d))),
 			h = Math.floor(d / 3600),
 			m = Math.floor(d % 3600 / 60),

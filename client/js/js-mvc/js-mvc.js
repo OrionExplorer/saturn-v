@@ -2,6 +2,25 @@
 	var global = this;
 
 	global.JSMVC = {
+		InternalData : {
+			initLoadedFiles : function() {
+				var file = null,
+					fileObject = '',
+					initFunction = null;
+
+				for(file in JSMVC.InternalData.loadedFiles) {
+					if(JSMVC.InternalData.loadedFiles[file]['loaded'] === true && JSMVC.InternalData.loadedFiles[file]['initialized'] === false) {
+						fileObject = file.replace(/(\/)/g,'.');
+						initFunction = JSMVC.Utils.getObjectValue(fileObject, 'init', global);
+						if(typeof initFunction == 'function') {
+							initFunction.call(JSMVC.Utils.getObjectValue(fileObject, null, global)); //scope!
+							JSMVC.InternalData.loadedFiles[file]['initialized'] = true;
+						}
+					}
+				}
+			},
+			loadedFiles : {}
+		},
 		application : function(originalPath, config) {
 			window.onload = function() {
 				JSMVC._init(originalPath,config);
@@ -97,14 +116,14 @@
 					if(parts[1] === 'controller') {
 						JSMVC.Utils.initController(originalPath);
 					}
-					try {
-						initFunction = JSMVC.Utils.getObjectValue(originalPath, 'init', global); //eval(originalPath+'[\'init\']');
+					/*try {
+						initFunction = JSMVC.Utils.getObjectValue(originalPath, 'init', global);
 						if(typeof initFunction === 'function') {
 							initFunction();
 						}
 					} catch(ex) {
 						console.error(ex);
-					}
+					}*/
 				}
 			}
 		},
@@ -160,11 +179,20 @@
 				var newFile = document.createElement('script'),
 					appPath = JSMVC.appPath ? JSMVC.appPath : '';
 
+				JSMVC.InternalData.loadedFiles[fileName] = {
+					loaded : false,
+					initialized : false
+				};
+
 				newFile.setAttribute('type', 'text/javascript');
 				newFile.setAttribute('src', appPath+fileName+'.js');
 
-				if(callback) {
-					newFile.onreadystatechange = newFile.onload = callback();
+				newFile.onreadystatechange = newFile.onload = function() {
+					JSMVC.InternalData.loadedFiles[fileName]['loaded'] = true;
+					JSMVC.InternalData.initLoadedFiles();
+					if(callback) {
+						callback();
+					}
 				}
 				document.getElementsByTagName('head')[0].appendChild(newFile);
 			},

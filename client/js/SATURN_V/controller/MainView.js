@@ -1,13 +1,6 @@
-JSMVC.define('SATURN_V.controller.ControlPanel', {
-	views : [],
-	models : [],
-	name : 'ControlPanel',
-
+JSMVC.define('SATURN_V.controller.MainView', {
+	name : 'MainView',
 	lastComputerMessage : '',
-
-	init : function() {
-		
-	},
 
 	parseRemoteData : function(json) {
 		if(json.computer_message != this.lastComputerMessage && json.computer_message.length > 0) {

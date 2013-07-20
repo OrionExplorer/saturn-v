@@ -1,11 +1,3 @@
-var lastComputerMessage = '';
-
-function kotlecikButtonController(id) {
-	var button = document.getElementById(id);
-	Socket.send('konsumpcja kotlecika!');
-	
-}
-
 function pitchRollYawButtonController(id) {
 	var button = document.getElementById(id);
 	var buttonVal = (button.value == 'ON' ? 'START' : 'STOP');

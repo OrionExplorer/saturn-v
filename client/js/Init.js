@@ -1,16 +1,12 @@
 JSMVC.application('SATURN_V', {
 	controllers : [
 		'Network',
-		'ControlPanel',
-		'Events'
+		'MainView'
 	],
 	requires : [
 		'SATURN_V.utils.Shared',
-		'SATURN_V.utils.Frontend'
+		'SATURN_V.utils.Frontend',
+		'SATURN_V.utils.Events'
 	],
-	appPath : 'js/',
-
-	launch : function() {
-		
-	}
+	appPath : 'js/'
 });

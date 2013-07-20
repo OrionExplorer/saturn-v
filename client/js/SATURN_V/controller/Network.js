@@ -1,18 +1,16 @@
 JSMVC.define('SATURN_V.controller.Network', {
-	views : [],
-	models : [],
 	name : 'Network',
 	Socket : null,
 
 	init : function() {
-		var FRONTEND = SATURN_V.utils.Frontend;
-		var SHARED = SATURN_V.utils.Shared;
+		var FRONTEND = SATURN_V.utils.Frontend,
+			SHARED = SATURN_V.utils.Shared;
 
 		FRONTEND.setAllButtonsDisabled(true);
-		SATURN_V.controller.Network.addLoginFormEvents();
+		this.addLoginFormEvents();
 
 		if( SHARED.checkBrowserForHTML5() ) {
-			SATURN_V.controller.Network.getSaturnVRemoteAddress();
+			this.getSaturnVRemoteAddress();
 		} else {
 			FRONTEND.updateInformation('Error: Please check your browser for HTML5 support');
 		}
@@ -23,8 +21,12 @@ JSMVC.define('SATURN_V.controller.Network', {
 			usernameField = document.getElementById('usernameField'),
 			passwordField = document.getElementById('passwordField');
 
-		usernameField.addEventListener('keypress', SATURN_V.controller.Network.performUserLogin);
-		passwordField.addEventListener('keypress', SATURN_V.controller.Network.performUserLogin);
+		usernameField.addEventListener('keypress', function(evt) {
+			me.performUserLogin(evt);
+		});
+		passwordField.addEventListener('keypress', function(evt) {
+			me.performUserLogin(evt);
+		});
 	},
 
 	sendCommand : function(command, commandType, responseMode) {
@@ -74,26 +76,27 @@ JSMVC.define('SATURN_V.controller.Network', {
 			if( userLogin.value.length == 0 || userPassword.value.length == 0 ) {
 				alert('Please enter username and token!');
 			} else if(userLogin.value.length > 0 & userPassword.value.length > 0) {
-				SATURN_V.controller.sendLoginData(userLogin.value, userPassword.value);
+				me.sendLoginData(userLogin.value, userPassword.value);
 			}
 		}
 	},
 
 	getSaturnVRemoteAddress: function(override) {
 		var me = this,
-			saturnV_address = undefined;
+			saturnV_address = undefined,
+			tmp_address = localStorage.getItem('saturnVcomputer');
 
 		if(override == undefined) {
-			saturnV_address = localStorage.getItem('saturnVcomputer');
+			saturnV_address = tmp_address;
 		}
 
 		if(saturnV_address) {
 			me.connectToSaturnV(saturnV_address);
 		} else {
-			saturnV_address = prompt('Please enter Saturn V Main Computer IP address with port number', 'ws://');
-			if (saturnV_address != null && saturnV_address != '') {
+			saturnV_address = prompt('Please enter Saturn V Main Computer IP address with port number', tmp_address);
+			if (saturnV_address != null && saturnV_address != '' && saturnV_address != tmp_address) {
 				localStorage.setItem('saturnVcomputer', saturnV_address);
-				SATURN_V.controller.Network.Network.connectToSaturnV(saturnV_address);
+				me.connectToSaturnV(saturnV_address);
 			} else {
 				if(override == undefined) {
 					SATURN_V.utils.Frontend.updateInformation('Error: Unable to connect to Saturn V Main Computer');
@@ -102,25 +105,10 @@ JSMVC.define('SATURN_V.controller.Network', {
 		}
 	},
 
-	connectToSaturnV : function(address) {
+
+	initSocket : function(address) {
 		var me = this;
 
-		function reviewer(key, value) {
-			var type;
-			if (value && typeof value === 'object') {
-				type = value.type;
-				if (typeof type === 'string' && typeof window[type] === 'function') {
-					return new (window[type])(value);
-				}
-			}
-			return value;
-		}
-
-		if(this.Socket) {
-			this.Socket.close();
-		}
-
-		SATURN_V.utils.Frontend.updateInformation('Connection with Saturn V Main Computer is being established...');
 		this.Socket = new WebSocket(address);
 		
 		this.Socket.onclose = function() {
@@ -133,10 +121,13 @@ JSMVC.define('SATURN_V.controller.Network', {
 		}
 
 		this.Socket.onmessage = function(evt) {
-			var json = null;
-			var currentTime = document.getElementById('voyager7_mission_time').innerHTML;
+			var json = null,
+				currentTime = document.getElementById('voyager7_mission_time').innerHTML,
+				loadMask = document.getElementById('loadMask'),
+				loginForm = document.getElementById('loginForm');
+
 			try {
-				json = JSON.parse(evt.data, reviewer);
+				json = JSON.parse(evt.data);
 			} catch(ex) {
 				SATURN_V.utils.Frontend.updateInformation('Error: Unable to read received data.');
 				console.log(ex);
@@ -145,13 +136,12 @@ JSMVC.define('SATURN_V.controller.Network', {
 			
 			if(json.data_type == 'telemetry') {
 				if(json.success) {
-					SATURN_V.controller.ControlPanel.parseRemoteData(json.data);
+					SATURN_V.controller.MainView.parseRemoteData(json.data);
 				} else {
 					
 				}
 			} else if(json.data_type == 'command_response') {
-				var loadMask = document.getElementById('loadMask');
-				var loginForm = document.getElementById('loginForm');
+				
 
 				if(json.success) {
 					if(json.msg == 'user_authorized') {
@@ -159,7 +149,7 @@ JSMVC.define('SATURN_V.controller.Network', {
 						loginForm.style.display = 'none';
 						SATURN_V.utils.Frontend.updateInformation('Access to remote computer granted');
 						SATURN_V.utils.Frontend.setAllButtonsDisabled(false);
-						SATURN_V.controller.Network.sendCommand('', 'data', 'live');
+						/*SATURN_V.controller.Network*/me.sendCommand('', 'data', 'live');
 					}
 				} else {
 					if(json.msg == 'authorization_required') {
@@ -183,5 +173,29 @@ JSMVC.define('SATURN_V.controller.Network', {
 				SATURN_V.utils.Frontend.updateInformation('<'+currentTime+'> User left: '+ json.msg);
 			}
 		}
+	},
+
+	connectToSaturnV : function(address) {
+		var me = this;
+
+		function reviewer(key, value) {
+			var type;
+			if (value && typeof value === 'object') {
+				type = value.type;
+				if (typeof type === 'string' && typeof window[type] === 'function') {
+					return new (window[type])(value);
+				}
+			}
+			return value;
+		}
+
+		if(this.Socket) {
+			this.Socket.close();
+		}
+
+		SATURN_V.utils.Frontend.updateInformation('Connection with Saturn V Main Computer is being established...');
+
+		this.initSocket(address);
+		
 	}
 });
