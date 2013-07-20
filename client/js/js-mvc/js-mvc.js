@@ -115,13 +115,13 @@
 				this.loadControllerModels(controllerPath);
 			},
 			loadController : function(controllerName) {
-				this.loadJSFile(JSMVC.name+'/controller/'+controllerName+'/'+controllerName);
+				this.loadJSFile(JSMVC.name+'/controller/'+controllerName);
 			},
 			loadModel : function(controllerName, modelName) {
-				this.loadJSFile(JSMVC.name+'/model/'+controllerName+'/'+modelName);
+				this.loadJSFile(JSMVC.name+'/model/'+modelName);
 			},
 			loadView : function(controllerName, viewName) {
-				this.loadJSFile(JSMVC.name+'/view/'+controllerName+'/'+viewName);
+				this.loadJSFile(JSMVC.name+'/view/'+viewName);
 			},
 			loadControllerViews : function(controllerName) {
 				var controller = JSMVC.Utils.getObjectValue(controllerName, null, global),

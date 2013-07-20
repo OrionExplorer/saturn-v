@@ -1,4 +1,4 @@
-JSMVC.define('SATURN_V.controller.ControlPanel.ControlPanel', {
+JSMVC.define('SATURN_V.controller.ControlPanel', {
 	views : [],
 	models : [],
 	name : 'ControlPanel',

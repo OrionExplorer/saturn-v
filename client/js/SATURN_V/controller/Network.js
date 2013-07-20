@@ -1,4 +1,4 @@
-JSMVC.define('SATURN_V.controller.Network.Network', {
+JSMVC.define('SATURN_V.controller.Network', {
 	views : [],
 	models : [],
 	name : 'Network',
@@ -9,10 +9,10 @@ JSMVC.define('SATURN_V.controller.Network.Network', {
 		var SHARED = SATURN_V.utils.Shared;
 
 		FRONTEND.setAllButtonsDisabled(true);
-		SATURN_V.controller.Network.Network.addLoginFormEvents();
+		SATURN_V.controller.Network.addLoginFormEvents();
 
 		if( SHARED.checkBrowserForHTML5() ) {
-			SATURN_V.controller.Network.Network.getSaturnVRemoteAddress();
+			SATURN_V.controller.Network.getSaturnVRemoteAddress();
 		} else {
 			FRONTEND.updateInformation('Error: Please check your browser for HTML5 support');
 		}
@@ -23,8 +23,8 @@ JSMVC.define('SATURN_V.controller.Network.Network', {
 			usernameField = document.getElementById('usernameField'),
 			passwordField = document.getElementById('passwordField');
 
-		usernameField.addEventListener('keypress', SATURN_V.controller.Network.Network.performUserLogin);
-		passwordField.addEventListener('keypress', SATURN_V.controller.Network.Network.performUserLogin);
+		usernameField.addEventListener('keypress', SATURN_V.controller.Network.performUserLogin);
+		passwordField.addEventListener('keypress', SATURN_V.controller.Network.performUserLogin);
 	},
 
 	sendCommand : function(command, commandType, responseMode) {
@@ -74,7 +74,7 @@ JSMVC.define('SATURN_V.controller.Network.Network', {
 			if( userLogin.value.length == 0 || userPassword.value.length == 0 ) {
 				alert('Please enter username and token!');
 			} else if(userLogin.value.length > 0 & userPassword.value.length > 0) {
-				SATURN_V.controller.Network.Network.sendLoginData(userLogin.value, userPassword.value);
+				SATURN_V.controller.sendLoginData(userLogin.value, userPassword.value);
 			}
 		}
 	},
@@ -145,8 +145,7 @@ JSMVC.define('SATURN_V.controller.Network.Network', {
 			
 			if(json.data_type == 'telemetry') {
 				if(json.success) {
-					//console.log('Received telemetry data.', json.data );
-					SATURN_V.controller.ControlPanel.ControlPanel.parseRemoteData(json.data);
+					SATURN_V.controller.ControlPanel.parseRemoteData(json.data);
 				} else {
 					
 				}
@@ -160,7 +159,7 @@ JSMVC.define('SATURN_V.controller.Network.Network', {
 						loginForm.style.display = 'none';
 						SATURN_V.utils.Frontend.updateInformation('Access to remote computer granted');
 						SATURN_V.utils.Frontend.setAllButtonsDisabled(false);
-						SATURN_V.controller.Network.Network.sendCommand('', 'data', 'live');
+						SATURN_V.controller.Network.sendCommand('', 'data', 'live');
 					}
 				} else {
 					if(json.msg == 'authorization_required') {
