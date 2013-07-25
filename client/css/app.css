@@ -23,7 +23,7 @@ input[type="button"] {
 	border-bottom: 1px solid #bbb;
 	border-radius: 3px;
 	color: #333;
-	font: bold 10px/1 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
+	font: bold  "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 	padding: 2px;
 	text-align: center;
 	text-shadow: 0 1px 0 #eee;
@@ -65,7 +65,9 @@ caption {
 .terminal {
 		color: #999999;
 		font-family: Helvetica;
-		font-size: 9pt;
+		font-size: 15px;
+		width : 65%;
+		margin: 0 auto;
 }
 
 input[type=text],input[type=password] {
@@ -82,7 +84,7 @@ textarea {
 	display: block;
 	border: 0px;
 	font-family: Helvetica, monaco;
-	font-size: 11px;
+	font-size: 14px;
 	background-color: #999999;
 	border-radius: 5px;
 	-moz-border-radius: 5px;
