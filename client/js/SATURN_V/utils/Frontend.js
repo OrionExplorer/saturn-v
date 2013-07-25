@@ -14,7 +14,7 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 
 		if(objId == undefined || objId == null) {
 			objId = document.querySelectorAll('[data-name]');
-			if(!objId) { return; }
+			if(!objId) { cosole.warn('Unable to find "'+id+'" element.'); return; }
 			for(i = 0; i < objId.length; i++) {
 				if(objId[i].getAttribute('data-name') === id) {
 					if(objId[i] && objId[i].tagName && objId[i].tagName == 'BUTTON') {
@@ -26,7 +26,7 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 			}
 		} else {
 			switch(objId.tagName) {
-				case 'BUTTON' : {
+				case 'INPUT' : {
 						objId.value = val;
 				}break;
 				case undefined : {

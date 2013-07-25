@@ -323,7 +323,6 @@
 				</div>
 				<div class="reports-1-panel">
 					<div class="box-1-info">
-						<!-- Mission Control Module not yet available -->
 						<table>
 							<tbody>
 								<tr>
@@ -331,7 +330,7 @@
 										<strong>COUNTDOWN</strong>
 									</td>
 									<td class="background-value-cell">
-										<input type="button" id="countdownButton" value="START" onclick="countdownButtonButtonController('countdownButton');" disabled="">
+										<input type="button" id="countdownButton" value="START" disabled="">
 									</td>
 								</tr>
 								<tr>
@@ -339,7 +338,7 @@
 										<strong>INTERNAL GUIDANCE</strong>
 									</td>
 									<td class="background-value-cell">
-										<input type="button" id="mainEngineEngageButton" value="ENGAGE" onclick="mainEngineEngageButtonController('mainEngineEngageButton');" disabled="">
+										<input type="button" id="internalGuidanceButton" value="ENGAGE" disabled="">
 									</td>
 								</tr>
 								<tr>
@@ -347,7 +346,7 @@
 										<strong>HOLDDOWN ARMS</strong>
 									</td>
 									<td class="background-value-cell">
-										<input type="button" id="holddownArmsButton" value="RELEASE" onclick="holddownArmsButtonController('holddownArmsButton');" disabled="">
+										<input type="button" id="holddownArmsButton" value="RELEASE" disabled="">
 									</td>
 								</tbody>
 							</table>
@@ -458,30 +457,30 @@
 										<td class="background-value-cell">
 											<ul>
 												<li>
-													<input type="button" id="systemS3Restart" value="RESTART" onclick="systemS3ButtonController('systemS3Restart');" disabled="">
+													<input type="button" id="systemS3Restart" value="RESTART" disabled="">
 												</li>
 												<li>
-													<input type="button" id="systemS3ActionButton" value="OUTBOARD" onclick="systemS3ButtonController('systemS3ActionButton');" disabled="">
-												</li>
-											</ul>
-										</td>
-										<td class="background-value-cell">
-											<ul>
-												<li>
-													<input type="button" id="systemS2CenterEngineCutoffButton" value="INBOARD" onclick="systemS2ButtonController('systemS2CenterEngineCutoffButton');" disabled="">
-												</li>
-												<li>
-													<input type="button" id="systemS2ActionButton" value="OUTBOARD" onclick="systemS2ButtonController('systemS2ActionButton');" disabled="">  
+													<input type="button" id="systemS3ActionButton" value="OUTBOARD" disabled="">
 												</li>
 											</ul>
 										</td>
 										<td class="background-value-cell">
 											<ul>
 												<li>
-													<input type="button" id="systemS1CenterEngineCutoffButton" value="INBOARD" onclick="systemS1ButtonController('systemS1CenterEngineCutoffButton');" disabled="">
+													<input type="button" id="systemS2CenterEngineCutoffButton" value="INBOARD" disabled="">
 												</li>
 												<li>
-													<input type="button" id="systemS1ActionButton" value="OUTBOARD" onclick="systemS1ButtonController('systemS1ActionButton');" disabled="">
+													<input type="button" id="systemS2ActionButton" value="OUTBOARD" disabled="">  
+												</li>
+											</ul>
+										</td>
+										<td class="background-value-cell">
+											<ul>
+												<li>
+													<input type="button" id="systemS1CenterEngineCutoffButton" value="INBOARD" disabled="">
+												</li>
+												<li>
+													<input type="button" id="systemS1ActionButton" value="OUTBOARD" disabled="">
 												</li>
 											</ul>
 										</td>
@@ -499,9 +498,9 @@
 											<strong>PITCH</strong>
 										</td>
 										<td class="background-value-cell">
-											<input type="button" style="width:30px;" id="pitchButton" value="ON" onclick="pitchRollYawButtonController('pitchButton');" disabled="">
-											<input type="button" style="width:30px;" id="pitchIncButton" value="+" onclick="pitchRollYawButtonController('pitchIncButton');" disabled="">
-											<input type="button" style="width:30px;" id="pitchDecButton" value="-" onclick="pitchRollYawButtonController('pitchDecButton');" disabled="">
+											<input type="button" style="width:30px;" id="pitchButton" value="ON" disabled="">
+											<input type="button" style="width:30px;" id="pitchIncButton" value="+" disabled="">
+											<input type="button" style="width:30px;" id="pitchDecButton" value="-" disabled="">
 										</td>
 									</tr>
 									<tr>
@@ -509,9 +508,9 @@
 											<strong>ROLL</strong>
 										</td>
 										<td class="background-value-cell">
-											<input type="button" style="width:30px;" id="rollButton" value="ON" onclick="pitchRollYawButtonController('rollButton');" disabled="">
-											<input type="button" style="width:30px;" id="rollIncButton" value="+" onclick="pitchRollYawButtonController('rollIncButton');" disabled="">
-											<input type="button" style="width:30px;" id="rollDecButton" value="-" onclick="pitchRollYawButtonController('rollDecButton');" disabled="">
+											<input type="button" style="width:30px;" id="rollButton" value="ON" disabled="">
+											<input type="button" style="width:30px;" id="rollIncButton" value="+" disabled="">
+											<input type="button" style="width:30px;" id="rollDecButton" value="-" disabled="">
 										</td>
 									</tr>
 									<tr>
@@ -519,9 +518,9 @@
 											<strong>YAW</strong>
 										</td>
 										<td class="background-value-cell">
-											<input type="button" style="width:30px;" id="yawButton" value="ON" onclick="pitchRollYawButtonController('yawButton');" disabled="">
-											<input type="button" style="width:30px;" id="yawIncButton" value="+" onclick="pitchRollYawButtonController('yawIncButton');" disabled="">
-											<input type="button" style="width:30px;" id="yawDecButton" value="-" onclick="pitchRollYawButtonController('yawDecButton');" disabled="">
+											<input type="button" style="width:30px;" id="yawButton" value="ON" disabled="">
+											<input type="button" style="width:30px;" id="yawIncButton" value="+" disabled="">
+											<input type="button" style="width:30px;" id="yawDecButton" value="-" disabled="">
 										</td>
 									</tr>
 								</tbody>
@@ -537,14 +536,14 @@
 										<td class="background-value-cell">
 											<ul>
 												<li>
-													<input type="button" id="mainEngineThrustFullButton" value="FULL" onclick="mainEngineThrustButtonController('mainEngineThrustFullButton');" disabled="">
+													<input type="button" id="mainEngineThrustFullButton" value="FULL" disabled="">
 												</li>
 												<li>
-													<input type="button" id="mainEngineThrustUpButton" value="+" onclick="mainEngineThrustButtonController('mainEngineThrustUpButton');" disabled="" style="width:45px;">
-													<input type="button" id="mainEngineThrustDownButton" value="-" onclick="mainEngineThrustButtonController('mainEngineThrustDownButton');" disabled="" style="width:45px;">
+													<input type="button" id="mainEngineThrustUpButton" value="+" disabled="" style="width:45px;">
+													<input type="button" id="mainEngineThrustDownButton" value="-" disabled="" style="width:45px;">
 												</li>
 												<li>
-													<input type="button" id="mainEngineThrustNullButton" value="NULL" onclick="mainEngineThrustButtonController('mainEngineThrustNullButton');" disabled="">
+													<input type="button" id="mainEngineThrustNullButton" value="NULL" disabled="">
 												</li>
 											</ul>
 										</td>
@@ -554,7 +553,7 @@
 											<strong>MAIN ENGINE</strong>
 										</td>
 										<td class="background-value-cell">
-											<input type="button" id="systemAPSButton" value="ENGAGE" onclick="systemMPSButtonController('systemAPSButton');" disabled="">
+											<input type="button" id="mainEngineEngageButton" value="ENGAGE" disabled="">
 										</td>
 									</tr>
 								</tbody>
@@ -570,10 +569,10 @@
 										<td class="background-value-cell">
 											<ul>
 												<li>
-													<input type="button" id="towerJettisonButton" value="JETTISON" onclick="towerJettisonButtonController('towerJettisonButton');" disabled="">
+													<input type="button" id="towerJettisonButton" value="JETTISON" disabled="">
 												</li>
 												<li>
-													<input type="button" id="towerJettisonEngageButton" value="ENGAGE" onclick="towerJettisonButtonController('towerJettisonEngageButton');" disabled="">
+													<input type="button" id="towerJettisonEngageButton" value="ENGAGE" disabled="">
 												</li>
 											</ul>
 										</td>
@@ -585,7 +584,7 @@
 									<td class="background-value-cell">
 										<ul>
 											<li>
-												<input type="button" id="autoPilotButton" value="OFF" onclick="autoPilotButtonController('autoPilotButton');" disabled="">
+												<input type="button" id="autoPilotButton" value="OFF" disabled="">
 											</li>
 										</ul>
 									</td>
@@ -598,7 +597,7 @@
 			<div class="reports-1-panel" style="margin-top:10px;  width:99%;">
 				<div class="box-info" style="width:99%">
 					<textarea id="message-box" readonly="readonly" style="height:70px; width:100%">INTERFACE READY</textarea>
-					<input id="chat-input" type="text" onkeypress="chatInputController(event)" style="width:100%; height:15px; margin-top:1px;"/>
+					<input id="chat-input" type="text" style="width:100%; height:15px; margin-top:1px;"/>
 				</div>
 			</div>
 		</div>

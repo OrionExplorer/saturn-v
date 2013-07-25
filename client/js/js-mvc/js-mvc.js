@@ -8,13 +8,13 @@
 					fileObject = '',
 					initFunction = null;
 
-				for(file in JSMVC.InternalData.loadedFiles) {
-					if(JSMVC.InternalData.loadedFiles[file]['loaded'] === true && JSMVC.InternalData.loadedFiles[file]['initialized'] === false) {
+				for(file in global.JSMVC.InternalData.loadedFiles) {
+					if(global.JSMVC.InternalData.loadedFiles[file].loaded === true && global.JSMVC.InternalData.loadedFiles[file].initialized === false) {
 						fileObject = file.replace(/(\/)/g,'.');
-						initFunction = JSMVC.Utils.getObjectValue(fileObject, 'init', global);
+						initFunction = global.JSMVC.Utils.getObjectValue(fileObject, 'init', global);
 						if(typeof initFunction === 'function') {
-							initFunction.call(JSMVC.Utils.getObjectValue(fileObject, null, global)); //scope!
-							JSMVC.InternalData.loadedFiles[file]['initialized'] = true;
+							initFunction.call(global.JSMVC.Utils.getObjectValue(fileObject, null, global)); //scope!
+							global.JSMVC.InternalData.loadedFiles[file].initialized = true;
 						}
 					}
 				}
@@ -23,8 +23,8 @@
 		},
 		application : function(originalPath, config) {
 			window.onload = function() {
-				JSMVC._init(originalPath,config);
-			}
+				global.JSMVC._init(originalPath,config);
+			};
 		},
 		_init : function(originalPath, config) {
 			var launchFunction = null,
@@ -34,29 +34,29 @@
 				i = 0, j = 0;
 
 			global[originalPath] = config;
-			global.JSMVC['name'] = originalPath;
+			global.JSMVC.name = originalPath;
 
 			appPath = global[originalPath].appPath;
 			if(typeof appPath !== 'string') {
 				appPath = '';
 			}
-			global.JSMVC['appPath'] = appPath;
+			global.JSMVC.appPath = appPath;
 
 			requires = global[originalPath].requires;
 
 			if(requires) {
 				for(j = 0; j < requires.length; j++) {
-					JSMVC.create(requires[j]);
+					global.JSMVC.create(requires[j]);
 				}
 			}
 
 			controllers = global[originalPath].controllers;
 			for(i = 0; i < controllers.length; i++) {
-				JSMVC.Utils.loadController(controllers[i]);
+				global.JSMVC.Utils.loadController(controllers[i]);
 			}
 
-			if(config && typeof config['launch'] === 'function') {
-				launchFunction = JSMVC.Utils.getObjectValue(originalPath, 'launch', global);
+			if(config && typeof config.launch === 'function') {
+				launchFunction = global.JSMVC.Utils.getObjectValue(originalPath, 'launch', global);
 				if(typeof launchFunction === 'function') {
 					launchFunction();
 				}
@@ -80,17 +80,15 @@
 			}
 
 			this.Utils.loadJSFile(newPath);
-			return JSMVC.Utils.getObjectValue(originalPath, null, global);
+			return global.JSMVC.Utils.getObjectValue(originalPath, null, global);
 		},
 		define : function(originalPath, config) {
 			var parent = null,
 				i = 0,
 				path = '',
-				controllers = [],
 				parts = [],
 				item = null,
-				newPath = '',
-				initFunction = null;
+				newPath = '';
 
 			if(typeof path === 'string') {
 				parent = global;
@@ -114,16 +112,8 @@
 						}
 					}
 					if(parts[1] === 'controller') {
-						JSMVC.Utils.initController(originalPath);
+						global.JSMVC.Utils.initController(originalPath);
 					}
-					/*try {
-						initFunction = JSMVC.Utils.getObjectValue(originalPath, 'init', global);
-						if(typeof initFunction === 'function') {
-							initFunction();
-						}
-					} catch(ex) {
-						console.error(ex);
-					}*/
 				}
 			}
 		},
@@ -134,16 +124,16 @@
 				this.loadControllerModels(controllerPath);
 			},
 			loadController : function(controllerName) {
-				this.loadJSFile(JSMVC.name+'/controller/'+controllerName);
+				this.loadJSFile(global.JSMVC.name+'/controller/'+controllerName);
 			},
 			loadModel : function(controllerName, modelName) {
-				this.loadJSFile(JSMVC.name+'/model/'+modelName);
+				this.loadJSFile(global.JSMVC.name+'/model/'+modelName);
 			},
 			loadView : function(controllerName, viewName) {
-				this.loadJSFile(JSMVC.name+'/view/'+viewName);
+				this.loadJSFile(global.JSMVC.name+'/view/'+viewName);
 			},
 			loadControllerViews : function(controllerName) {
-				var controller = JSMVC.Utils.getObjectValue(controllerName, null, global),
+				var controller = global.JSMVC.Utils.getObjectValue(controllerName, null, global),
 					views = controller.views,
 					i = 0;
 				
@@ -154,7 +144,7 @@
 				}
 			},
 			loadControllerModels : function(controllerName) {
-				var controller = JSMVC.Utils.getObjectValue(controllerName, null, global),
+				var controller = global.JSMVC.Utils.getObjectValue(controllerName, null, global),
 					models = controller.models,
 					i = 0;
 
@@ -165,21 +155,21 @@
 				}
 			},
 			loadControllerRequirements : function(controllerName) {
-				var controller = JSMVC.Utils.getObjectValue(controllerName, null, global),
+				var controller = global.JSMVC.Utils.getObjectValue(controllerName, null, global),
 					requires = controller.requires,
 					i = 0;
 
 				if(requires) {
 					for(i = 0; i < requires.length; i++) {
-						this.loadJSFile(requires[i]);
+						global.JSMVC.create(requires[i]);
 					}
 				}
 			},
 			loadJSFile : function(fileName, callback) {
 				var newFile = document.createElement('script'),
-					appPath = JSMVC.appPath ? JSMVC.appPath : '';
+					appPath = global.JSMVC.appPath ? global.JSMVC.appPath : '';
 
-				JSMVC.InternalData.loadedFiles[fileName] = {
+				global.JSMVC.InternalData.loadedFiles[fileName] = {
 					loaded : false,
 					initialized : false
 				};
@@ -188,12 +178,12 @@
 				newFile.setAttribute('src', appPath+fileName+'.js');
 
 				newFile.onreadystatechange = newFile.onload = function() {
-					JSMVC.InternalData.loadedFiles[fileName]['loaded'] = true;
-					JSMVC.InternalData.initLoadedFiles();
+					global.JSMVC.InternalData.loadedFiles[fileName].loaded = true;
+					global.JSMVC.InternalData.initLoadedFiles();
 					if(callback) {
 						callback();
 					}
-				}
+				};
 				document.getElementsByTagName('head')[0].appendChild(newFile);
 			},
 			getObjectValue : function(pathStr, key, object) {
@@ -209,5 +199,5 @@
 				return (typeof key === 'string' ?  obj[key] : obj);
 			}
 		}
-	}
+	};
 })();

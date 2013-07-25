@@ -56,15 +56,15 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		SATURN_V.utils.Frontend.updateEl('voyager7_thrust', json.current_thrust/*+' %'*/);
 
 		if(json.internal_guidance_engaged == 0) {
-			SATURN_V.utils.Frontend.updateEl('mainEngineEngageButton', 'ENGAGE');//, 2000, 'SATURN_V.utils.Frontend.enableEl("'+id+'")');
+			SATURN_V.utils.Frontend.updateEl('internalGuidanceButton', 'ENGAGE');//, 2000, 'SATURN_V.utils.Frontend.enableEl("'+id+'")');
 		} else {
-			SATURN_V.utils.Frontend.updateEl('mainEngineEngageButton', 'DISENGAGE');//, 2000, 'SATURN_V.utils.Frontend.enableEl("'+id+'")');
+			SATURN_V.utils.Frontend.updateEl('internalGuidanceButton', 'DISENGAGE');//, 2000, 'SATURN_V.utils.Frontend.enableEl("'+id+'")');
 		}
 
 		if(json.main_engine_engaged == 0) {
-			SATURN_V.utils.Frontend.updateEl('systemAPSButton', 'ENGAGE');
+			SATURN_V.utils.Frontend.updateEl('mainEngineEngageButton', 'ENGAGE');
 		} else {
-			SATURN_V.utils.Frontend.updateEl('systemAPSButton', 'DISENGAGE');
+			SATURN_V.utils.Frontend.updateEl('mainEngineEngageButton', 'DISENGAGE');
 		}
 
 		if(json.s_ic_center_engine_available == 0) {
