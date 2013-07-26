@@ -66,7 +66,7 @@ caption {
 		color: #999999;
 		font-family: Helvetica;
 		font-size: 15px;
-		width : 65%;
+		min-width : 65%;
 		margin: 0 auto;
 }
 
