@@ -1,6 +1,8 @@
 body {
 		background-color: black;
 		padding: 0px;
+		margin: 0 auto;
+		/*width:1280px;*/
 }
 
 ul {margin:0; padding:0;}
