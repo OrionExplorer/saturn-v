@@ -1,7 +1,7 @@
 JSMVC.define('SATURN_V.utils.Frontend', {
 
 	updateInformation : function(status) {
-		var infoPanel = document.getElementById('message-box'),
+		var infoPanel = document.getElementById('messageBox'),
 			_status = status.toString();
 
 		infoPanel.value += '\n'+_status;

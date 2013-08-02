@@ -11,6 +11,15 @@ JSMVC.define('SATURN_V.utils.Shared', {
 		return lessThanZero ? 'T-'+(h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s) : 'T+'+(h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s);
 	},
 
+	getStyle : function (el,styleProp) {
+		var x = document.getElementById(el);
+		if (x.currentStyle)
+			var y = x.currentStyle[styleProp];
+		else if (window.getComputedStyle)
+			var y = document.defaultView.getComputedStyle(x,null).getPropertyValue(styleProp);
+		return y;
+	},
+
 	json2text : function(json_object) {
 		function replacer(key, value) {
 			if (typeof value === 'number' && !isFinite(value)) {

@@ -225,7 +225,7 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 
 	chatInputController : function(event) {
 		var key = event.keyCode || event.which,
-			chatInput = document.getElementById('chat-input');
+			chatInput = document.getElementById('chatInput');
 
 		if (key == 13 && chatInput.value.length > 0) {
 			SATURN_V.controller.Network.sendCommand(chatInput.value, 'chat_message');

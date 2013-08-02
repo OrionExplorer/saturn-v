@@ -1,12 +1,18 @@
 body {
-		background-color: black;
-		padding: 0px;
-		margin: 0 auto;
-		/*width:1280px;*/
+	background-color: black;
+	padding: 0px;
+	margin: 0 auto;
+	/*width:1280px;*/
 }
 
-ul {margin:0; padding:0;}
-li {list-style: none;}
+ul {
+	margin:0;
+	padding:0;
+}
+
+li {
+	list-style: none;
+}
 
 /* clean gray from http://hellohappy.org/css3-buttons/
 *******************************************************************************/
@@ -57,19 +63,13 @@ input[type="button"][disabled] {
 		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
 		color: #bfbfbf;
 }
-
-
-caption {
-		margin: 0px;
-		color: #999999;
+input[type="button"].controlButton {
+	width:30px;
 }
 
-.terminal {
-		color: #999999;
-		font-family: Helvetica;
-		font-size: 15px;
-		min-width : 65%;
-		margin: 0 auto;
+caption {
+	margin: 0px;
+	color: #999999;
 }
 
 input[type=text],input[type=password] {
@@ -91,36 +91,22 @@ textarea {
 	border-radius: 5px;
 	-moz-border-radius: 5px;
 	padding: 2px;
-}
-
-.terminal table {
-		color : black;
-		background-color : #999999;
-}
-
-.terminal td.title {
-		border: 0px;
-}
-
-.link {
-		border: 0px;
-		text-decoration: underline;
-		cursor: pointer;
+	resize: none;
 }
 
 input {
-		width: 123px;
+	width: 123px;
 }
 
 table, td {
-		border: 0px solid #999999;
-		border-radius: 5px;
-		font-family: Helvetica;
-		text-align: center;
-		/*width: auto;*/
-		-moz-border-radius: 3px;
-		padding: 3px;
-		table-layout:fixed;
+	border: 0px solid #999999;
+	border-radius: 5px;
+	font-family: Helvetica;
+	text-align: center;
+	/*width: auto;*/
+	-moz-border-radius: 5px;
+	padding: 5px;
+	table-layout:fixed;
 }​
 
 td {
@@ -130,6 +116,6 @@ td {
 }
 
 strong {
-		font-weight: bolder;
-		font-family: Helvetica;
+	font-weight: bolder;
+	font-family: Helvetica;
 }

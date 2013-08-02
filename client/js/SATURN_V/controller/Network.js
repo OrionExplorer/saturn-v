@@ -154,8 +154,8 @@ JSMVC.define('SATURN_V.controller.Network', {
 				} else {
 					if(json.msg == 'authorization_required') {
 						SATURN_V.utils.Frontend.updateInformation('Remote computer requires authorization');
-						
-						if(loadMask.style.display == 'none') {
+						var loadMaskStyleDisplay = loadMask.style.display;
+						if(loadMaskStyleDisplay == 'none' || loadMaskStyleDisplay == '') {
 							loadMask.style.display = 'block';
 							loadMask.style.height = '100%';
 							loginForm.style.display = 'block';

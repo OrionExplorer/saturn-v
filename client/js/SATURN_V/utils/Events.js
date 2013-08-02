@@ -37,7 +37,7 @@ JSMVC.define('SATURN_V.utils.Events', {
 
 	chatInputController : function() {
 		this.registerEvent([{
-			elementId : 'chat-input',
+			elementId : 'chatInput',
 			eventName : 'keypress',
 			callback : SATURN_V.controller.MainComputer.chatInputController,
 			callbackArguments : null,

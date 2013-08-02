@@ -1,8 +1,9 @@
 .box-info {
 	display: block;
-	margin: 5px;
+	margin: 2px;
 	color: #999999;
-	width: 80em;
+	width: 99%;
+	/*max-width: 90%;*/
 	overflow: visible;
 	display: inline-block;
 	vertical-align: middle;
@@ -10,7 +11,7 @@
 
 .box-1-info {
 	height: auto;
-	margin: 5px;
+	margin: 2px;
 	display: inline-block;
 	vertical-align: middle;
 	font-size:14px;
@@ -18,8 +19,8 @@
 }
 
 .reports-1-panel {
-	width: 100%;
-	max-width:1280px;
+	width: 99%;
+	/*max-width:1280px;*/
 	text-align: center;
 	line-height: 12px;
 	margin: 0 auto;
@@ -31,7 +32,8 @@
 	border: 1px solid;
 	border-bottom: 1px solid black;
 	border-right: 1px solid black;
-	background: #999999;
+	/*background: #535353;*/
+	background-image:-webkit-linear-gradient(#898989,#777777,#989898);
 	color: black;
 	width: 110px;
 }
@@ -41,10 +43,27 @@
 	border-right: 1px solid #999999;
 	background: black;
 	color: #999999;
-	width: 100px;
+	width: 110px;
 }
 
-.container {
+.controlContainer {
+	border : 1px solid #888888;
+	margin: 0 auto;
+	width:90%;
+}
+
+#loadMask {
+	position:absolute;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	background-color:black;
+	display:none;
+}
+
+#loginForm {
+	display:none;
 	width: 300px;
 	height: 150px;
 	background-color: #999999;
@@ -62,9 +81,96 @@
 	font-size: 9pt;
 }
 
-.controlContainer {
-	border : 1px solid #888888;
-	/*background-color: #191919;*/
+.windowHeader {
+	border-radius:2px;
+	-moz-border-radius:2px;
+	background-color:grey;
+	width:100%;
+	height:20px;
+	display:block;
+}
+
+.loginFormLayout {
+	width:100%;
+	height:50px;
+	position:absolute;
+	top:50%;
+	margin-top:-35px;
+}
+
+#usernameField, #passwordField {
+	background-color: black;
+	color:#999999;
+}
+
+#incorrectDataInfo {
+	position:absolute;
+	bottom:0px;
+	border-radius:2px;
+	-moz-border-radius:2px;
+	background-color:grey;
+	width:100%;
+	display:none;
+}
+
+#apolloCSM_control, #apolloLM_control, #houstonMC_control {
+	display: none;
+}
+
+.controlNavigation {
+	width:99%;
+	padding: 1px;
+}
+
+#chatInput {
+	width:99%;
+	height:15px;
+	margin-top:1px;
+	/*background-color: #535353;*/
+	background-image:-webkit-linear-gradient(#898989,#777777,#989898);
+}
+
+#messageBox {
+	height:70px;
+	width:99%;
+	/*background-color: #535353;*/
+	background-image:-webkit-linear-gradient(#898989,#777777,#989898);
+}
+
+.terminal {
+	color: #999999;
+	font-family: Helvetica;
+	font-size: 15px;
+	min-width : 65%;
 	margin: 0 auto;
-	width:90%;
+}
+
+.terminal table {
+	color : black;
+	/*background-color : #797979;*/
+	background-image:-webkit-linear-gradient(#898989,#777777,#989898);
+}
+
+.terminal td.title {
+	border: 0px;
+	font-weight:bold;
+	width:33%;
+}
+
+.terminal td.title-left {
+	text-align: left;
+}
+
+.terminal td.title-center {
+	text-align: center;
+}
+
+.terminal td.title-right {
+	text-align: right;
+}
+
+.link {
+	border: 0px;
+	text-decoration: underline;
+	cursor: pointer;
 }
