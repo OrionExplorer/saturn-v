@@ -2,6 +2,7 @@ body {
 	background-color: black;
 	padding: 0px;
 	margin: 0 auto;
+	min-width: 320px;
 	/*width:1280px;*/
 }
 
@@ -20,7 +21,7 @@ input[type="button"] {
 	height: 20px;
 	clear: right;
 	background-color: #eeeeee;
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc));
+	/*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc));*/
 	background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
 	background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
 	background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
@@ -78,7 +79,6 @@ input[type=text],input[type=password] {
 	font-family: Helvetica, monaco;
 	background-color: #999999;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
 	padding: 2px;
 }
 
@@ -89,7 +89,6 @@ textarea {
 	font-size: 14px;
 	background-color: #999999;
 	border-radius: 5px;
-	-moz-border-radius: 5px;
 	padding: 2px;
 	resize: none;
 }
@@ -103,8 +102,6 @@ table, td {
 	border-radius: 5px;
 	font-family: Helvetica;
 	text-align: center;
-	/*width: auto;*/
-	-moz-border-radius: 5px;
 	padding: 5px;
 	table-layout:fixed;
 }​

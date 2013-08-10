@@ -196,7 +196,7 @@
 					obj = obj[parts[i]];
 				}
 
-				return (typeof key === 'string' ?  obj[key] : obj);
+				return typeof key === 'string' ? obj.hasOwnProperty(key) ? obj[key] : obj : obj;
 			}
 		}
 	};

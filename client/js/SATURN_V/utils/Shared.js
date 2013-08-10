@@ -1,9 +1,9 @@
 JSMVC.define('SATURN_V.utils.Shared', {
 	name : 'Shared',
 
-	secondsToHms : function (d) {
-		var lessThanZero = (d < 0),
-			d = Math.abs(Math.round(Number(d))),
+	secondsToHms : function (seconds) {
+		var lessThanZero = (seconds < 0),
+			d = Math.abs(Math.round(Number(seconds))),
 			h = Math.floor(d / 3600),
 			m = Math.floor(d % 3600 / 60),
 			s = Math.floor(d % 3600 % 60);
