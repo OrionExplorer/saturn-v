@@ -605,17 +605,6 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			break;
 		}
 	}
-
-	for( i = 0; i < MAX_CLIENTS; i++ ) {
-		if( i <= MAX_CLIENTS && connected_clients[ i ].socket_descriptor == 0 && connected_clients[ i + 1].socket_descriptor > 0) {
-			connected_clients[ i ] = connected_clients[ i + 1 ];
-			connected_clients[ i + 1 ].socket_descriptor = 0;
-			connected_clients[ i + 1 ].authorized = 0;
-			connected_clients[ i + 1 ].binded = 0;
-			connected_clients[ i + 1 ].mode = CONNECTION;
-			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
-		}
-	}
 }
 
 CONNECTED_CLIENT* SOCKET_find_client( int socket_descriptor ) {

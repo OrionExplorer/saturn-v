@@ -20,10 +20,9 @@
 .reports-1-panel {
 	width: 99%;
 	text-align: center;
-	line-height: 12px;
+	line-height: 10px;
 	margin: 0 auto;
 	height: auto;
-	/*float: left;*/
 }
 
 .background-property-cell {
@@ -113,7 +112,7 @@
 }
 
 .controlNavigation {
-	width:99%;
+	width: 100%;
 	padding: 1px;
 }
 
@@ -126,7 +125,7 @@
 }
 
 #messageBox {
-	height:70px;
+	height:60px;
 	width:99%;
 	background-image:-webkit-linear-gradient(#898989,#777777,#989898);
 	background-image:-moz-linear-gradient(#898989,#777777,#989898);
@@ -138,6 +137,10 @@
 	font-size: 15px;
 	min-width : 60%;
 	margin: 0 auto;
+}
+
+#saturnVconfig {
+	cursor: pointer;
 }
 
 @media all and (min-width: 1200px) {
