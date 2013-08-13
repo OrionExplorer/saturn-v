@@ -5,7 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<meta name="author" content="Marcin Kelar">
 		<link href="css/app.css" rel="stylesheet" type="text/css">
-		<link href="css/g_hud.css" rel="stylesheet" type="text/css">
+		<link href="css/main.css" rel="stylesheet" type="text/css">
 		<link rel="SHORTCUT ICON" href="favicon.ico">
 		<title>SATURN V</title>
 	</head>
@@ -37,7 +37,7 @@
 		<div class="terminal">
 			<div class="reports-1-panel">
 				<div class="box-info">
-					<table class="controlNavigation">
+					<table class="controlNavigation main">
 						<tbody>
 							<tr>
 								<td class="title title-left">
@@ -60,7 +60,7 @@
 						<tbody>
 							<tr>
 								<td class="background-property-cell">
-									<strong>VELOCITY</strong>
+									<span>VELOCITY</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_velocity">0</span>
@@ -68,7 +68,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>ACCELERATION</strong>
+									<span>ACCELERATION</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_acceleration">0</span>
@@ -76,7 +76,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>ALTITUDE</strong>
+									<span>ALTITUDE</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_altitude">0</span>
@@ -90,7 +90,7 @@
 						<tbody>
 							<tr>
 								<td class="background-property-cell">
-									<strong>APOAPSIS</strong>
+									<span>APOAPSIS</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_orbitA">0.0</span>
@@ -98,7 +98,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>PERIAPSIS</strong>
+									<span>PERIAPSIS</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_orbitP">0.0</span>
@@ -106,7 +106,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>INCLINATION</strong>
+									<span>INCLINATION</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_orbitInclination">0</span>
@@ -120,7 +120,7 @@
 						<tbody>
 							<tr>
 								<td class="background-property-cell">
-									<strong>PITCH</strong>
+									<span>PITCH</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_pitch">0</span>
@@ -128,7 +128,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>ROLL</strong>
+									<span>ROLL</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_rollAzimuth">0</span>
@@ -136,7 +136,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>YAW</strong>
+									<span>YAW</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_yaw">0</span>
@@ -150,7 +150,7 @@
 						<tbody>
 							<tr>
 								<td class="background-property-cell">
-									<strong>G-FORCE</strong>
+									<span>G-FORCE</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_gForce">0</span>
@@ -158,7 +158,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>TOTAL</strong>
+									<span>TOTAL</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_distance">0</span>
@@ -166,7 +166,7 @@
 							</tr>
 							<tr>
 								<td class="background-property-cell">
-									<strong>THRUST</strong>
+									<span>THRUST</span>
 								</td>
 								<td class="background-value-cell">
 									<span data-name="voyager7_thrust">0</span>
@@ -185,13 +185,13 @@
 								<tbody>
 									<tr>
 										<td class="title title-left">
-											<strong class="link" id="showApolloSA514ControlPanel_CSM">SA-514</strong>
+											<span class="link" id="showApolloSA514ControlPanel_CSM">SA-514</span>
 										</td>
 										<td class="title title-center">
-											Command/Service Module
+											COMMAND/SERVICE MODULE
 										</td>
 										<td class="title title-right">
-											<strong class="link" id="showApolloLMControlPanel_CSM">LM</strong>
+											<span class="link" id="showApolloLMControlPanel_CSM">LM</span>
 										</td>
 									</tr>
 								</tbody>
@@ -207,13 +207,13 @@
 								<tbody>
 									<tr>
 										<td class="title title-left">
-											<strong class="link" id="showApolloCSMControlPanel_LM" >CSM</strong>
+											<span class="link" id="showApolloCSMControlPanel_LM" >CSM</span>
 										</td>
 										<td class="title title-center">
-											Lunar Module
+											LUNAR MODULE
 										</td>
 										<td class="title title-right">
-											<strong class="link" id="showApolloSA514ControlPanel_LM" >SA-514</strong>
+											<span class="link" id="showApolloSA514ControlPanel_LM" >SA-514</span>
 										</td>
 									</tr>
 								</tbody>
@@ -229,13 +229,13 @@
 								<tbody>
 									<tr>
 										<td class="title title-left">
-											<strong class="link" id="showApolloCSMControlPanel_MC" >CSM</strong>
+											<span class="link" id="showApolloCSMControlPanel_MC" >CSM</span>
 										</td>
 										<td class="title title-center">
-											Mission Control
+											MISSION CONTROL
 										</td>
 										<td class="title title-right">
-											<strong class="link" id="showApolloSA514ControlPanel_MC" >SA-514</strong>
+											<span class="link" id="showApolloSA514ControlPanel_MC" >SA-514</span>
 										</td>
 									</tr>
 								</tbody>
@@ -248,7 +248,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>MAX Q</strong>
+											<span>MAX Q</span>
 										</td>
 										<td class="background-value-cell">
 											<span data-name="voyager7_dynamicPressure">0</span>
@@ -264,7 +264,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-IVB</strong>
+											<span>S-IVB</span>
 										</td>
 									</tr>
 									<tr>
@@ -290,7 +290,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-II</strong>
+											<span>S-II</span>
 										</td>
 									</tr>
 									<tr>
@@ -316,7 +316,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-IC</strong>
+											<span>S-IC</span>
 										</td>
 									</tr>
 									<tr>
@@ -345,7 +345,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>COUNTDOWN</strong>
+											<span>COUNTDOWN</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" id="countdownButton" value="START" disabled="">
@@ -353,7 +353,7 @@
 									</tr>
 									<tr>
 										<td class="background-property-cell">
-											<strong>INTERNAL GUIDANCE</strong>
+											<span>INTERNAL GUIDANCE</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" id="internalGuidanceButton" value="ENGAGE" disabled="">
@@ -361,7 +361,7 @@
 									</tr>
 									<tr>
 										<td class="background-property-cell">
-											<strong>HOLDDOWN ARMS</strong>
+											<span>HOLDDOWN ARMS</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" id="holddownArmsButton" value="RELEASE" disabled="">
@@ -380,13 +380,13 @@
 								<tbody>
 									<tr>
 										<td class="title title-left">
-											<strong class="link" id="showApolloCSMControlPanel_SA" >CSM</strong>
+											<span class="link" id="showApolloCSMControlPanel_SA" >CSM</span>
 										</td>
 										<td class="title title-center">
 											SA-514
 										</td>
 										<td class="title title-right">
-											<strong class="link" id="showHoustonMCControlPanel_SA" >MC</strong>
+											<span class="link" id="showHoustonMCControlPanel_SA" >MC</span>
 										</td>
 									</tr>
 								</tbody>
@@ -399,7 +399,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>MAX Q</strong>
+											<span>MAX Q</span>
 										</td>
 										<td class="background-value-cell">
 											<span data-name="voyager7_dynamicPressure">0</span>
@@ -415,7 +415,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-IVB</strong>
+											<span>S-IVB</span>
 										</td>
 									</tr>
 									<tr>
@@ -453,7 +453,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-II</strong>
+											<span>S-II</span>
 										</td>
 									</tr>
 									<tr>
@@ -491,7 +491,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>S-IC</strong>
+											<span>S-IC</span>
 										</td>
 									</tr>
 									<tr>
@@ -531,7 +531,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>PITCH</strong>
+											<span>PITCH</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" class="controlButton" id="pitchButton" value="ON" disabled="">
@@ -541,7 +541,7 @@
 									</tr>
 									<tr>
 										<td class="background-property-cell">
-											<strong>ROLL</strong>
+											<span>ROLL</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" class="controlButton" id="rollButton" value="ON" disabled="">
@@ -551,7 +551,7 @@
 									</tr>
 									<tr>
 										<td class="background-property-cell">
-											<strong>YAW</strong>
+											<span>YAW</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" class="controlButton" id="yawButton" value="ON" disabled="">
@@ -567,7 +567,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>THRUST</strong>
+											<span>THRUST</span>
 										</td>
 										<td class="background-value-cell">
 											<ul>
@@ -586,7 +586,7 @@
 									</tr>
 									<tr>
 										<td class="background-property-cell">
-											<strong>MAIN ENGINE</strong>
+											<span>MAIN ENGINE</span>
 										</td>
 										<td class="background-value-cell">
 											<input type="button" id="mainEngineEngageButton" value="ENGAGE" disabled="">
@@ -600,7 +600,7 @@
 								<tbody>
 									<tr>
 										<td class="background-property-cell">
-											<strong>LET</strong>
+											<span>LET</span>
 										</td>
 										<td class="background-value-cell">
 											<ul>
@@ -615,7 +615,7 @@
 									</tr>
 									<tr>
 										<td class="background-property-cell">
-											<strong>AUTOPILOT</strong>
+											<span>AUTOPILOT</span>
 										</td>
 										<td class="background-value-cell">
 											<ul>

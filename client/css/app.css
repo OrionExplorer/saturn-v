@@ -1,5 +1,6 @@
 body {
-	background-color: black;
+	/*background-color: black;*/
+	background-color: #D6DAD0;
 	padding: 0px;
 	margin: 0 auto;
 	min-width: 320px;
@@ -15,13 +16,37 @@ li {
 	list-style: none;
 }
 
-/* clean gray from http://hellohappy.org/css3-buttons/
-*******************************************************************************/
+input::-moz-focus-inner { 
+	border: 0;
+	padding: 0;
+}
+
 input[type="button"] {
+	border: 3px solid #A69887;
+	background-color: #A69887;
+	color: #FFF1E1;
+	border-radius: 5px;
+	text-align: center;
+	margin: 1px;
+	width: 100px; 
+	height: 20px;
+	padding: 0px;
+}
+input[type="button"]:hover {
+	border: 3px solid #916B60;
+}
+
+input[type="button"][disabled] {
+		border: 3px solid #aaa;
+		/*border-bottom: 3px solid #888;*/
+		-webkit-box-shadow: inset 0 0 5px 2px #A69887, 0 1px 0 0 #A69887;
+		box-shadow: inset 0 0 5px 2px #A69887, 0 1px 0 0 #A69887;
+		color: #bfbfbf;
+}
+/*input[type="button"] {
 	height: 20px;
 	clear: right;
 	background-color: #eeeeee;
-	/*background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc));*/
 	background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
 	background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
 	background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
@@ -63,9 +88,9 @@ input[type="button"][disabled] {
 		-webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
 		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
 		color: #bfbfbf;
-}
+}*/
 input[type="button"].controlButton {
-	width:30px;
+	width:50px;
 }
 
 caption {
@@ -106,11 +131,11 @@ table, td {
 	table-layout:fixed;
 }​
 
-td {
-	padding: 0px;  
+/*td {
+	padding: 0px !important;  
 	table-layout:fixed;
 	border-radius: 0px;
-}
+}*/
 
 strong {
 	font-weight: bolder;
