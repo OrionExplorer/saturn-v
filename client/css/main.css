@@ -122,7 +122,6 @@
 
 .controlNavigation.main {
 	font-size: 20px;
-	height: 35px;
 }
 
 #chatInput {
@@ -154,10 +153,12 @@
 	cursor: pointer;
 }
 
-@media all and (min-width: 1200px) {
-	.terminal {
-		max-width: 1200px;
-	}	
+#voyager7_timeInfo {
+	white-space: nowrap;
+}
+
+.reports-1-panel[data-type="additional-data-600"] {
+	display: none;
 }
 
 @media all and (max-width: 768px) {
@@ -170,11 +171,29 @@
 	}
 }
 
-@media all and (max-width: 980px) {
-	.terminal {
-		width: 100%;
+@media all and (max-width: 1024px) {
+	.box-1-info[data-type="additional-data-1024"] {
+		display: none;
 	}
-	.box-1-info[data-type="additional-data-980"] {
+}
+
+@media all and (min-height: 600px) {
+	.reports-1-panel[data-type="additional-data-600"] {
+		display: block;
+	}
+}
+
+@media all and (orientation: portrait) {
+	.box-1-info {
+		width: 99%;
+	}
+}
+
+@media all and (max-width: 470px) {
+	.box-1-info {
+		width: 99%;
+	}
+	#voyager7_timeInfo {
 		display: none;
 	}
 }
@@ -184,12 +203,7 @@
 		font-size: 15px;
 		height: 10px;
 	}
-	#voyager7_timeInfo {
-		display: none;
-	}
-	.reports-1-panel[data-type="additional-data-550"] {
-		display: none;
-	}
+	
 	.box-1-info[data-type="additional-data-560"] {
 		display: none;
 	}
@@ -198,12 +212,14 @@
 .terminal table {
 	color : black;
 	border: 1px solid #8A8C86;
+	margin: 0 auto;
 }
 
 .terminal td.title {
 	border: 0px;
 	font-weight:bold;
 	width:33%;
+	white-space: nowrap;
 }
 
 .terminal td.title-left {
