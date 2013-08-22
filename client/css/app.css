@@ -43,55 +43,6 @@ input[type="button"][disabled] {
 		box-shadow: inset 0 0 5px 2px #A69887, 0 1px 0 0 #A69887;
 		color: #bfbfbf;
 }
-/*input[type="button"] {
-	height: 20px;
-	clear: right;
-	background-color: #eeeeee;
-	background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-	background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
-	background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
-	background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
-	background-image: linear-gradient(top, #eeeeee, #cccccc);
-	border: 1px solid #ccc;
-	margin: 1px;
-	border-bottom: 1px solid #bbb;
-	border-radius: 3px;
-	color: #333;
-	font: bold  "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
-	padding: 2px;
-	text-align: center;
-	text-shadow: 0 1px 0 #eee;
-	width: 100px; 
-}
-input[type="button"]:hover {
-		background-color: #dddddd;
-		background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #dddddd), color-stop(100%, #bbbbbb));
-		background-image: -webkit-linear-gradient(top, #dddddd, #bbbbbb);
-		background-image: -moz-linear-gradient(top, #dddddd, #bbbbbb);
-		background-image: -ms-linear-gradient(top, #dddddd, #bbbbbb);
-		background-image: -o-linear-gradient(top, #dddddd, #bbbbbb);
-		background-image: linear-gradient(top, #dddddd, #bbbbbb);
-		border: 1px solid #bbb;
-		border-bottom: 1px solid #999;
-		cursor: pointer;
-		text-shadow: 0 1px 0 #ddd;
-}
-input[type="button"]:active {
-		border: 1px solid #aaa;
-		border-bottom: 1px solid #888;
-		-webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
-		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
-}
-input[type="button"][disabled] {
-		border: 1px solid #aaa;
-		border-bottom: 1px solid #888;
-		-webkit-box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
-		box-shadow: inset 0 0 5px 2px #aaaaaa, 0 1px 0 0 #eeeeee;
-		color: #bfbfbf;
-}*/
-input[type="button"].controlButton {
-	width:50px;
-}
 
 caption {
 	margin: 0px;
@@ -131,11 +82,9 @@ table, td {
 	table-layout:fixed;
 }​
 
-/*td {
-	padding: 0px !important;  
-	table-layout:fixed;
-	border-radius: 0px;
-}*/
+table {
+	padding : 5em;
+}
 
 strong {
 	font-weight: bolder;

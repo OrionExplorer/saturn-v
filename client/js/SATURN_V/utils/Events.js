@@ -1,6 +1,7 @@
 JSMVC.define('SATURN_V.utils.Events', {
 	
 	init : function() {
+		this.loginButton();
 		this.onSaturnVLabelClick();
 		this.showApolloSA514ControlPanel();
 		this.showApolloLMControlPanel();
@@ -68,6 +69,15 @@ JSMVC.define('SATURN_V.utils.Events', {
 			callback : SATURN_V.controller.MainComputer.towerJettisonButtonController,
 			callbackArguments : ['towerJettisonEngageButton'],
 			scope : SATURN_V.controller.MainComputer
+		}]);
+	},
+
+	loginButton : function() {
+		this.registerEvent([{
+			elementId : 'loginButton',
+			eventName : 'click',
+			callback : SATURN_V.controller.Network.performUserLogin,
+			scope : SATURN_V.controller.Network
 		}]);
 	},
 

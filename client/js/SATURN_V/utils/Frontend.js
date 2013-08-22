@@ -71,7 +71,7 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 			i = 0;
 
 		for (i = 0; i < inputs.length; i++) {
-			if (inputs[i].type === 'button') {
+			if (inputs[i].type === 'button' && inputs[i].id !== 'loginButton') {
 				inputs[i].disabled = bool;
 			}
 		}

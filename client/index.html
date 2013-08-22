@@ -16,25 +16,28 @@
 		<!-- Login form -->
 		<div id="loadMask"></div>
 		<div id="loginForm">
-			<div class="windowHeader"></div>
 			<table class="loginFormLayout">
 				<tr>
-					<td>USERNAME</td>
+					<td class="usernameLabel"><span>USERNAME</span></td>
 					<td>
 						<input autocomplete="on" type="text" id="usernameField" />
 					</td>
 				</tr>
 				<tr>
-					<td>TOKEN</td>
+					<td class="passwordLabel"><span>TOKEN</span></td>
 					<td>
 						<input autocomplete="on" type="password" id="passwordField" />
 					</td>
 				</tr>
 			</table>
-			<div id="incorrectDataInfo">TOKEN IS INCORRECT</div>
+			<table class="loginButtonTable">
+				<tr><td><input id="loginButton" type="button" value="LOGIN"/></td></tr>
+				<tr><td><span id="incorrectDataInfo">TOKEN IS INCORRECT</span></td></tr>
+			</table>
 		</div>
+		
 		<!-- Main form -->
-		<div class="terminal">
+		<div id="mainTerminal" class="terminal">
 			<div class="reports-1-panel">
 				<div class="box-info">
 					<table class="controlNavigation main">
@@ -435,14 +438,14 @@
 									</tr>
 									<tr>
 										<td class="background-value-cell">
-											<ul>
-												<li>
+											<!-- <ul> -->
+												<!-- <li> -->
 													<input type="button" id="systemS3Restart" value="RESTART" disabled="">
-												</li>
-												<li>
+												<!-- </li> -->
+												<!-- <li> -->
 													<input type="button" id="systemS3ActionButton" value="OUTBOARD" disabled="">
-												</li>
-											</ul>
+												<!-- </li> -->
+											<!-- </ul> -->
 										</td>
 									</tr>
 								</tbody>
@@ -473,14 +476,14 @@
 									</tr>
 									<tr>
 										<td class="background-value-cell">
-											<ul>
-												<li>
+											<!-- <ul> -->
+												<!-- <li> -->
 													<input type="button" id="systemS2CenterEngineCutoffButton" value="INBOARD" disabled="">
-												</li>
-												<li>
+												<!-- </li> -->
+												<!-- <li> -->
 													<input type="button" id="systemS2ActionButton" value="OUTBOARD" disabled="">  
-												</li>
-											</ul>
+												<!-- </li> -->
+											<!-- </ul> -->
 										</td>
 									</tr>
 								</tbody>
@@ -511,14 +514,14 @@
 									</tr>
 									<tr>
 										<td class="background-value-cell">
-											<ul>
-												<li>
+											<!-- <ul> -->
+												<!-- <li> -->
 													<input type="button" id="systemS1CenterEngineCutoffButton" value="INBOARD" disabled="">
-												</li>
-												<li>
+												<!-- </li> -->
+												<!-- <li> -->
 													<input type="button" id="systemS1ActionButton" value="OUTBOARD" disabled="">  
-												</li>
-											</ul>
+												<!-- </li> -->
+											<!-- </ul> -->
 										</td>
 									</tr>
 								</tbody>

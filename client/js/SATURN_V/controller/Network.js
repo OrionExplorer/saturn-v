@@ -65,6 +65,7 @@ JSMVC.define('SATURN_V.controller.Network', {
 	},
 
 	performUserLogin : function(event) {
+		console.log(event.type);
 		var key = event.keyCode || event.which,
 			userLogin = document.getElementById('usernameField'),
 			userPassword = document.getElementById('passwordField'),
@@ -72,7 +73,7 @@ JSMVC.define('SATURN_V.controller.Network', {
 
 		document.getElementById('incorrectDataInfo').style.display = 'none';
 
-		if(key == 13) {
+		if(key == 13 || event.type == 'click') {
 			if( userLogin.value.length == 0 || userPassword.value.length == 0 ) {
 				alert('Please enter username and token!');
 			} else if(userLogin.value.length > 0 & userPassword.value.length > 0) {
@@ -141,12 +142,11 @@ JSMVC.define('SATURN_V.controller.Network', {
 					
 				}
 			} else if(json.data_type == 'command_response') {
-				
-
 				if(json.success) {
 					if(json.msg == 'user_authorized') {
 						loadMask.style.display = 'none';
 						loginForm.style.display = 'none';
+						document.getElementById('mainTerminal').style.display = 'block';
 						SATURN_V.utils.Frontend.updateInformation('Access to remote computer granted');
 						SATURN_V.utils.Frontend.setAllButtonsDisabled(false);
 						/*SATURN_V.controller.Network*/me.sendCommand('', 'data', 'live');
@@ -154,6 +154,7 @@ JSMVC.define('SATURN_V.controller.Network', {
 				} else {
 					if(json.msg == 'authorization_required') {
 						SATURN_V.utils.Frontend.updateInformation('Remote computer requires authorization');
+						document.getElementById('mainTerminal').style.display = 'none';
 						var loadMaskStyleDisplay = loadMask.style.display;
 						if(loadMaskStyleDisplay == 'none' || loadMaskStyleDisplay == '') {
 							loadMask.style.display = 'block';
