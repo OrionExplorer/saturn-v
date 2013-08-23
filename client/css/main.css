@@ -45,7 +45,7 @@
 	background: black;
 	color: #999999;
 	width: 110px;
-	font-size: 12px;
+	font-size: 15px;
 }
 
 .background-value-cell span {
@@ -137,7 +137,7 @@
 	margin-top: 1px;
 	border: 1px solid #1B2128;
 	background-color: #C4CAC1;
-	font-size: 10px;
+	font-size: 15px;
 }
 
 #messageBox {
@@ -145,7 +145,7 @@
 	width: 99%;
 	border: 1px solid #1B2128;
 	background-color: #C4CAC1;
-	font-size: 10px;
+	font-size: 15px;
 }
 
 .usernameLabel, .passwordLabel {
@@ -183,7 +183,7 @@ input[type="button"].controlButton {
 
 input[type="button"] {
 	font-size : 1em;
-	width: 70px;
+	width: 100px;
 }
 
 @media all and (min-width: 1200px) {
@@ -244,6 +244,10 @@ input[type="button"] {
 	}
 	/**/
 
+	.background-value-cell[data-type="portrait"] {
+		display: none;
+	}
+
 	.background-value-cell span {
 		font-size: 2em;
 	}
@@ -291,7 +295,7 @@ input[type="button"] {
 		font-size: 15px;
 		height: 10px;
 	}
-	
+
 	.box-1-info[data-type="additional-data-560"] {
 		display: none;
 	}
@@ -301,6 +305,7 @@ input[type="button"] {
 	color : black;
 	border: 1px solid #8A8C86;
 	margin: 0 auto;
+	padding: 3px;
 }
 
 .terminal td.title {

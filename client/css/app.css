@@ -32,6 +32,7 @@ input[type="button"] {
 	height: 20px;
 	padding: 0px;
 }
+
 input[type="button"]:hover {
 	border: 3px solid #916B60;
 }
@@ -78,7 +79,7 @@ table, td {
 	border-radius: 5px;
 	font-family: Helvetica;
 	text-align: center;
-	padding: 5px;
+	padding: 4px;
 	table-layout:fixed;
 }​
 
