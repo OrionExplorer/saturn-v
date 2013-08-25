@@ -95,10 +95,10 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 
 	mainEngineThrustButtonController : function(id) {
 		switch(document.getElementById(id).value) {
-			case '+' : {
+			case 'INCREASE' : {
 					this.execCommand('THRUST', 'INCREASE', 5, false);
 			} break;
-			case '-' : {
+			case 'DECREASE' : {
 					this.execCommand('THRUST', 'DECREASE', 5, false);
 			} break;
 			case 'FULL' : {
