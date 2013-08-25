@@ -59,11 +59,17 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 	},
 
 	disableEl : function(id) {
-		document.getElementById(id).disabled = true;
+		var element = document.getElementById(id);
+		if(element && element.disabled === false) {
+			element.disabled = true;
+		}
 	},
 
 	enableEl : function(id) {
-		document.getElementById(id).disabled = false;
+		var element = document.getElementById(id);
+		if(element && element.disabled === true) {
+			element.disabled = false;
+		}
 	},
 
 	setAllButtonsDisabled : function(bool) {
@@ -71,7 +77,7 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 			i = 0;
 
 		for (i = 0; i < inputs.length; i++) {
-			if (inputs[i].type === 'button' && inputs[i].id !== 'loginButton') {
+			if (inputs[i].type === 'button' && inputs[i].id !== 'loginButton' && inputs[i].id !== 'closeControlPanelButton' ) {
 				inputs[i].disabled = bool;
 			}
 		}

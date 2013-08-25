@@ -94,6 +94,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "s_ii_thrust", telemetry_data.s_ii_thrust );
 	cJSON_AddNumberToObject( data, "s_ii_burn_time", telemetry_data.s_ii_burn_time );
 	cJSON_AddNumberToObject( data, "s_ii_center_engine_available", telemetry_data.s_ii_center_engine_available );
+	cJSON_AddNumberToObject( data, "s_ii_interstage_mass", telemetry_data.s_ii_interstage_mass );
 
 	cJSON_AddNumberToObject( data, "s_ivb_fuel", telemetry_data.s_ivb_fuel );
 	cJSON_AddNumberToObject( data, "s_ivb_attached", telemetry_data.s_ivb_attached );
@@ -175,6 +176,7 @@ void TELEMETRY_update( void ) {
 	telemetry_data.s_ii_thrust = system_s2.current_thrust;
 	telemetry_data.s_ii_burn_time = system_s2.burn_time;
 	telemetry_data.s_ii_center_engine_available = system_s2.center_engine_available;
+	telemetry_data.s_ii_interstage_mass = system_s2.interstage_mass;
 
 	telemetry_data.s_ivb_fuel = system_s3.fuel;
 	telemetry_data.s_ivb_attached = ROCKET_STAGE_get_attached( &system_s3 );

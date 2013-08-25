@@ -89,7 +89,7 @@ void MAIN_COMPUTER_init( void ) {
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
 	time_tick = ( time_interval * 0.001 );
-	telemetry_data.mission_time = -12.0;
+	telemetry_data.mission_time = -20.0;
 	telemetry_data.launch_escape_tower_ready = 1;
 	AUTOPILOT_init();
 

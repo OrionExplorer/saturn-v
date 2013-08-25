@@ -34,7 +34,8 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 				NULL_THRUST : 8,
 				INCREASE : 9,
 				DECREASE : 10,
-				JETTISON : 11
+				JETTISON : 11,
+				INTERSTAGE_JETTISON : 12
 			};
 		
 		if(SATURN_V.controller.Network.Socket) {
@@ -168,6 +169,9 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 			} break;
 			case 'systemS2CenterEngineCutoffButton' : {
 				this.execCommand('S2', 'CENTER_ENGINE_CUTOFF');
+			} break;
+			case 'systemS2InterstageJettisonButton' : {
+				this.execCommand('S2', 'INTERSTAGE_JETTISON');
 			} break;
 		}
 	},

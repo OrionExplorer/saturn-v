@@ -65,7 +65,6 @@ JSMVC.define('SATURN_V.controller.Network', {
 	},
 
 	performUserLogin : function(event) {
-		console.log(event.type);
 		var key = event.keyCode || event.which,
 			userLogin = document.getElementById('usernameField'),
 			userPassword = document.getElementById('passwordField'),

@@ -178,6 +178,7 @@ struct TELEMETRY {
 	short					s_ic_center_engine_available;
 	short					s_ii_center_engine_available;
 	short					s_ivb_center_engine_available;
+	long double				s_ii_interstage_mass;
 };
 
 /* G³ówna struktura, która bêdzie przechowywa³a wszystkie informacje o po³¹czonym kliencie */

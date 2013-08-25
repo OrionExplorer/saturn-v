@@ -2,6 +2,7 @@ JSMVC.define('SATURN_V.utils.Events', {
 	
 	init : function() {
 		this.loginButton();
+		this.closeControlPanelButton();
 		this.onSaturnVLabelClick();
 		this.showApolloSA514ControlPanel();
 		this.showApolloLMControlPanel();
@@ -21,14 +22,37 @@ JSMVC.define('SATURN_V.utils.Events', {
 
 		this.autoPilotButtonController();
 		this.chatInputController();
+		this.showControlPanelButtons();
+	},
+
+	showControlPanelButtons : function() {
+		var controlPanelButtons = SATURN_V.controller.MainView.controlPanelButtons,
+			i = 0,
+			eventsList = [];
+
+		for(i = 0; i < controlPanelButtons.length; i++) {
+			eventsList[eventsList.length] = {
+				elementId : controlPanelButtons[i],
+				eventName : 'click',
+				callback : SATURN_V.controller.MainView.showControlPanel,
+				callbackArguments : [controlPanelButtons[i]],
+				scope : SATURN_V.controller.MainView
+			}
+		}
+		this.registerEvent(eventsList);
 	},
 
 	registerEvent : function(cfg) {
 		var i = 0,
 			listener = function(index) {
-				document.getElementById(cfg[index].elementId).addEventListener(cfg[index].eventName, function(event) {
-					cfg[index].callback.call(cfg[index].scope, cfg[index].callbackArguments ? cfg[index].callbackArguments : event);
-				});
+				var element = document.getElementById(cfg[index].elementId);
+				if(!element) {
+					console.error('Cannot find element "'+cfg[index].elementId+'" in DOM.')
+				} else {
+					document.getElementById(cfg[index].elementId).addEventListener(cfg[index].eventName, function(event) {
+						cfg[index].callback.call(cfg[index].scope, cfg[index].callbackArguments ? cfg[index].callbackArguments : event);
+					});
+				}
 		};
 
 		for(i = 0; i < cfg.length; i++) {
@@ -78,6 +102,15 @@ JSMVC.define('SATURN_V.utils.Events', {
 			eventName : 'click',
 			callback : SATURN_V.controller.Network.performUserLogin,
 			scope : SATURN_V.controller.Network
+		}]);
+	},
+
+	closeControlPanelButton : function() {
+		this.registerEvent([{
+			elementId : 'closeControlPanelButton',
+			eventName : 'click',
+			callback : SATURN_V.controller.MainView.closeControlPanel,
+			scope : SATURN_V.controller.MainView
 		}]);
 	},
 

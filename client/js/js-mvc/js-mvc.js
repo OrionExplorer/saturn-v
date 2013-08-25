@@ -117,6 +117,15 @@
 				}
 			}
 		},
+		Object : {
+			isEmpty : function(object) {
+				var key;
+				for(key in object) {
+					return false;
+				}
+				return true;
+			}
+		},
 		Utils : {
 			initController : function(controllerPath) {
 				this.loadControllerRequirements(controllerPath);
