@@ -2,15 +2,17 @@
 ######Copyright (C) 2011 - 2013
 ######Marcin Kelar (marcin.kelar@gmail.com)
 
-Interactive Saturn V simulator. JavaScript code written with [JSMVC framework](https://github.com/OrionExplorer/js-mvc).
+Interactive Saturn V simulator.
+
+Client code written with [JSMVC framework](https://github.com/OrionExplorer/js-mvc).  
+Server code written with [c-websocket](https://github.com/OrionExplorer/c-websocket).
 
 Features:
 * Saturn V main computer (server application) uses WebSockets and standard sockets simultaneously
 * Best played with friends (at least one astronaut and one flight controller)
 * Built-in chat
-* Separated GUI sections for Saturn V, Apollo CSM and Apollo LM modules
+* Separated GUI sections for Saturn V, Apollo CSM, Apollo LM and Mission Control modules
 * Live flight data
-* Current simulation ends when Earth Parking Orbit is reached
 
 TODO:
 - [ ] Separate user accounts with authorization
