@@ -34,7 +34,7 @@
 	background-color: #C4CAC1;
 	color: black;
 	width: 110px;
-	font-size: 15px;
+	font-size: 1.2em;
 	font-weight: bold;
 	/*white-space: nowrap;*/
 	overflow: hidden;
@@ -42,7 +42,7 @@
 }
 
 .background-property-cell.link {
-	font-size: 1.2em !important;
+	/*font-size: 1.2em !important;*/
 	padding: 10px;
 	width: auto;
 	height: auto;
@@ -61,7 +61,7 @@
 	background: black;
 	color: #999999;
 	width: 110px;
-	font-size: 15px;
+	font-size: 1.2em;
 }
 
 .background-value-cell span {
@@ -89,7 +89,7 @@
 	display: none;
 	padding: 0px;
 	top:50%;
-	margin-top: -12%;
+	margin-top: -15%;
     left:50%;
     margin-left:-45%;
 	width: 90%;
@@ -121,7 +121,7 @@
 	border-radius: 5px !important;
 	width: 50% !important;
 	padding: 5px !important;
-	font-size: 1.5em !important;
+	font-size: 2.5em !important;
 }
 
 #loginForm {
@@ -195,7 +195,7 @@
 }
 
 .controlNavigation.links {
-	margin-bottom: 20px !important;
+	margin-bottom: 0px !important;
 }
 
 #chatInput {
@@ -252,6 +252,7 @@
 input[type="button"] {
 	font-size: 1em;
 	width: 100px;
+	padding : 2em !important;
 }
 
 @media all and (min-width: 1900px) {
@@ -317,7 +318,10 @@ input[type="button"] {
 	}
 }
 
-@media all and (min-height: 600px) {
+@media all and (min-height: 700px) {
+	.controlNavigation.links {
+		margin-bottom: 10px !important;
+	}
 	.reports-1-panel[data-type="additional-data-600"] {
 		display: block;
 	}
@@ -336,6 +340,7 @@ input[type="button"] {
 		opacity: 1 !important;
 		position: fixed !important;
 		max-height: 100% !important;
+		min-height: 100% !important;
 		height: 100% !important;
 		top: 0px !important;
 		left: 0px !important;
@@ -344,10 +349,18 @@ input[type="button"] {
 		box-shadow: none;
 	}
 
-	#controlPanel input[type="button"] {
-		width:auto;
+	#loginForm input[type="button"], #controlPanel input[type="button"] {
+		width: 90% !important;
+		margin: 15px;
 		padding: 1em !important;
-		font-size: 2em;
+		font-size: 4em !important;
+	}
+
+	input[type="text"], input[type="password"] {
+		width: 90% !important;
+		/*margin: 15px;*/
+		padding: 1em !important;
+		font-size: 4em !important;
 	}
 
 	/**/
@@ -398,7 +411,7 @@ input[type="button"] {
 	}
 
 	td.title-center, td.title-left, td.title-right {
-		font-size: 2em;
+		font-size: 3em !important;
 	}
 }
 
@@ -436,6 +449,7 @@ input[type="button"] {
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow:ellipsis;
+	font-size : 1.5em;
 }
 
 .terminal td.title-left, #controlPanel td.title-left {
@@ -455,6 +469,7 @@ input[type="button"] {
 	text-decoration: underline;
 	cursor: pointer;
 	opacity: 0.7;
+	font-size: 1.2em;
 }
 
 .link:hover {
