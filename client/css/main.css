@@ -245,7 +245,9 @@
 
 .footer {
 	position: absolute;
-	margin: 0 auto;
+	left: 50%;
+	margin-left: -45%;
+	width:90%;
 	bottom: 10px;
 }
 
