@@ -349,9 +349,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		if(targetId) {
 			document.getElementById(targetId).style.display = 'block';
 			controlPanel.style.display = 'block';
-			/*if(controlZone) {
-				controlPanel.style.top = window.getComputedStyle(controlZone, null).getPropertyValue('top');
-			}*/
 		}
 		
 	}
