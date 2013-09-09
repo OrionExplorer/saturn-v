@@ -1,11 +1,14 @@
 JSMVC.define('SATURN_V.utils.Frontend', {
 
 	updateInformation : function(status) {
-		var infoPanel = document.getElementById('messageBox'),
-			_status = status.toString();
+		var infoPanel = this.findElementsByDataAttr('component', 'messageBox');
+		_status = status.toString(),
+		i = 0;
 
-		infoPanel.value += '\n'+_status;
-		infoPanel.scrollTop = 99999;
+		for(i = 0; i < infoPanel.length; i++) {
+			infoPanel[i].value += '\n'+_status;
+			infoPanel[i].scrollTop = 99999;	
+		}
 	},
 
 	findElementsByDataAttr : function(dataAttrName, dataAttrValue) {

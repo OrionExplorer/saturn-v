@@ -138,6 +138,21 @@
 				<li><input type="button" id="holddownArmsButton" value="RELEASE" disabled=""></li>
 			</ul>
 		</div>
+		<!-- CHAT -->
+		<div id="controlPanelSA514Chat">
+			<table class="controlNavigation links"><tbody><tr><td class="title title-center">COMMUNICATION</td></tr></tbody></table>
+			<div class="box-info">
+				<textarea class="messageBox" data-component="messageBox" readonly="readonly">INTERFACE READY</textarea>
+				<input class="chatInput" data-component="chatInput" type="text"></input>
+			</div>
+		</div>
+		<div id="controlPanelMCChat">
+			<table class="controlNavigation links"><tbody><tr><td class="title title-center">COMMUNICATION</td></tr></tbody></table>
+			<div class="box-info">
+				<textarea class="messageBox" data-component="messageBox" readonly="readonly">INTERFACE READY</textarea>
+				<input class="chatInput" data-component="chatInput" type="text"></input>
+			</div>
+		</div>
 
 		<input id="closeControlPanelButton" class="bigButton" type="button" value="CLOSE"/>
 	</div>
@@ -486,6 +501,17 @@
 									</tbody>
 								</table>
 							</div>
+							<div class="box-1-info">
+								<table>
+									<tbody>
+										<tr>
+											<td class="background-property-cell link" id="controlPanelMCChat_show">
+												<span>COMMUNICATION</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -517,6 +543,22 @@
 					</div>
 					<div class="box-1-info mission-control-controls">
 						<div class="reports-1-panel">
+						</div>
+						<div class="reports-1-panel">
+							<div class="box-1-info" data-type="additional-data-560-h">
+								<table>
+									<tbody>
+										<tr>
+											<td class="background-property-cell">
+												<span>MAX Q</span>
+											</td>
+											<td class="background-value-cell">
+												<span data-name="voyager7_dynamicPressure">0</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 						<div class="reports-1-panel">
 							<div class="box-1-info">
@@ -676,15 +718,20 @@
 									</tbody>
 								</table>
 							</div>
+							<div class="box-1-info">
+								<table>
+									<tbody>
+										<tr>
+											<td class="background-property-cell link" id="controlPanelSA514Chat_show">
+												<span>COMMUNICATION</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		<div class="reports-1-panel footer" data-type="additional-data-660-h">
-			<div class="box-info">
-				<textarea id="messageBox" readonly="readonly">INTERFACE READY</textarea>
-				<input id="chatInput" type="text" />
 			</div>
 		</div>
 	</div>

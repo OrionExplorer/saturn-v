@@ -45,15 +45,33 @@ JSMVC.define('SATURN_V.utils.Events', {
 	registerEvent : function(cfg) {
 		var i = 0,
 			listener = function(index) {
-				var element = document.getElementById(cfg[index].elementId);
+				var element = document.getElementById(cfg[index].elementId),
+				single = true,
+				i = 0;
+
 				if(!element) {
-					console.error('Cannot find element "'+cfg[index].elementId+'" in DOM.')
-				} else {
-					document.getElementById(cfg[index].elementId).addEventListener(cfg[index].eventName, function(event) {
-						cfg[index].callback.call(cfg[index].scope, cfg[index].callbackArguments ? cfg[index].callbackArguments : event);
-					});
+					element = SATURN_V.utils.Frontend.findElementsByDataAttr('component', cfg[index].elementId);
+					if(!element) {
+						console.error('Cannot find element "'+cfg[index].elementId+'" in DOM.')
+					} else {
+						single = false;
+					}
 				}
-		};
+
+				if(element) {
+					if(single === true) {
+						document.getElementById(cfg[index].elementId).addEventListener(cfg[index].eventName, function(event) {
+							cfg[index].callback.call(cfg[index].scope, cfg[index].callbackArguments ? cfg[index].callbackArguments : event);
+						});
+					} else {
+						for(i = 0; i < element.length; i++) {
+							element[i].addEventListener(cfg[index].eventName, function(event) {
+								cfg[index].callback.call(cfg[index].scope, cfg[index].callbackArguments ? cfg[index].callbackArguments : event);
+							});
+						}
+					}
+				}
+			};
 
 		for(i = 0; i < cfg.length; i++) {
 			listener(i);

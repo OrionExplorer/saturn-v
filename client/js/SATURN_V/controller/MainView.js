@@ -15,7 +15,9 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			'controlPanelAutoPilot_show',
 			'controlPanelCountdown_show',
 			'controlPanelInternalGuidance_show',
-			'controlPanelHolddownArms_show'
+			'controlPanelHolddownArms_show',
+			'controlPanelSA514Chat_show',
+			'controlPanelMCChat_show'
 	],
 
 	getNewData : function(json) {

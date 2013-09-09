@@ -232,21 +232,21 @@
 	margin-bottom: 15px !important;
 }
 
-#chatInput {
+.chatInput {
 	width: 99%;
-	height: 15px;
-	margin-top: 1px;
-	border: 1px solid #1B2128;
-	background-color: #C4CAC1;
-	font-size: 15px;
+	height: 35px;
+	margin-top: 1px !important;
+	border: 1px solid #1B2128 !important;
+	background-color: #C4CAC1 !important;
+	font-size: 1.5em;
 }
 
-#messageBox {
-	height: 60px;
+.messageBox {
+	height: 150px;
 	width: 99%;
 	border: 1px solid #1B2128;
 	background-color: #C4CAC1;
-	font-size: 15px;
+	font-size: 1.5em;
 }
 
 .usernameLabel, .passwordLabel {
@@ -278,11 +278,10 @@
 }
 
 .footer {
-	position: absolute;
+	position: relative;
 	left: 50%;
-	margin-left: -45%;
-	width:90%;
-	bottom: 10px;
+	margin-left: -49%;
+	width:99%;
 }
 
 input[type="button"] {
@@ -364,12 +363,6 @@ input[type="button"] {
 	}
 }
 
-@media all and (max-height: 660px) {
-	.reports-1-panel[data-type="additional-data-660-h"] {
-		display: none;
-	}
-}
-
 @media all and (max-height: 560px) {
 	.box-1-info[data-type="additional-data-560-h"] {
 		display: none;
@@ -423,10 +416,6 @@ input[type="button"] {
 	}
 
 	.box-1-info[data-type="additional-data-560-h"] {
-		display: none;
-	}
-
-	.reports-1-panel[data-type="additional-data-660-h"] {
 		display: none;
 	}
 

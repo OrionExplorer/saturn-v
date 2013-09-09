@@ -229,12 +229,14 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 
 	chatInputController : function(event) {
 		var key = event.keyCode || event.which,
-			chatInput = document.getElementById('chatInput');
+			chatInput = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'chatInput'),
+			i = 0;
 
-		if (key == 13 && chatInput.value.length > 0) {
-			SATURN_V.controller.Network.sendCommand(chatInput.value, 'chat_message');
-			chatInput.value = '';
+		for(i = 0; i < chatInput.length; i++) {
+			if (key == 13 && chatInput[i].value.length > 0) {
+				SATURN_V.controller.Network.sendCommand(chatInput[i].value, 'chat_message');
+				chatInput[i].value = '';
+			}	
 		}
 	}
-
 });
