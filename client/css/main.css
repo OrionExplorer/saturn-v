@@ -52,9 +52,11 @@
 }
 
 .mission-control-rocket-view {
+	position: relative;
+	top:0px;
+	margin-left:15px;
 	width: 35em;
 	height:30em;
-	margin-left: 5px;
 	border: 2px solid #8A8C86;
 	background-color: #4C4C4C;
 }
@@ -298,6 +300,10 @@ input[type="button"] {
 		line-height: 1.1em !important;
 	}
 
+	.mission-control-rocket-view {
+		padding: 30px !important;
+	}
+
 	.bigButton {
 		height: auto !important;
 		border-radius: 5px !important;
@@ -348,6 +354,15 @@ input[type="button"] {
 @media all and (max-width: 900px) {
 	.box-1-info[data-type="additional-data-900-w"] {
 		display: none;
+	}
+}
+
+@media all and (max-width: 1120px) {
+	.mission-control-rocket-view, .rocket-display {
+		display: none;
+	}
+	.mission-control-controls {
+		width: 99%;
 	}
 }
 
