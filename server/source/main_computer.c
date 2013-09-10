@@ -91,6 +91,7 @@ void MAIN_COMPUTER_init( void ) {
 	time_tick = ( time_interval * 0.001 );
 	telemetry_data.mission_time = -20.0;
 	telemetry_data.launch_escape_tower_ready = 1;
+	telemetry_data.active_stage = 1;
 	AUTOPILOT_init();
 
 	MAIN_FLIGHT_STATUS = LAUNCH_FROM_EARTH;
@@ -198,6 +199,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 								ROCKET_STAGE_do_detach( &system_s1 );
 								success = 1;
 								strncpy( message, "S-IC STAGED", BIG_BUFF_SIZE );
+								telemetry_data.active_stage = 2;
 							} else {
 								success = 0;
 								strncpy( message, "ERROR: S-IC STAGE IS STAGED", BIG_BUFF_SIZE );
@@ -263,6 +265,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 								ROCKET_STAGE_do_detach( &system_s2 );
 								success = 1;
 								strncpy( message, "S-II STAGED", BIG_BUFF_SIZE );
+								telemetry_data.active_stage = 3;
 							} else {
 								success = 0;
 								strncpy( message, "ERROR: S-II STAGE IS STAGED", BIG_BUFF_SIZE );
@@ -339,6 +342,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 								ROCKET_STAGE_do_detach( &system_s3 );
 								success = 1;
 								strncpy( message, "S-IVB STAGED", BIG_BUFF_SIZE );
+								telemetry_data.active_stage = -1;
 							} else {
 								success = 0;
 								strncpy( message, "ERROR: S-IVB STAGE IS STAGED", BIG_BUFF_SIZE );

@@ -71,7 +71,8 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 
 		if(json.pitch != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_pitch', Math.round(json.pitch)/*+'°'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_pitch', Math.round(json.pitch)/*+'°'*/);
+			this.updateRocketPitch(json.pitch);
 		}
 		
 		if(json.roll != undefined) {
@@ -82,7 +83,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);	
 		}
 		
-
 		if(json.orbit_apoapsis != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_orbitA', Math.round(json.orbit_apoapsis/100)/10);	
 		}
@@ -94,7 +94,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		if(json.orbit_inclination != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_orbitInclination', Math.round(json.orbit_inclination));	
 		}
-		
 
 		if(json.s_ic_fuel != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s1_fuel', Math.round(json.s_ic_fuel)/*+' KG'*/);	
@@ -110,7 +109,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		if(json.s_ic_thrust != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s1_thrust', Math.round(json.s_ic_thrust)/*+' N'*/);	
 		}
-		
 
 		if(json.s_ii_fuel != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s2_fuel', Math.round(json.s_ii_fuel)/*+' KG'*/);	
@@ -127,7 +125,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		if(json.s_ii_thrust != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s2_thrust', Math.round(json.s_ii_thrust)/*+' N'*/);	
 		}
-		
 
 		if(json.s_ivb_fuel != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s3_fuel', Math.round(json.s_ivb_fuel)/*+' KG'*/);	
@@ -273,6 +270,45 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			} else {
 				SATURN_V.utils.Frontend.enableEl('systemS2ActionButton');
 			}	
+		}
+
+		if(json.launch_escape_tower_ready != undefined
+			|| json.active_stage != undefined
+			|| json.s_ii_interstage_mass != undefined
+		) {
+			this.updateRocketView(this.cachedData.launch_escape_tower_ready, this.cachedData.active_stage);
+		}
+	},
+
+	updateRocketPitch : function(pitch_value) {
+		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
+		i = 0;
+
+		for(i = 0; i < rocketView.length; i++) {
+			rocketView[i].style.transform = 'rotate('+pitch_value+'deg)';
+			rocketView[i].style['-webkit-transform'] = 'rotate('+pitch_value+'deg)';
+		}
+	},
+
+	updateRocketView : function(launch_escape_tower_ready, active_stage) {
+		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
+		i = 0,
+		styleStr = '';
+
+		if(active_stage === 1) {
+			styleStr = 'url(img/01'+(launch_escape_tower_ready ? '' : '_NOLET')+'.png)';
+		} else if(active_stage === 2) {
+			if(this.cachedData.s_ii_interstage_mass > 0) {
+				styleStr = 'url(img/02'+(launch_escape_tower_ready ? '' : '_NOLET')+'.png)';
+			} else {
+				styleStr = 'url(img/03'+(launch_escape_tower_ready ? '' : '_NOLET')+'.png)';
+			}
+		} else if(active_stage === 3) {
+			styleStr = 'url(img/04.png)';
+		}
+
+		for(i = 0; i < rocketView.length; i++) {
+			rocketView[i].style.backgroundImage = styleStr;
 		}
 	},
 

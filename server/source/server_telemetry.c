@@ -102,6 +102,8 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "s_ivb_burn_time", telemetry_data.s_ivb_burn_time );
 	cJSON_AddNumberToObject( data, "s_ivb_center_engine_available", telemetry_data.s_ivb_center_engine_available );
 
+	cJSON_AddNumberToObject( data, "active_stage", telemetry_data.active_stage );
+
 	output = cJSON_Print( root );
 
 	strncpy( dst, output, dst_len );
