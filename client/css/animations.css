@@ -1,0 +1,102 @@
+/* Staging animations */
+@keyframes staging_1 {
+	from {
+		background-image:url(../img/01.png);
+	}
+	to {
+		background-image:url(../img/02.png);
+	}
+}
+@keyframes staging_1_NOLET {
+	from {
+		background-image:url(../img/01_NOLET.png);
+	}
+	to {
+		background-image:url(../img/02_NOLET.png);
+	}
+}
+
+@keyframes staging_2_interstage {
+	from {
+		background-image:url(../img/02.png);
+	}
+	to {
+		background-image:url(../img/03.png);
+	}
+}
+@keyframes staging_2_interstage_NOLET {
+	from {
+		background-image:url(../img/02_NOLET.png);
+	}
+	to {
+		background-image:url(../img/03_NOLET.png);
+	}
+}
+
+@keyframes staging_2 {
+	from {
+		background-image:url(../img/03.png);
+	}
+	to {
+		background-image:url(../img/04.png);
+	}
+}
+@keyframes staging_2_NOLET {
+	from {
+		background-image:url(../img/03_NOLET.png);
+	}
+	to {
+		background-image:url(../img/04.png);
+	}
+}
+/* Staging animations - WebKit*/
+@-webkit-keyframes staging_1 {
+	from {
+		background-image:url(../img/01.png);
+	}
+	to {
+		background-image:url(../img/02.png);
+	}
+}
+@-webkit-keyframes staging_1_NOLET {
+	from {
+		background-image:url(../img/01_NOLET.png);
+	}
+	to {
+		background-image:url(../img/02_NOLET.png);
+	}
+}
+
+@-webkit-keyframes staging_2_interstage {
+	from {
+		background-image:url(../img/02.png);
+	}
+	to {
+		background-image:url(../img/03.png);
+	}
+}
+@-webkit-keyframes staging_2_interstage_NOLET {
+	from {
+		background-image:url(../img/02_NOLET.png);
+	}
+	to {
+		background-image:url(../img/03_NOLET.png);
+	}
+}
+
+@-webkit-keyframes staging_2 {
+	from {
+		background-image:url(../img/03.png);
+	}
+	to {
+		background-image:url(../img/04.png);
+	}
+}
+@-webkit-keyframes staging_2_NOLET {
+	from {
+		background-image:url(../img/03_NOLET.png);
+	}
+	to {
+		background-image:url(../img/04.png);
+	}
+}

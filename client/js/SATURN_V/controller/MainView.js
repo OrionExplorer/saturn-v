@@ -52,6 +52,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		var message = '',
 			mission_time = json.mission_time || this.cachedData.mission_time;
 
+
 		if(json.computer_message && json.computer_message != this.lastComputerMessage && json.computer_message.length > 0) {
 			message = '<'+SATURN_V.utils.Shared.secondsToHms(mission_time)+'> '+json.computer_message;
 			this.lastComputerMessage = json.computer_message;
@@ -80,7 +81,8 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 		
 		if(json.yaw != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);
+			this.updateRocketYaw(json.yaw);
 		}
 		
 		if(json.orbit_apoapsis != undefined) {
@@ -290,26 +292,59 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 	},
 
+	updateRocketYaw : function(yaw_value) {
+		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
+		i = 0;
+
+		for(i = 0; i < rocketView.length; i++) {
+			rocketView[i].style.transform = 'rotate('+(-yaw_value)+'deg)';
+			rocketView[i].style['-webkit-transform'] = 'rotate('+(-yaw_value)+'deg)';
+		}
+	},
+
 	updateRocketView : function(launch_escape_tower_ready, active_stage) {
 		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
 		i = 0,
 		styleStr = '';
+		//animationStr = 'staging_'+(active_stage)+'';
+		lesStr = (launch_escape_tower_ready ? '' : '_NOLET');
 
 		if(active_stage === 1) {
-			styleStr = 'url(img/01'+(launch_escape_tower_ready ? '' : '_NOLET')+'.png)';
+			styleStr = 'url(img/01'+lesStr+'.png)';
 		} else if(active_stage === 2) {
 			if(this.cachedData.s_ii_interstage_mass > 0) {
-				styleStr = 'url(img/02'+(launch_escape_tower_ready ? '' : '_NOLET')+'.png)';
+				styleStr = 'url(img/02'+lesStr+'.png)';
 			} else {
-				styleStr = 'url(img/03'+(launch_escape_tower_ready ? '' : '_NOLET')+'.png)';
+				styleStr = 'url(img/03'+lesStr+'.png)';
 			}
 		} else if(active_stage === 3) {
 			styleStr = 'url(img/04.png)';
 		}
 
-		for(i = 0; i < rocketView.length; i++) {
-			rocketView[i].style.backgroundImage = styleStr;
+		if(active_stage-1 == 2 && this.cachedData.s_ii_interstage_mass > 0) {
+			//animationStr += '_interstage';
 		}
+
+		//animationStr += lesStr;
+		console.log(arguments,animationStr);
+
+		for(i = 0; i < rocketView.length; i++) {
+			if(active_stage > 1) {
+				/*rocketView[i].style.animation = animationStr+' 2s';
+				rocketView[i].style['-webkit-animation'] = animationStr+' 2s';
+				rocketView[i].style.animationIterationCount = 1;
+				rocketView[i].style['-webkit-animation-iteration-count'] = 1;*/
+			}
+			rocketView[i].style.backgroundImage = styleStr;
+			
+		}
+
+		/*setTimeout(function() {
+			for(i = 0; i < rocketView.length; i++) {
+				rocketView[i].style.animation = null;
+				rocketView[i].style['-webkit-animation'] = null;
+			}
+		},5000);*/
 	},
 
 	showApolloLMControlPanel : function () {

@@ -48,7 +48,9 @@
 	background-image: url(../img/01.png);
 	background-position: center;
 	background-repeat: no-repeat;
-	-webkit-transform: rotate(0deg);
+	/*-webkit-transform: rotate(0deg);*/
+	/*-webkit-animation: staging 2s;*/
+	/*animation: staging 2s;*/
 }
 
 .mission-control-rocket-view {
