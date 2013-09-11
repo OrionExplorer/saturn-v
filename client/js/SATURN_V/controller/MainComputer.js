@@ -140,7 +140,7 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 		var button = document.getElementById(id);
 		switch(button.id) {
 			case 'towerJettisonButton' : {
-				execCommand('LET', 'JETTISON');
+				this.execCommand('LET', 'JETTISON');
 			} break;
 		}
 	},

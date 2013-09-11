@@ -274,12 +274,88 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			}	
 		}
 
-		if(json.launch_escape_tower_ready != undefined
-			|| json.active_stage != undefined
-			|| json.s_ii_interstage_mass != undefined
-		) {
-			this.updateRocketView(this.cachedData.launch_escape_tower_ready, this.cachedData.active_stage);
+		if(json.launch_escape_tower_ready != undefined && json.launch_escape_tower_ready == false) {
+			this.updateRocketView('let_jettison');
 		}
+		if(json.active_stage != undefined) {
+			this.updateRocketView('staging');
+		}
+		if(json.s_ii_interstage_mass != undefined && json.s_ii_interstage_mass == 0) {
+			this.updateRocketView('s_ii_interstage_jettison');
+		}
+	},
+
+	updateRocketView : function(action) {
+		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
+		i = 0, j = 0,
+		styleStr = '',
+		animationStr = '';
+		currentStage = this.cachedData.active_stage,
+		currentLETavailable = this.cachedData.launch_escape_tower_ready,
+		currentSIIinterstageAvailable = (this.cachedData.s_ii_interstage_mass > 0);
+
+		switch(action) {
+			case 'let_jettison' : {
+				if(currentStage == 1) { /* Let jettison while S-IC is available */
+					styleStr = 'url(img/01_NOLET.png)';
+					animationStr = 'LET_JETTISON_SIC';
+				} else if(currentStage == 2) { /* Let jettison while S-II is available */
+					if(currentSIIinterstageAvailable == true) { /* S-II interstage is available */
+						styleStr = 'url(img/02_NOLET.png)';
+						animationStr = 'LET_JETTISON_SII_INT';
+					} else { /* S-II interstage is unavailable */
+						styleStr = 'url(img/03_NOLET.png)';
+						animationStr = 'LET_JETTISON_SII';
+					}
+				} else if(currentStage == 3) { /* Let jettison while S-IVB is available */
+					styleStr = 'url(img/04.png)';
+				}
+			} break;
+			case 'staging' : {
+				if(currentLETavailable == true) {
+					if(currentStage == 2) { /* S-IC separation while LET is available*/
+						styleStr = 'url(img/02.png)';
+						animationStr = 'STAGING_SIC_LET';
+					} else if(currentStage == 3) { /* S-II separation while LET is available (!?) */
+						styleStr = 'url(img/04)';
+						animationStr = 'STAGING_SII_LET';
+					}
+				} else {
+					if(currentStage == 2) { /* S-IC separation while LET is unavailable*/
+						styleStr = 'url(img/02_NOLET.png)';
+						animationStr = 'STAGING_SIC';
+					} else if(currentStage == 3) { /* S-II separation */
+						styleStr = 'url(img/04.png)';
+						animationStr = 'STAGING_SII';
+					}
+				}
+			} break;
+			case 's_ii_interstage_jettison' : {
+				if(currentLETavailable == true) {	/* S-II interstage jettison while LET is available */
+					styleStr = 'url(img/03.png)';
+					animationStr = 'SII_INTERSTAGE_JETTISON_LET';
+				} else { /* S-II interstage jettison while LET is unavailable */
+					styleStr = 'url(img/03_NOLET.png)'
+					animationStr = 'SII_INTERSTAGE_JETTISON';
+				}
+			} break;
+		}
+
+		for(i = 0; i < rocketView.length; i++) {
+			if(currentStage > 1) {
+				rocketView[i].style.animation = animationStr+' 1s';
+				rocketView[i].style['-webkit-animation'] = animationStr+' 1s';
+			}
+			rocketView[i].style.backgroundImage = styleStr;
+		}
+
+		/* We have to remove all animations becouse of infinite playing while switching between views */
+		setTimeout(function() {
+			for(j = 0; j < rocketView.length; j++) {
+				rocketView[j].style.animation = null;
+				rocketView[j].style['-webkit-animation'] = null;
+			}
+		}, 3000);
 	},
 
 	updateRocketPitch : function(pitch_value) {
@@ -300,51 +376,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			rocketView[i].style.transform = 'rotate('+(-yaw_value)+'deg)';
 			rocketView[i].style['-webkit-transform'] = 'rotate('+(-yaw_value)+'deg)';
 		}
-	},
-
-	updateRocketView : function(launch_escape_tower_ready, active_stage) {
-		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
-		i = 0,
-		styleStr = '';
-		//animationStr = 'staging_'+(active_stage)+'';
-		lesStr = (launch_escape_tower_ready ? '' : '_NOLET');
-
-		if(active_stage === 1) {
-			styleStr = 'url(img/01'+lesStr+'.png)';
-		} else if(active_stage === 2) {
-			if(this.cachedData.s_ii_interstage_mass > 0) {
-				styleStr = 'url(img/02'+lesStr+'.png)';
-			} else {
-				styleStr = 'url(img/03'+lesStr+'.png)';
-			}
-		} else if(active_stage === 3) {
-			styleStr = 'url(img/04.png)';
-		}
-
-		if(active_stage-1 == 2 && this.cachedData.s_ii_interstage_mass > 0) {
-			//animationStr += '_interstage';
-		}
-
-		//animationStr += lesStr;
-		console.log(arguments,animationStr);
-
-		for(i = 0; i < rocketView.length; i++) {
-			if(active_stage > 1) {
-				/*rocketView[i].style.animation = animationStr+' 2s';
-				rocketView[i].style['-webkit-animation'] = animationStr+' 2s';
-				rocketView[i].style.animationIterationCount = 1;
-				rocketView[i].style['-webkit-animation-iteration-count'] = 1;*/
-			}
-			rocketView[i].style.backgroundImage = styleStr;
-			
-		}
-
-		/*setTimeout(function() {
-			for(i = 0; i < rocketView.length; i++) {
-				rocketView[i].style.animation = null;
-				rocketView[i].style['-webkit-animation'] = null;
-			}
-		},5000);*/
 	},
 
 	showApolloLMControlPanel : function () {

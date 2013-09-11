@@ -19,6 +19,7 @@ JSMVC.define('SATURN_V.utils.Events', {
 		this.systemS2ButtonController();
 		this.systemS3ButtonController();
 		this.pitchRollYawButtonController();
+		this.towerJettisonButtonController();
 
 		this.autoPilotButtonController();
 		this.chatInputController();
