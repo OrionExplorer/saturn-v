@@ -343,13 +343,13 @@ JSMVC.define('SATURN_V.controller.MainView', {
 
 		for(i = 0; i < rocketView.length; i++) {
 			if(currentStage > 1) {
-				rocketView[i].style.animation = animationStr+' 1s';
-				rocketView[i].style['-webkit-animation'] = animationStr+' 1s';
+				rocketView[i].style.animation = animationStr+' 4s';
+				rocketView[i].style['-webkit-animation'] = animationStr+' 4s';
 			}
 			rocketView[i].style.backgroundImage = styleStr;
 		}
 
-		/* We have to remove all animations becouse of infinite playing while switching between views */
+		/* We have to remove all animations becouse of infinite playing while switching between panels */
 		setTimeout(function() {
 			for(j = 0; j < rocketView.length; j++) {
 				rocketView[j].style.animation = null;
