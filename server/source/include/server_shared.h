@@ -87,7 +87,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define MAX_CLIENTS							FD_SETSIZE
 
 #define RFC1123FMT							"%a, %d %b %Y %H:%M:%S GMT"
-#define DATETIME							"%d-%m-%Y %H:%M:%S"
+#define DATETIME							"%H:%M:%S"
 
 #define LOGIN_STR							"{\"success\":false,\"msg\":\"authorization_required\",\"data_type\":\"command_response\"}\0"
 #define LOGIN_SUCCESS						"{\"success\":true,\"msg\":\"user_authorized\",\"data_type\":\"command_response\"}\0"

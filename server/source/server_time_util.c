@@ -24,7 +24,7 @@ char* get_actual_time( void ) {
 	time_t now;
 
 	now = time( NULL );
-	tim = *( localtime( &now ) );
+	tim = *( gmtime( &now ) );
 	strftime( s, TIME_BUFF_SIZE, DATETIME, &tim );
 
 	return ( ( char* )&s );

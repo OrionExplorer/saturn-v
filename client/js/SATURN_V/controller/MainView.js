@@ -151,7 +151,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		document.title = 'SATURN V ('+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+')';
 		
 		if(json.current_time_gmt != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', json.current_time_gmt.toUpperCase());	
+			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', 'GMT '+json.current_time_gmt.toUpperCase());	
 		}
 
 		if(json.last_velocity != undefined) {

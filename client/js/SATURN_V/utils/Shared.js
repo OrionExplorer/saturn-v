@@ -9,9 +9,18 @@ JSMVC.define('SATURN_V.utils.Shared', {
 
 	formatTime : function(seconds) {
 		var lessThanZero = (seconds < 0),
-			tMark = (lessThanZero ? '-' : '');
+			tMark = (lessThanZero ? '-' : ''),
+			pad = 5;
 
-		return 'MISSION TIME: '+tMark+/*Math.round*/this.padNumber(Math.abs(seconds).toFixed(1),5);
+			if(seconds < 1000) {
+				pad = 5;
+			} else if(seconds >= 1000 && seconds < 10000) {
+				pad = 6;
+			} else if(seconds >= 10000 && seconds < 100000) {
+				pad = 7;
+			}
+
+		return 'MISSION TIME: '+tMark+this.padNumber(Math.abs(seconds).toFixed(1), pad);
 	},
 
 	formatTimeForTitle : function(seconds) {

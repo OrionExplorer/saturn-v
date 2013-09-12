@@ -7,7 +7,7 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 
 		for(i = 0; i < infoPanel.length; i++) {
 			infoPanel[i].value += '\n'+_status;
-			infoPanel[i].scrollTop = 99999;	
+			infoPanel[i].scrollTop = 99999;
 		}
 	},
 

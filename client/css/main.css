@@ -207,7 +207,7 @@
 	border-radius: 5px !important;
 	width: 50% !important;
 	padding: 5px !important;
-	font-size: 1.5em !important;
+	font-size: 2em !important;
 }
 
 #closeControlPanelButton {
@@ -216,10 +216,10 @@
 }
 
 #incorrectDataInfo {
-	border-radius: 2px;
-	background-color: #c0c4bb;
 	width: 100%;
+	font-size: 2em;
 	display: none;
+	font-weight: bold;
 }
 
 #apolloCSM_control, #apolloLM_control, #houstonMC_control {
@@ -316,7 +316,11 @@ input[type="button"] {
 		border-radius: 5px !important;
 		width: 50% !important;
 		padding: 1em !important;
-		font-size: 1.5em !important;
+		font-size: 2em !important;
+	}
+
+	.long {
+		font-size: 1em !important;
 	}
 
 	#controlPanel input[type="button"] {
