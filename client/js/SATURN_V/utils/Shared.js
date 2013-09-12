@@ -1,14 +1,33 @@
 JSMVC.define('SATURN_V.utils.Shared', {
 	name : 'Shared',
 
-	secondsToHms : function (seconds) {
+	padNumber : function(n, p, c) {
+		var pad_char = typeof c !== 'undefined' ? c : '0';
+		var pad = new Array(1 + p).join(pad_char);
+		return (pad + n).slice(-pad.length);
+	},
+
+	formatTime : function(seconds) {
 		var lessThanZero = (seconds < 0),
-			d = Math.abs(Math.round(Number(seconds))),
+			tMark = (lessThanZero ? '-' : '');
+
+		return 'MISSION TIME: '+tMark+/*Math.round*/this.padNumber(Math.abs(seconds).toFixed(1),5);
+	},
+
+	formatTimeForTitle : function(seconds) {
+		var lessThanZero = (seconds < 0),
+			tMark = (lessThanZero ? '-' : '+');
+
+		return 'T'+tMark+this.secondsToHms(seconds);
+	},
+
+	secondsToHms : function (seconds) {
+		var d = Math.abs(Math.round(Number(seconds))),
 			h = Math.floor(d / 3600),
 			m = Math.floor(d % 3600 / 60),
 			s = Math.floor(d % 3600 % 60);
 
-		return lessThanZero ? 'T-'+(h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s) : 'T+'+(h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s);
+		return (h < 10 ? '0'+h : h)+':'+(m < 10 ? '0'+m : m)+':'+(s < 10 ? '0'+s : s);
 	},
 
 	getStyle : function (el,styleProp) {

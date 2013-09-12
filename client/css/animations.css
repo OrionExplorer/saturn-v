@@ -1,5 +1,4 @@
-/*********************************************************************************/
-/* LET JETTISON ANIMATIONS*/
+/* LET JETTISON ANIMATIONS - WebKit*/
 @keyframes LET_JETTISON_SIC {
 	from {
 		background-image:url(../img/01.png);
@@ -26,40 +25,28 @@
 		background-image:url(../img/03_NOLET.png);
 	}
 }
-/* STAGING ANIMATIONS*/
+/* STAGING ANIMATIONS - WebKit*/
 @keyframes STAGING_SIC_LET {
-	from {
-		background-image:url(../img/01.png);
-	}
-	to {
-		background-image:url(../img/02.png);
-	}
-}
-@keyframes STAGING_SII_LET {
-	from {
-		background-image:url(../img/03.png);
-	}
-	to {
-		background-image:url(../img/04.png);
-	}
+	0%		{ background-image: url(../img/01.png); }
+	50%		{ background-image: url(../img/01_S.png); }
+	100%	{ background-image: url(../img/02.png); }
 }
 @keyframes STAGING_SIC {
-	from {
-		background-image:url(../img/01_NOLET.png);
-	}
-	to {
-		background-image:url(../img/02_NOLET.png);
-	}
+	0%		{ background-image: url(../img/01_NOLET.png); }
+	50%		{ background-image: url(../img/01_S_NOLET.png); }
+	100%	{ background-image: url(../img/02_NOLET.png); }
+}
+@keyframes STAGING_SII_LET {
+	0%		{ background-image: url(../img/02.png); }
+	50%		{ background-image: url(../img/02_S.png); }
+	100%	{ background-image: url(../img/04.png); }
 }
 @keyframes STAGING_SII {
-	from {
-		background-image:url(../img/03_NOLET.png);
-	}
-	to {
-		background-image:url(../img/04.png);
-	}
+	0%		{ background-image: url(../img/03_NOLET.png); }
+	50%		{ background-image: url(../img/02_S_NOLET.png); }
+	100%	{ background-image: url(../img/04.png); }
 }
-/* S-II INTERSTAGE JETTISON ANIMATIONS */
+/* S-II INTERSTAGE JETTISON ANIMATIONS - WebKit */
 @keyframes SII_INTERSTAGE_JETTISON_LET {
 	from {
 		background-image:url(../img/02.png);

@@ -43,7 +43,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 	#define APP_NAME	"Saturn V Computer (Win32)"
 #else
-	#define WSAGetLastError() -1
+	#define WSAGetLastError() errno
 /* �cie�ki do plik�w/folder�w na systemach LINUX s� oddzielone "/" */
 	#define SLASH		"/"
 	#define C_SLASH		'/'
@@ -55,6 +55,28 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 	#define Sleep(x)	usleep(x*1000)
 
 	#define APP_NAME	"Saturn V Computer (Linux)"
+#endif
+
+#ifndef NI_MAXHOST
+# define NI_MAXHOST			1025
+#endif
+#ifndef NI_MAXSERV
+# define NI_MAXSERV			32
+#endif
+#ifndef NI_NUMERICHOST
+# define NI_NUMERICHOST		1
+#endif
+#ifndef NI_NUMERICSERV
+# define NI_NUMERICSERV		2
+#endif
+#ifndef NI_NOFQDN
+# define NI_NOFQDN			4
+#endif
+#ifndef NI_NAMEREQD
+# define NI_NAMEREQD		8
+#endif
+#ifndef NI_DGRAM
+# define NI_DGRAM			16
 #endif
 
 #endif

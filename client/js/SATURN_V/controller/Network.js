@@ -166,11 +166,11 @@ JSMVC.define('SATURN_V.controller.Network', {
 					}
 				}
 			} else if(json.data_type == 'chat_message') {
-				SATURN_V.utils.Frontend.updateInformation('<'+currentTime+'> '+json.data.user+': '+json.data.text);
+				SATURN_V.utils.Frontend.updateInformation(json.data.user+': '+json.data.text);
 			} else if(json.data_type == 'new_user') {
-				SATURN_V.utils.Frontend.updateInformation('<'+currentTime+'> New user: '+ json.msg);
+				SATURN_V.utils.Frontend.updateInformation('New user: '+ json.msg);
 			} else if(json.data_type == 'del_user') {
-				SATURN_V.utils.Frontend.updateInformation('<'+currentTime+'> User left: '+ json.msg);
+				SATURN_V.utils.Frontend.updateInformation('User left: '+ json.msg);
 			}
 		}
 	},

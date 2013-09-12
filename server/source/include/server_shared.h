@@ -47,9 +47,10 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 #include <errno.h>
+#include <sys/select.h>
 #endif
 
-#define APP_VER								"0.1"
+#define APP_VER								"0.4"
 #define SERVER_NAME							APP_NAME"/"APP_VER
 
 #define LOGS_PATH							""SLASH

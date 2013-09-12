@@ -88,7 +88,7 @@ static void SOCKET_initialization( void ) {
 	memset( &server_address, 0, sizeof( server_address ) );
 	server_address.sin_addr.s_addr = htonl( INADDR_ANY );
 	server_address.sin_family = AF_INET;
-	server_address.sin_port = htons( ( u_short )active_port );
+	server_address.sin_port = htons( ( unsigned short )active_port );
 }
 
 /*
@@ -98,6 +98,10 @@ static void SOCKET_prepare( void ) {
 	unsigned long b = 0;
 	int i = 1;
 	int wsa_result = 0;
+	struct timeval tv = {0, 0};
+
+	tv.tv_sec = 1;
+	tv.tv_usec = 0;
 
 	FD_ZERO( &master );
 	FD_ZERO( &read_fds );
@@ -115,13 +119,25 @@ static void SOCKET_prepare( void ) {
 		exit( EXIT_FAILURE );
 	}
 
-	if( setsockopt( socket_server, IPPROTO_TCP, TCP_NODELAY, ( char * )&i, sizeof( int ) ) == SOCKET_ERROR ) {
+	if( setsockopt( socket_server, SOL_SOCKET, SO_RCVTIMEO, ( char* )&tv, sizeof( struct timeval ) ) == SOCKET_ERROR ) {
+		wsa_result = WSAGetLastError();
+		LOG_print( "setsockopt( SO_RCVTIMEO ) error: %d.\n", wsa_result );
+		printf( "setsockopt( SO_RCVTIMEO ) error: %d.\n", wsa_result );
+	}
+
+	if( setsockopt( socket_server, SOL_SOCKET, SO_SNDTIMEO, ( char* )&tv, sizeof( struct timeval ) ) == SOCKET_ERROR ) {
+		wsa_result = WSAGetLastError();
+		LOG_print( "setsockopt( SO_SNDTIMEO ) error: %d.\n", wsa_result );
+		printf( "setsockopt( SO_SNDTIMEO ) error: %d.\n", wsa_result );
+	}
+
+	if( setsockopt( socket_server, IPPROTO_TCP, TCP_NODELAY, /*( char * )*/&i, sizeof( i ) ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "setsockopt( TCP_NODELAY ) error: %d.\n", wsa_result );
 		printf( "setsockopt( TCP_NODELAY ) error: %d.\n", wsa_result );
 	}
 
-	if( setsockopt( socket_server, SOL_SOCKET, SO_REUSEADDR, ( char * )&i, sizeof( int ) ) == SOCKET_ERROR ) {
+	if( setsockopt( socket_server, SOL_SOCKET, SO_REUSEADDR, /*( char * )*/&i, sizeof( i ) ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
 		printf( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
@@ -163,12 +179,12 @@ void SOCKET_run( void ) {
 	FD_SET( socket_server, &master );
 
 	tv.tv_sec = 1;
-	tv.tv_usec = 500000;
+	tv.tv_usec = 0;
 
 	fdmax = socket_server;
 
 	/* Uruchomienie w¹tku wysy³aj¹cego dane do pod³¹czonych klientów */
-	pthread_create( &sthread, NULL, TELEMETRY_send_live_data, "voyager7computer" );
+	pthread_create( &sthread, NULL, TELEMETRY_send_live_data, "saturnVcomputer" );
 
 	for( ;"elvis presley lives"; ) {
 		read_fds = master;

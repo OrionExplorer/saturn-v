@@ -49,12 +49,13 @@ JSMVC.define('SATURN_V.controller.MainView', {
 	},
 
 	parseLocalData : function(json) {
-		var message = '',
+		var me = this,
+			message = '',
 			mission_time = json.mission_time || this.cachedData.mission_time;
 
 
 		if(json.computer_message && json.computer_message != this.lastComputerMessage && json.computer_message.length > 0) {
-			message = '<'+SATURN_V.utils.Shared.secondsToHms(mission_time)+'> '+json.computer_message;
+			message = '<'+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+'> '+json.computer_message;
 			this.lastComputerMessage = json.computer_message;
 			SATURN_V.utils.Frontend.updateInformation(message);
 		}
@@ -73,7 +74,9 @@ JSMVC.define('SATURN_V.controller.MainView', {
 
 		if(json.pitch != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_pitch', Math.round(json.pitch)/*+'°'*/);
-			this.updateRocketPitch(json.pitch);
+			setTimeout(function() {
+				me.updateRocketPitch(json.pitch);
+			}, 100);
 		}
 		
 		if(json.roll != undefined) {
@@ -86,11 +89,11 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 		
 		if(json.orbit_apoapsis != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_orbitA', Math.round(json.orbit_apoapsis/100)/10);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_orbitA', (Math.round(json.orbit_apoapsis/100)/10).toFixed(1));
 		}
 		
 		if(json.orbit_periapsis != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_orbitP', Math.round(json.orbit_periapsis/100)/10);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_orbitP', (Math.round(json.orbit_periapsis/100)/10).toFixed(1));
 		}
 		
 		if(json.orbit_inclination != undefined) {
@@ -144,8 +147,8 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s3_thrust', Math.round(json.s_ivb_thrust)/*+' N'*/);	
 		}
 		
-		SATURN_V.utils.Frontend.updateEl('voyager7_mission_time', SATURN_V.utils.Shared.secondsToHms(mission_time));
-		document.title = 'SATURN V ('+SATURN_V.utils.Shared.secondsToHms(mission_time)+')';
+		SATURN_V.utils.Frontend.updateEl('voyager7_mission_time', SATURN_V.utils.Shared.formatTime(mission_time));
+		document.title = 'SATURN V ('+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+')';
 		
 		if(json.current_time_gmt != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', json.current_time_gmt.toUpperCase());	
@@ -156,7 +159,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 		
 		if(json.current_acceleration != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_acceleration', Math.round(json.current_acceleration*10)/10 /*+ ' M/S'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_acceleration', (Math.round(json.current_acceleration*10)/10).toFixed(1));
 		}
 		
 		if(json.current_gforce != undefined) {
@@ -168,21 +171,12 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 
 		if(json.current_altitude != undefined) {
-			if(json.current_altitude <= 1000) {
-				SATURN_V.utils.Frontend.updateEl('voyager7_altitude', Math.round(json.current_altitude) /*+ ' M'*/);
-			} else if(json.current_altitude > 1000) {
-					SATURN_V.utils.Frontend.updateEl('voyager7_altitude', Math.round(json.current_altitude/100)/10 /*+ ' KM'*/);		
-			}
+			SATURN_V.utils.Frontend.updateEl('voyager7_altitude', Math.round(json.current_altitude) /*+ ' M'*/);
 		}
 
 		if(json.total_distance  != undefined) {
-			if(json.total_distance <= 1000) {
-				SATURN_V.utils.Frontend.updateEl('voyager7_distance', Math.round(json.total_distance) /*+ ' M'*/);
-			} else {
-				SATURN_V.utils.Frontend.updateEl('voyager7_distance', Math.round(json.total_distance)/1000 /*+ ' KM'*/);
-			}	
+			SATURN_V.utils.Frontend.updateEl('voyager7_distance', Math.round(json.total_distance));
 		}
-		
 
 		if(json.current_thrust != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_thrust', json.current_thrust/*+' %'*/);	
@@ -355,7 +349,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 				rocketView[j].style.animation = null;
 				rocketView[j].style['-webkit-animation'] = null;
 			}
-		}, 3000);
+		}, 5000);
 	},
 
 	updateRocketPitch : function(pitch_value) {
