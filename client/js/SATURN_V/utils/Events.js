@@ -4,6 +4,7 @@ JSMVC.define('SATURN_V.utils.Events', {
 		this.loginButton();
 		this.closeControlPanelButton();
 		this.onSaturnVLabelClick();
+		this.onMissionTimeLabelClick();
 		this.showApolloSA514ControlPanel();
 		this.showApolloLMControlPanel();
 		this.showApolloCSMControlPanel();
@@ -276,9 +277,19 @@ JSMVC.define('SATURN_V.utils.Events', {
 		this.registerEvent([{
 			elementId : 'saturnVconfig',
 			eventName : 'click',
-			callback : SATURN_V.controller.Network.getSaturnVRemoteAddress,
+			callback : SATURN_V.controller.MainView.switchMissionTimeFormat,
 			callbackArguments : [true],
 			scope : SATURN_V.controller.Network
+		}]);
+	},
+
+	onMissionTimeLabelClick : function() {
+		this.registerEvent([{
+			elementId : 'voyager7_mission_time',
+			eventName : 'click',
+			callback : SATURN_V.controller.MainView.switchMissionTimeFormat,
+			callbackArguments : [true],
+			scope : SATURN_V.controller.MainView
 		}]);
 	},
 

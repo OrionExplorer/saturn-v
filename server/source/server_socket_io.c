@@ -100,8 +100,8 @@ static void SOCKET_prepare( void ) {
 	int wsa_result = 0;
 	struct timeval tv = {0, 0};
 
-	tv.tv_sec = 1;
-	tv.tv_usec = 0;
+	tv.tv_sec = 0;
+	tv.tv_usec = 20000;
 
 	FD_ZERO( &master );
 	FD_ZERO( &read_fds );

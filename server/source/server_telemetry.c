@@ -43,10 +43,12 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 
 	cJSON_AddNumberToObject( data, "stable_orbit_achieved", telemetry_data.stable_orbit_achieved );
 	cJSON_AddNumberToObject( data, "orbit_semi_major_axis", telemetry_data.orbit_semi_major_axis );
+	cJSON_AddNumberToObject( data, "orbit_semi_minor_axis", telemetry_data.orbit_semi_minor_axis );
 	cJSON_AddNumberToObject( data, "orbit_eccentrity", telemetry_data.orbit_eccentrity );
 	cJSON_AddNumberToObject( data, "orbit_apoapsis", telemetry_data.orbit_apoapsis );
 	cJSON_AddNumberToObject( data, "orbit_periapsis", telemetry_data.orbit_periapsis );
 	cJSON_AddNumberToObject( data, "orbit_inclination", telemetry_data.orbit_inclination );
+	cJSON_AddNumberToObject( data, "orbit_circumference", telemetry_data.orbit_circumference );
 	cJSON_AddNumberToObject( data, "launch_escape_tower_ready", telemetry_data.launch_escape_tower_ready );
 
 	if( telemetry_data.auto_pilot_enabled == 1 ) {

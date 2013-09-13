@@ -87,7 +87,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define MAX_CLIENTS							FD_SETSIZE
 
 #define RFC1123FMT							"%a, %d %b %Y %H:%M:%S GMT"
-#define DATETIME							"%H:%M:%S"
+#define DATETIME							"%d-%m-%Y %H:%M:%S"
 
 #define LOGIN_STR							"{\"success\":false,\"msg\":\"authorization_required\",\"data_type\":\"command_response\"}\0"
 #define LOGIN_SUCCESS						"{\"success\":true,\"msg\":\"user_authorized\",\"data_type\":\"command_response\"}\0"
@@ -144,10 +144,12 @@ struct TELEMETRY {
 	int						current_dynamic_pressure;
 	short					stable_orbit_achieved;
 	double					orbit_semi_major_axis;
+	double					orbit_semi_minor_axis;
 	double					orbit_eccentrity;
 	double					orbit_periapsis;
 	double					orbit_apoapsis;
 	double					orbit_inclination;
+	double					orbit_perimeter;
 	short					launch_escape_tower_ready;
 	double					pitch;
 	double					dest_pitch;

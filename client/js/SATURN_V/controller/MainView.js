@@ -2,6 +2,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 	name : 'MainView',
 	lastComputerMessage : '',
 	cachedData : null,
+	missionTimeFormat : 0,		/* 0 = HMS; 1 = S */
 	controlPanelButtons : [
 			'controlPanelSIVB_show',
 			'controlPanelSII_show',
@@ -138,11 +139,11 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		if(json.s_ivb_burn_time != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s3_burnTime', Math.round(json.s_ivb_burn_time)/*+' S'*/);	
 		}
-		
+
 		if(json.s_ivb_attached != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s3_status', (json.s_ivb_attached == 1 ? 'OPERATIONAL' : 'STAGED'));	
 		}
-		
+
 		if(json.s_ivb_thrust != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_s3_thrust', Math.round(json.s_ivb_thrust)/*+' N'*/);	
 		}
@@ -151,7 +152,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		document.title = 'SATURN V ('+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+')';
 		
 		if(json.current_time_gmt != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', 'GMT '+json.current_time_gmt.toUpperCase());	
+			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', 'GMT '+json.current_time_gmt.split(' ')[1]);	
 		}
 
 		if(json.last_velocity != undefined) {
@@ -448,6 +449,9 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			document.getElementById(targetId).style.display = 'block';
 			controlPanel.style.display = 'block';
 		}
-		
+	},
+
+	switchMissionTimeFormat : function() {
+		this.missionTimeFormat = this.missionTimeFormat == 0 ? 1 : 0;
 	}
 });

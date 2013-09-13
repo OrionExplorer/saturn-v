@@ -59,7 +59,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 100 );
+		Sleep( 10 );
 	}
 }
 
@@ -710,12 +710,20 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
 
+double _PHYSICS_get_orbit_circumference( double semi_major_axis, double semi_minor_axis ) {
+	return ( ( sqrt( 0.5 * (( semi_major_axis * semi_major_axis) + ( semi_minor_axis * semi_minor_axis ) ) ) ) * ( _PI * 2 ) ) / 2;
+}
+
 double _PHYSICS_get_orbit_eccentrity( double altitude, double velocity ) {
-	return ( AO_current->radius + altitude ) * pow( velocity, 2 ) / ( 3.986005*pow( 10, 14 ) ) -1;
+	return ( AO_current->radius + altitude ) * pow( velocity, 2 ) / ( 3.986005 * pow( 10, 14 ) ) -1;
+}
+
+double _PHYSICS_get_orbit_semi_minor_axis( double semi_major_axis, double eccentrity ) {
+	return sqrt( semi_major_axis * sqrt( 1 - pow( eccentrity, 2 ) ) * ( semi_major_axis * ( 1 - pow( eccentrity, 2 ) ) ) );
 }
 
 double _PHYSICS_get_orbit_semi_major_axis( double altitude, double velocity ) {
-	return ( 1 / ( 2 / ( AO_current->radius+altitude ) - pow( velocity, 2 ) / (3.986005*pow( 10,14 ) ) ) );
+	return ( 1 / ( 2 / ( AO_current->radius + altitude ) - pow( velocity, 2 ) / ( 3.986005 * pow( 10,14 ) ) ) );
 }
 
 double _PHYSICS_get_orbit_perigee( double semi_major_axis, double eccentrity ) {
@@ -727,7 +735,7 @@ double _PHYSICS_get_orbit_apogee( double semi_major_axis, double eccentrity ) {
 }
 
 double _PHYSICS_get_orbit_inclination( double latitude, double current_roll ) {
-	return ( acos( cos( latitude * DEG2RAD ) * sin( ( 90-current_roll ) * DEG2RAD ) ) ) * 57.29577;
+	return ( acos( cos( latitude * DEG2RAD ) * sin( ( 90 - current_roll ) * DEG2RAD ) ) ) * 57.29577;
 }
 
 double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
@@ -980,8 +988,10 @@ void PHYSICS_shared_calculations( void ) {
 
 	telemetry_data.orbit_semi_major_axis = _PHYSICS_get_orbit_semi_major_axis( telemetry_data.current_altitude, telemetry_data.current_velocity );
 	telemetry_data.orbit_eccentrity = _PHYSICS_get_orbit_eccentrity( telemetry_data.current_altitude, telemetry_data.current_velocity );
+	telemetry_data.orbit_semi_minor_axis = _PHYSICS_get_orbit_semi_minor_axis( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
 	telemetry_data.orbit_apoapsis = _PHYSICS_get_orbit_apogee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
 	telemetry_data.orbit_periapsis = _PHYSICS_get_orbit_perigee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
+	telemetry_data.orbit_circumference = _PHYSICS_get_orbit_circumference( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_semi_minor_axis );
 
 	if( telemetry_data.orbit_periapsis > telemetry_data.orbit_apoapsis ) {
 		tmp = telemetry_data.orbit_apoapsis;

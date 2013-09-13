@@ -226,6 +226,10 @@
 	display: none;
 }
 
+#voyager7_mission_time {
+	cursor: pointer;
+}
+
 .controlNavigation {
 	width: 100%;
 	padding: 1px;
@@ -383,6 +387,18 @@ input[type="button"] {
 	}
 }
 
+@media all and (max-width: 1024px) {
+	span[data-type="additional-data-1020-w"] {
+		/*display: none;*/
+	}
+}
+
+@media all and (max-width: 768px) {
+	#voyager7_timeInfo {
+		display: none;
+	}
+}
+
 @media all and (min-height: 660px) {
 	.controlNavigation.links {
 		margin-bottom: 20px !important;
@@ -432,7 +448,7 @@ input[type="button"] {
 	}
 
 	.box-1-info[data-type="additional-data-900-w"] {
-		display: 612e;
+		display: none;
 	}
 	.box-1-info[data-type="additional-data-612-w"] {
 		display: none;
@@ -446,6 +462,14 @@ input[type="button"] {
 	}
 
 	.box-1-info[data-type="portrait"] {
+		display: none;
+	}
+
+	#voyager7_timeInfo {
+		display: none;
+	}
+
+	span[data-type="additional-data-1020-w"] {
 		display: none;
 	}
 
@@ -491,6 +515,12 @@ input[type="button"] {
 	}
 }
 
+@media all and (max-width: 430px) {
+	#saturnVconfig {
+		display: none;
+	}
+}
+
 @media all and (max-width: 360px) {
 	.controlNavigation.main {
 		font-size: 15px;
@@ -508,7 +538,8 @@ input[type="button"] {
 .terminal td.title, #controlPanel td.title {
 	border: 0px;
 	font-weight:bold;
-	width:33%;
+	/*width:33%;*/
+	/*display: block;*/
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow:ellipsis;
@@ -517,14 +548,17 @@ input[type="button"] {
 
 .terminal td.title-left, #controlPanel td.title-left {
 	text-align: left;
+	width:20%;
 }
 
 .terminal td.title-center, #controlPanel td.title-center {
 	text-align: center;
+	width:60%;
 }
 
 .terminal td.title-right, #controlPanel td.title-right {
 	text-align: right;
+	width:20%;
 }
 
 .link {
