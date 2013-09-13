@@ -149,7 +149,7 @@ struct TELEMETRY {
 	double					orbit_periapsis;
 	double					orbit_apoapsis;
 	double					orbit_inclination;
-	double					orbit_perimeter;
+	double					orbit_circumference;
 	short					launch_escape_tower_ready;
 	double					pitch;
 	double					dest_pitch;
