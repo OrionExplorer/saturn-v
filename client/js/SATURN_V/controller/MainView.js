@@ -86,7 +86,11 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		
 		if(json.yaw != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);
-			this.updateRocketYaw(json.yaw);
+			/*this.updateRocketYaw(json.yaw);*/
+		}
+
+		if(json.orbit_mean_motion != undefined) {
+			SATURN_V.utils.Frontend.updateEl('voyager7_mean_motion', json.orbit_mean_motion.toFixed(6)/*+'°'*/);
 		}
 		
 		if(json.orbit_apoapsis != undefined) {
@@ -99,6 +103,10 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		
 		if(json.orbit_inclination != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_orbitInclination', Math.round(json.orbit_inclination));	
+		}
+
+		if(json.orbit_revolution_period != undefined) {
+			SATURN_V.utils.Frontend.updateEl('voyager7_period', Math.round(json.orbit_revolution_period));
 		}
 
 		if(json.s_ic_fuel != undefined) {
@@ -158,6 +166,14 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		if(json.last_velocity != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_velocity', Math.round(json.last_velocity)/* + ' M/S'*/);	
 		}
+
+		if(json.current_horizontal_velocity != undefined) {
+			SATURN_V.utils.Frontend.updateEl('voyager7_horizontal_velocity', Math.round(json.current_horizontal_velocity)/* + ' M/S'*/);	
+		}
+
+		if(json.current_vertical_velocity != undefined) {
+			SATURN_V.utils.Frontend.updateEl('voyager7_vertical_velocity', Math.round(json.current_vertical_velocity)/* + ' M/S'*/);	
+		}
 		
 		if(json.current_acceleration != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_acceleration', (Math.round(json.current_acceleration*10)/10).toFixed(1));
@@ -168,7 +184,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 		
 		if(json.current_dynamic_pressure != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_dynamicPressure', Math.round(json.current_dynamic_pressure)/10/*+' KG/M²'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_dynamicPressure', (Math.round(json.current_dynamic_pressure)/10).toFixed(1)/*+' KG/M²'*/);	
 		}
 
 		if(json.current_altitude != undefined) {
@@ -177,6 +193,10 @@ JSMVC.define('SATURN_V.controller.MainView', {
 
 		if(json.total_distance  != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_distance', Math.round(json.total_distance));
+		}
+
+		if(json.downrange  != undefined) {
+			SATURN_V.utils.Frontend.updateEl('voyager7_downrange', Math.round(json.downrange));
 		}
 
 		if(json.current_thrust != undefined) {
@@ -269,14 +289,14 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			}	
 		}
 
+		if(json.s_ii_interstage_mass != undefined && json.s_ii_interstage_mass == 0) {
+			this.updateRocketView('s_ii_interstage_jettison');
+		}
 		if(json.launch_escape_tower_ready != undefined && json.launch_escape_tower_ready == false) {
 			this.updateRocketView('let_jettison');
 		}
 		if(json.active_stage != undefined) {
 			this.updateRocketView('staging');
-		}
-		if(json.s_ii_interstage_mass != undefined && json.s_ii_interstage_mass == 0) {
-			this.updateRocketView('s_ii_interstage_jettison');
 		}
 	},
 

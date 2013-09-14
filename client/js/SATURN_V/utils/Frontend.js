@@ -2,7 +2,7 @@ JSMVC.define('SATURN_V.utils.Frontend', {
 
 	updateInformation : function(status) {
 		var infoPanel = this.findElementsByDataAttr('component', 'messageBox');
-		_status = status.toString(),
+		_status = status.toString().toUpperCase(),
 		i = 0;
 
 		for(i = 0; i < infoPanel.length; i++) {

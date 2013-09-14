@@ -19,6 +19,10 @@
 	border-radius: 5px;
 }
 
+.box-1-info table {
+	padding: 2px !important;
+}
+
 .reports-1-panel {
 	position: relative;
 	width: 99%;
@@ -109,6 +113,10 @@
 
 .background-value-cell span {
 	font-weight: bold;
+}
+
+.no-border {
+	border: 0px !important;
 }
 
 .controlContainer {
@@ -335,6 +343,10 @@ input[type="button"] {
 		padding: 1.5em !important;
 	}
 
+	.controlNavigation.main {
+		font-size: 1.3em !important;
+	}
+
 	.box-info {
 		font-size: 1.2em !important;
 	}
@@ -348,7 +360,7 @@ input[type="button"] {
 	}
 
 	.background-property-cell, .background-value-cell {
-		width: 135px !important;
+		width: 165px !important;
 	}
 
 	.title {

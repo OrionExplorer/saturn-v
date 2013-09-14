@@ -2,7 +2,7 @@
 
 Projekt Saturn V Main Computer
 
-Plik: voyager7main.c
+Plik: saturn-v.c
 
 Przeznaczenie:
 Uruchomenie funkcji CORE_initialize()

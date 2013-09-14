@@ -34,6 +34,7 @@ input[type="button"] {
 	width: 100px; 
 	height: 20px;
 	padding: 0px;
+	cursor: pointer;
 }
 
 input[type="button"]:hover {
@@ -51,6 +52,10 @@ input[type="button"][disabled] {
 caption {
 	margin: 0px;
 	color: #999999;
+}
+
+input[type="text"] {
+	text-transform: uppercase;
 }
 
 input[type=text],input[type=password] {

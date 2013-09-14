@@ -130,7 +130,7 @@ JSMVC.define('SATURN_V.controller.Network', {
 				json = JSON.parse(evt.data);
 			} catch(ex) {
 				SATURN_V.utils.Frontend.updateInformation('Error: Unable to read received data.');
-				console.log(ex);
+				console.log(ex, evt.data);
 				return;
 			}
 			

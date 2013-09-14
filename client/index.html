@@ -185,7 +185,7 @@
 					<tbody>
 						<tr>
 							<td class="background-property-cell">
-								<span>VELOCITY</span><!-- &nbsp;<span class="unit">M/S</span> -->
+								<span>VELOCITY</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_velocity">0</span>&nbsp;<span class="unit">M/S</span>
@@ -193,18 +193,26 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>ACCELERATION</span><!-- &nbsp;<span class="unit">M/S</span> -->
+								<span>HORIZONTAL V</span>
 							</td>
 							<td class="background-value-cell">
-								<span data-name="voyager7_acceleration">0.0</span>&nbsp;<span class="unit">M/S</span>
+								<span data-name="voyager7_horizontal_velocity">0</span>&nbsp;<span class="unit">M/S</span>
 							</td>
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>ALTITUDE</span><!-- &nbsp;<span class="unit">M</span> -->
+								<span>VERTICAL V</span>
 							</td>
 							<td class="background-value-cell">
-								<span data-name="voyager7_altitude">0</span>&nbsp;<span class="unit">M</span>
+								<span data-name="voyager7_vertical_velocity">0</span>&nbsp;<span class="unit">M/S</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ACCELERATION</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_acceleration">0.0</span>&nbsp;<span class="unit">M/S</span>
 							</td>
 						</tr>
 					</tbody>
@@ -215,7 +223,7 @@
 					<tbody>
 						<tr>
 							<td class="background-property-cell">
-								<span>APOAPSIS</span><!-- &nbsp;<span class="unit">KM</span> -->
+								<span>APOAPSIS</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_orbitA">0.0</span>&nbsp;<span class="unit">KM</span>
@@ -223,7 +231,7 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>PERIAPSIS</span><!-- &nbsp;<span class="unit">KM</span> -->
+								<span>PERIAPSIS</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_orbitP">0.0</span>&nbsp;<span class="unit">KM</span>
@@ -231,10 +239,18 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>INCLINATION</span><!-- &nbsp;<span class="unit">DEG</span> -->
+								<span>INCLINATION</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_orbitInclination">0</span>&nbsp;<span class="unit">DEG</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ALTITUDE</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_altitude">0</span>&nbsp;<span class="unit">M</span>
 							</td>
 						</tr>
 					</tbody>
@@ -245,7 +261,7 @@
 					<tbody>
 						<tr>
 							<td class="background-property-cell">
-								<span>PITCH</span><!-- &nbsp;<span class="unit">DEG</span> -->
+								<span>PITCH</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_pitch">0</span>&nbsp;<span class="unit">DEG</span>
@@ -253,7 +269,7 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>ROLL</span><!-- &nbsp;<span class="unit">DEG</span> -->
+								<span>ROLL</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_rollAzimuth">0</span>&nbsp;<span class="unit">DEG</span>
@@ -261,10 +277,18 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>YAW</span><!-- &nbsp;<span class="unit">DEG</span> -->
+								<span>YAW</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_yaw">0</span>&nbsp;<span class="unit">DEG</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ORB. PERIOD</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_period">-1</span>&nbsp;<span class="unit">S</span>
 							</td>
 						</tr>
 					</tbody>
@@ -283,7 +307,15 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>TOTAL</span><!-- &nbsp;<span class="unit">M</span> -->
+								<span>DOWNRANGE</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_downrange">0</span>&nbsp;<span class="unit">M</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>TOTAL</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_distance">0</span>&nbsp;<span class="unit">M</span>
@@ -291,7 +323,7 @@
 						</tr>
 						<tr>
 							<td class="background-property-cell">
-								<span>THRUST</span><!-- &nbsp;<span class="unit">N</span> -->
+								<span>THRUST</span>
 							</td>
 							<td class="background-value-cell">
 								<span data-name="voyager7_thrust">0</span>&nbsp;<span class="unit">N</span>
@@ -470,7 +502,7 @@
 						</div>
 						<div class="reports-1-panel">
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelCountdown_show">
@@ -481,7 +513,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelInternalGuidance_show">
@@ -492,7 +524,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelHolddownArms_show">
@@ -503,7 +535,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link long" id="controlPanelMCChat_show">
@@ -643,7 +675,7 @@
 						</div>
 						<div class="reports-1-panel">
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelThrust_show">
@@ -654,7 +686,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelMainEngine_show">
@@ -665,7 +697,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelPitch_show">
@@ -676,7 +708,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelRoll_show">
@@ -687,7 +719,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelYaw_show">
@@ -698,7 +730,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelLET_show">
@@ -709,7 +741,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link" id="controlPanelAutoPilot_show">
@@ -720,7 +752,7 @@
 								</table>
 							</div>
 							<div class="box-1-info">
-								<table>
+								<table class="no-border">
 									<tbody>
 										<tr>
 											<td class="background-property-cell link long" id="controlPanelSA514Chat_show">

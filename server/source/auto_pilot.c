@@ -21,29 +21,29 @@ double _AUTOPILOT_get_pitch_step( void ) {
 	int seconds = round(pitch_program.running_time);
 	double result = 0.0;
 
-	if(seconds >= 1 && seconds < 30) {
-		result = 0.8965517;
+	if( seconds >= 0 && seconds < 30 ) {
+		result = 0.767;
 	}
-	if(seconds >= 30 && seconds < 70) {
-		result = 0.5212500;
+	if( seconds >= 30 && seconds < 40 ) {
+		result = 0.885;
 	}
-	if(seconds >= 70 && seconds < 130 ) {
-		result = 0.3908333;
+	if( seconds >= 40 && seconds < 70 ) {
+		result = 0.85;
 	}
-	if(seconds >= 130 && seconds < 210) {
-		result = -0.1562500;
+	if( seconds >= 70 && seconds < 150  ) {
+		result = 0.1618333;
 	}
-	if(seconds >= 210 && seconds < 360) {
-		result = 0.0975067;
+	if( seconds >= 150 && seconds < 230 ) {
+		result = 0.1659900;
 	}
-	if(seconds >= 360 && seconds < 510) {
-		result = 0.0487867;
+	if( seconds >= 230 && seconds < 300 ) {
+		result = 0.004;
 	}
-	if(seconds >= 510 && seconds < 590) {
-		result = 0.0194500;
+	if( seconds >= 300 && seconds < 400 ) {
+		result = 0.035;
 	}
-	if(seconds >= 590 && seconds < 670) {
-		result = 0.1262500;
+	if( seconds > 400) {
+		result = 0.041;
 	}
 
 	return ( result + pitch_modifier );
@@ -153,7 +153,7 @@ void AUTOPILOT_progress( double real_second ) {
 			}
 		} break;
 
-		case 31 : {
+		case 15 : {
 			if( pitch_program.running == 0 ) {
 				EXEC_COMMAND( PITCH_PROGRAM, START, 0 );
 			}

@@ -36,6 +36,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "current_thrust", telemetry_data.current_thrust );
 	cJSON_AddNumberToObject( data, "current_altitude", telemetry_data.current_altitude );
 	cJSON_AddNumberToObject( data, "total_distance", telemetry_data.total_distance );
+	cJSON_AddNumberToObject( data, "downrange", telemetry_data.downrange );
 	cJSON_AddNumberToObject( data, "last_velocity", telemetry_data.last_velocity );
 
 	cJSON_AddNumberToObject( data, "max_q_achieved", telemetry_data.max_q_achieved );
@@ -46,9 +47,14 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "orbit_semi_minor_axis", telemetry_data.orbit_semi_minor_axis );
 	cJSON_AddNumberToObject( data, "orbit_eccentrity", telemetry_data.orbit_eccentrity );
 	cJSON_AddNumberToObject( data, "orbit_apoapsis", telemetry_data.orbit_apoapsis );
+	cJSON_AddNumberToObject( data, "orbit_apoapsis_velocity", telemetry_data.orbit_apoapsis_velocity );
 	cJSON_AddNumberToObject( data, "orbit_periapsis", telemetry_data.orbit_periapsis );
+	cJSON_AddNumberToObject( data, "orbit_periapsis_velocity", telemetry_data.orbit_periapsis_velocity );
+	cJSON_AddNumberToObject( data, "orbit_revolution_period", telemetry_data.orbit_revolution_period );
+	cJSON_AddNumberToObject( data, "orbit_revolution_duration", telemetry_data.orbit_revolution_duration );
 	cJSON_AddNumberToObject( data, "orbit_inclination", telemetry_data.orbit_inclination );
 	cJSON_AddNumberToObject( data, "orbit_circumference", telemetry_data.orbit_circumference );
+	cJSON_AddNumberToObject( data, "orbit_mean_motion", telemetry_data.orbit_mean_motion );
 	cJSON_AddNumberToObject( data, "launch_escape_tower_ready", telemetry_data.launch_escape_tower_ready );
 
 	if( telemetry_data.auto_pilot_enabled == 1 ) {
@@ -107,9 +113,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "active_stage", telemetry_data.active_stage );
 
 	output = cJSON_Print( root );
-
 	strncpy( dst, output, dst_len );
-
 	cJSON_Delete( root );
 	root = NULL;
 
@@ -120,9 +124,9 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 void TELEMETRY_send_ondemand_data( CONNECTED_CLIENT *client) {
 	char *output;
 
-	output = ( char * )calloc( BIG_BUFF_SIZE, sizeof( char ) );
+	output = ( char * )calloc( LARGE_BUFF_SIZE, sizeof( char ) );
 
-	TELEMETRY_prepare_data( output, BIG_BUFF_SIZE );
+	TELEMETRY_prepare_data( output, LARGE_BUFF_SIZE );
 	SOCKET_send( &communication_session_, client, output, -1 );
 
 	free( output );

@@ -63,6 +63,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define UPLOAD_BUFFER_CHAR					16384*sizeof( char )
 #define LOG_BUFFER							128
 #define LOG_BUFFER_CHAR						128*sizeof( char )
+#define LARGE_BUFF_SIZE						8192
+#define LARGE_BUFF_SIZE_CHAR				8192*sizeof( char )
 #define BIG_BUFF_SIZE						2048
 #define BIG_BUFF_SIZE_CHAR					2048*sizeof( char )
 #define MEDIUM_BUFF_SIZE					1024
@@ -137,6 +139,7 @@ struct TELEMETRY {
 	int						current_thrust;
 	double					current_altitude;
 	double					total_distance;
+	double					downrange;
 	double					last_velocity;
 	double					mission_time;
 	char					current_time_gmt[ TIME_BUFF_SIZE ];
@@ -147,9 +150,14 @@ struct TELEMETRY {
 	double					orbit_semi_minor_axis;
 	double					orbit_eccentrity;
 	double					orbit_periapsis;
+	double					orbit_periapsis_velocity;
 	double					orbit_apoapsis;
+	double					orbit_apoapsis_velocity;
 	double					orbit_inclination;
 	double					orbit_circumference;
+	double					orbit_revolution_period;
+	double					orbit_revolution_duration;
+	double					orbit_mean_motion;
 	short					launch_escape_tower_ready;
 	double					pitch;
 	double					dest_pitch;
