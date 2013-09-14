@@ -4,11 +4,11 @@ LIBS =-lm -lpthread
 
 all: saturn-v
 
-saturn-v: auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o voyager7main.o server_socket_io.o main_computer.o server_strings_util.o
-	gcc auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o voyager7main.o server_socket_io.o main_computer.o server_strings_util.o -o saturn-v $(LIBS)
+saturn-v: auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o
+	gcc auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o -o saturn-v $(LIBS)
 
-voyager7main.o: source/voyager7main.c
-	gcc -c source/voyager7main.c $(CFLAGS)
+saturn-v.o: source/saturn-v.c
+	gcc -c source/saturn-v.c $(CFLAGS)
 
 auto_pilot.o: source/auto_pilot.c
 	gcc -c source/auto_pilot.c $(CFLAGS)
