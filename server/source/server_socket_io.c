@@ -131,13 +131,13 @@ static void SOCKET_prepare( void ) {
 		printf( "setsockopt( SO_SNDTIMEO ) error: %d.\n", wsa_result );
 	}
 
-	if( setsockopt( socket_server, IPPROTO_TCP, TCP_NODELAY, /*( char * )*/&i, sizeof( i ) ) == SOCKET_ERROR ) {
+	if( setsockopt( socket_server, IPPROTO_TCP, TCP_NODELAY, ( char * )&i, sizeof( i ) ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "setsockopt( TCP_NODELAY ) error: %d.\n", wsa_result );
 		printf( "setsockopt( TCP_NODELAY ) error: %d.\n", wsa_result );
 	}
 
-	if( setsockopt( socket_server, SOL_SOCKET, SO_REUSEADDR, /*( char * )*/&i, sizeof( i ) ) == SOCKET_ERROR ) {
+	if( setsockopt( socket_server, SOL_SOCKET, SO_REUSEADDR, ( char * )&i, sizeof( i ) ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
 		printf( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );

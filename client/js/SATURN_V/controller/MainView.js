@@ -17,7 +17,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			'controlPanelCountdown_show',
 			'controlPanelInternalGuidance_show',
 			'controlPanelHolddownArms_show',
-			'controlPanelSA514Chat_show',
+			'controlPanelCSMChat_show',
 			'controlPanelMCChat_show'
 	],
 
@@ -86,7 +86,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		
 		if(json.yaw != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);
-			/*this.updateRocketYaw(json.yaw);*/
+			this.updateRocketYaw(json.yaw);
 		}
 
 		if(json.orbit_mean_motion != undefined) {
@@ -393,54 +393,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 	},
 
-	showApolloLMControlPanel : function () {
-		var apolloCSM_control = document.getElementById('apolloCSM_control'),
-			apolloLM_control = document.getElementById('apolloLM_control'),
-			sa514_control = document.getElementById('sa514_control'),
-			houstonMC_control = document.getElementById('houstonMC_control');
-
-		houstonMC_control.style.display = 'none';
-		apolloCSM_control.style.display = 'none';
-		sa514_control.style.display = 'none';
-		apolloLM_control.style.display = 'block';
-	},
-
-	showApolloCSMControlPanel : function () {
-		var apolloCSM_control = document.getElementById('apolloCSM_control'),
-			apolloLM_control = document.getElementById('apolloLM_control'),
-			sa514_control = document.getElementById('sa514_control'),
-			houstonMC_control = document.getElementById('houstonMC_control');
-
-		houstonMC_control.style.display = 'none';
-		apolloLM_control.style.display = 'none';
-		sa514_control.style.display = 'none';
-		apolloCSM_control.style.display = 'block';
-	},
-
-	showApolloSA514ControlPanel : function () {
-		var apolloCSM_control = document.getElementById('apolloCSM_control'),
-			apolloLM_control = document.getElementById('apolloLM_control'),
-			sa514_control = document.getElementById('sa514_control'),
-			houstonMC_control = document.getElementById('houstonMC_control');
-
-		houstonMC_control.style.display = 'none';
-		apolloLM_control.style.display = 'none';
-		apolloCSM_control.style.display = 'none';
-		sa514_control.style.display = 'block';
-	},
-
-	showHoustonMCControlPanel : function () {
-		var apolloCSM_control = document.getElementById('apolloCSM_control'),
-			apolloLM_control = document.getElementById('apolloLM_control'),
-			sa514_control = document.getElementById('sa514_control'),
-			houstonMC_control = document.getElementById('houstonMC_control');
-
-		apolloLM_control.style.display = 'none';
-		apolloCSM_control.style.display = 'none';
-		sa514_control.style.display = 'none';
-		houstonMC_control.style.display = 'block';
-	},
-
 	closeControlPanel : function() {
 		document.getElementById('controlPanel').style.display = 'none';
 	},
@@ -453,7 +405,9 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		for(i = 0; i < this.controlPanelButtons.length; i++) {
 			targetId = this.controlPanelButtons[i].split('_show')[0];
 			element = document.getElementById(targetId);
-			element.style.display = (bool === true ? 'block' : 'none');
+			if(element) {
+				element.style.display = (bool === true ? 'block' : 'none');
+			}
 		}
 	},
 

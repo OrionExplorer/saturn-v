@@ -21,12 +21,17 @@ JSMVC.define('SATURN_V.controller.Network', {
 			usernameField = document.getElementById('usernameField'),
 			passwordField = document.getElementById('passwordField');
 
-		usernameField.addEventListener('keypress', function(evt) {
-			me.performUserLogin(evt);
-		});
-		passwordField.addEventListener('keypress', function(evt) {
-			me.performUserLogin(evt);
-		});
+		if(usernameField) {
+			usernameField.addEventListener('keypress', function(evt) {
+				me.performUserLogin(evt);
+			});	
+		}
+		
+		if(passwordField) {
+			passwordField.addEventListener('keypress', function(evt) {
+				me.performUserLogin(evt);
+			});	
+		}
 	},
 
 	sendCommand : function(command, commandType, responseMode) {

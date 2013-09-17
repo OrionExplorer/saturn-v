@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- Project start: 25 Sept. 2011. File separated from index.html 17.09.2013. -->
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta name="author" content="Marcin Kelar">
+	<link href="css/app.css" rel="stylesheet" type="text/css">
+	<link href="css/main.css" rel="stylesheet" type="text/css">
+	<link href="css/animations.css" rel="stylesheet" type="text/css">
+	<link rel="SHORTCUT ICON" href="favicon.ico">
+	<title>SATURN V - LM</title>
+</head>
+<body>
+	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
+	<script type="text/javascript" src="js/Init.js"></script>
+
+	<!-- Login form -->
+	<div id="loadMask"></div>
+	<div id="loginForm">
+		<table class="loginFormLayout">
+			<tr><td><span>LUNAR MODULE</span></td></tr>
+			<tr>
+				<td><input autocomplete="on" type="text" id="usernameField" placeholder="USERNAME"/></td>
+			</tr>
+			<tr>
+				<td><input autocomplete="on" type="password" id="passwordField" placeholder="TOKEN"/></td>
+			</tr>
+		</table>
+		<table class="loginButtonTable">
+			<tr><td><input id="loginButton" class="bigButton" type="button" value="LOGIN"/></td></tr>
+			<tr><td><span id="incorrectDataInfo">TOKEN IS INCORRECT</span></td></tr>
+		</table>
+	</div>
+
+	<!-- Control panel -->
+	<div id="controlPanel">
+		<!-- TODO -->
+	</div>
+
+	<!-- Main form -->
+	<div id="mainTerminal" class="terminal">
+		<div class="reports-1-panel">
+			<div class="box-info">
+				<table class="controlNavigation main">
+					<tbody>
+						<tr>
+							<td class="title title-left">
+								<span id="saturnVconfig">SATURN V</span>
+							</td>
+							<td class="title title-center">
+								<span data-type="additional-data-1020-w">MISSION TIME:&nbsp;</span><span id="voyager7_mission_time">000.0</span>
+							</td>
+							<td class="title title-right">
+								<span id="voyager7_timeInfo"></span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="reports-1-panel">
+			<div class="box-1-info">
+				<table>
+					<tbody>
+						<tr>
+							<td class="background-property-cell">
+								<span>VELOCITY</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_velocity">0</span>&nbsp;<span class="unit">M/S</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>HORIZONTAL V</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_horizontal_velocity">0</span>&nbsp;<span class="unit">M/S</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>VERTICAL V</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_vertical_velocity">0</span>&nbsp;<span class="unit">M/S</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ACCELERATION</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_acceleration">0.0</span>&nbsp;<span class="unit">M/S</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="box-1-info" data-type="additional-data-900-w">
+				<table>
+					<tbody>
+						<tr>
+							<td class="background-property-cell">
+								<span>APOAPSIS</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_orbitA">0.0</span>&nbsp;<span class="unit">KM</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>PERIAPSIS</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_orbitP">0.0</span>&nbsp;<span class="unit">KM</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>INCLINATION</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_orbitInclination">0</span>&nbsp;<span class="unit">DEG</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ALTITUDE</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_altitude">0</span>&nbsp;<span class="unit">M</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="box-1-info" data-type="additional-data-612-w">
+				<table>
+					<tbody>
+						<tr>
+							<td class="background-property-cell">
+								<span>PITCH</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_pitch">0</span>&nbsp;<span class="unit">DEG</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ROLL</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_rollAzimuth">0</span>&nbsp;<span class="unit">DEG</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>YAW</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_yaw">0</span>&nbsp;<span class="unit">DEG</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>ORB. PERIOD</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_period">-1</span>&nbsp;<span class="unit">S</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="box-1-info" data-type="additional-data-1200-w">
+				<table>
+					<tbody>
+						<tr>
+							<td class="background-property-cell">
+								<span>G-FORCE</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_gForce">0</span>&nbsp;<span class="unit">G</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>DOWNRANGE</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_downrange">0</span>&nbsp;<span class="unit">M</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>TOTAL</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_distance">0</span>&nbsp;<span class="unit">M</span>
+							</td>
+						</tr>
+						<tr>
+							<td class="background-property-cell">
+								<span>THRUST</span>
+							</td>
+							<td class="background-value-cell">
+								<span data-name="voyager7_thrust">0</span>&nbsp;<span class="unit">N</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div>
+			<!-- APOLLO LM -->
+			<div id="apolloLM_control">
+				<div class="reports-1-panel">
+					<div class="box-info" data-name="controlZone">
+						<table class="controlNavigation links">
+							<tbody>
+								<tr>
+									<td class="title title-center">
+										LUNAR MODULE
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
