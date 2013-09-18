@@ -110,12 +110,17 @@ JSMVC.define('SATURN_V.controller.Network', {
 		}
 	},
 
-
 	initSocket : function(address) {
 		var me = this;
 
 		this.Socket = new WebSocket(address);
-		
+
+		this.Socket.onerror = function(evt) {
+			SATURN_V.utils.Frontend.updateInformation('An error occurred while trying to connect to Saturn V computer');
+			SATURN_V.utils.Frontend.setAllButtonsDisabled(true);
+			SATURN_V.utils.Frontend.updateEl('loadingText', 'AN ERROR OCCURRED WHILE TRYING TO CONNECT TO SATURN V COMPUTER. PLEASE <a href="javascript:window.location.reload()">TRY AGAIN</a>.');
+		}
+
 		this.Socket.onclose = function() {
 			SATURN_V.utils.Frontend.updateInformation('Connection with Saturn V Main Computer is closed');
 			SATURN_V.utils.Frontend.setAllButtonsDisabled(true);
