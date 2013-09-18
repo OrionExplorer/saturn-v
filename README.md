@@ -2,7 +2,9 @@
 ######Copyright (C) 2011 - 2013
 ######Marcin Kelar (marcin.kelar@gmail.com)
 
-Interactive Saturn V simulator.
+Interactive Saturn V simulator.  
+From Wikipedia:
+>The Saturn V (pronounced "Saturn Five") was an American human-rated expendable rocket used by NASA's Apollo and Skylab programs from 1967 until 1973. A multistage liquid-fueled launch vehicle, NASA launched 13 Saturn Vs from the Kennedy Space Center, Florida with no loss of crew or payload. It remains the tallest, heaviest, and most powerful rocket ever brought to operational status and still holds the record for heaviest payload launched and heaviest payload capacity to Low Earth orbit (LEO).
 
 **Features**:
 * Best played with friends (at least one astronaut and one flight controller *for now*)
