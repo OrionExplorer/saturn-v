@@ -1,4 +1,4 @@
-###saturn-v [![Build Status](https://travis-ci.org/OrionExplorer/saturn-v.png?branch=master)](https://travis-ci.org/OrionExplorer/saturn-v)
+###SATURN V [![Build Status](https://travis-ci.org/OrionExplorer/saturn-v.png?branch=master)](https://travis-ci.org/OrionExplorer/saturn-v)
 ######Copyright (C) 2011 - 2013
 ######Marcin Kelar (marcin.kelar@gmail.com)
 
