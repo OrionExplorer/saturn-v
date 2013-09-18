@@ -5,11 +5,15 @@
 Interactive Saturn V simulator.
 
 **Features**:
-* Saturn V main computer (server application) uses WebSockets and standard sockets simultaneously
-* Best played with friends (at least one astronaut and one flight controller)
+* Best played with friends (at least one astronaut and one flight controller *for now*)
 * Built-in chat
-* Separated GUI sections for Saturn V, Apollo CSM, Apollo LM and Mission Control modules
+* Separated GUI sections for Apollo Command/Service Module, Apollo Lunar Module and Mission Control Center modules
+* Fully playable on mobile devices via browser
 * Live flight data
+
+**Technology**:
+* Saturn V main computer (server application) uses WebSockets and standard sockets simultaneously
+* Control panels (client application) uses HTML5, CSS3, JavaScript and make use of Responsive Design for better user experience on every possible device
 
 **Screenshots**:
 * Before launch (from MCC panel view) ![Before launch](http://img404.imageshack.us/img404/2193/seuf.png)
@@ -18,12 +22,13 @@ Interactive Saturn V simulator.
 * [More](http://imageshack.us/g/1/10321436/)
 
 **TODO**:
-- [ ] Separate user accounts with authorization
-- [ ] Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
-- [ ] Apollo CSM/LM coasting to the Moon
-- [ ] Entering Moon Orbit
-- [ ] Apollo CSM and LM separation
-- [ ] Landing on the Moon
+- CSM/LM separation from S-IVB stage
+- Separate user accounts with authorization (full CRUD)
+- Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
+- Apollo CSM/LM coasting to the Moon
+- Entering Moon Orbit
+- Apollo CSM and LM separation
+- Landing on the Moon
 
 
 All data used for this simulation is available in Apollo Flight Journals at http://history.nasa.gov/ (NASA) and http://www.braeunig.us/apollo/saturnV.htm (Robert A. Braeunig).  
