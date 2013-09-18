@@ -11,7 +11,7 @@ Interactive Saturn V simulator.
 * Fully playable on mobile devices via browser
 * Live flight data
 
-**Technology**:
+**Technology behind**:
 * Saturn V main computer (server application) uses WebSockets and standard sockets simultaneously
 * Control panels (client application) uses HTML5, CSS3, JavaScript and make use of Responsive Design for better user experience on every possible device
 
