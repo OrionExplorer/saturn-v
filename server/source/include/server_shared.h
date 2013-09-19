@@ -144,6 +144,7 @@ struct TELEMETRY {
 	double					mission_time;
 	char					current_time_gmt[ TIME_BUFF_SIZE ];
 	short					max_q_achieved;
+	short					mach_1_achieved;
 	int						current_dynamic_pressure;
 	short					stable_orbit_achieved;
 	double					orbit_semi_major_axis;

@@ -21,36 +21,36 @@ double _AUTOPILOT_get_pitch_step( void ) {
 	int seconds = round(pitch_program.running_time);
 	double result = 0.0;
 
-	if( seconds >= 0 && seconds < 30 ) {
-		result = 1.1315;
+	if(seconds >= 1 && seconds < 30) {
+		result = 0.8965517;
 	}
-	if( seconds >= 30 && seconds < 40 ) {
-		result = 0.998;
+	if(seconds >= 30 && seconds < 70) {
+		result = 0.5212500;
 	}
-	if( seconds >= 40 && seconds < 60 ) {
-		result = 0.997;
+	if(seconds >= 70 && seconds < 130 ) {
+		result = 0.3908333;
 	}
-	if( seconds >= 60 && seconds < 150 ) {
-		result = 0.0458;
+	if(seconds >= 130 && seconds < 210) {
+		result = -0.1562500;
 	}
-	if( seconds >= 150 && seconds < 230 ) {
-		result = 0.2099900;
+	if(seconds >= 210 && seconds < 360) {
+		result = 0.0975067;
 	}
-	if( seconds >= 230 && seconds < 300 ) {
-		result = 0.004;
+	if(seconds >= 360 && seconds < 510) {
+		result = 0.0487867;
 	}
-	if( seconds >= 300 && seconds < 400 ) {
-		result = 0.035;
+	if(seconds >= 510 && seconds < 590) {
+		result = 0.0194500;
 	}
-	if( seconds > 400) {
-		result = 0.041;
+	if(seconds >= 590 && seconds < 670) {
+		result = 0.1262500;
 	}
 
 	return ( result + pitch_modifier );
 }
 
 double _AUTOPILOT_get_roll_step( void ) {
-	return 0.94;
+	return 0.96;
 }
 
 double _AUTOPILOT_get_yaw_step( void ) {
@@ -59,7 +59,7 @@ double _AUTOPILOT_get_yaw_step( void ) {
 	}
 
 	if( telemetry_data.current_altitude < 130 && liftoff_yaw_achieved == 0 ) {
-		return 0.15625;
+		return 0.16625;
 	} else if( telemetry_data.current_altitude > 130 ) {
 		return -0.10625;
 	}
@@ -153,7 +153,7 @@ void AUTOPILOT_progress( double real_second ) {
 			}
 		} break;
 
-		case 28 : {
+		case 31 : {
 			if( pitch_program.running == 0 ) {
 				EXEC_COMMAND( PITCH_PROGRAM, START, 0 );
 			}

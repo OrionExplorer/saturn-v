@@ -59,7 +59,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 10 );
+		Sleep( 100 );
 	}
 }
 
@@ -75,18 +75,12 @@ void MAIN_COMPUTER_init( void ) {
 	COMPUTER_PROGRAMS_init();
 	CELESTIAL_OBJECTS_load();
 
-	ROCKET_STAGE_do_attach( &system_s1 ); //EXEC_COMMAND( S1, ATTACH, 0 );
-	ROCKET_STAGE_set_fuel( &system_s1, system_s1.max_fuel, 0 ); //EXEC_COMMAND( S1, TANK, 0 );
-	ROCKET_STAGE_do_attach( &system_s2 ); //EXEC_COMMAND( S2, ATTACH, 0 );
-	ROCKET_STAGE_set_fuel( &system_s2, system_s2.max_fuel, 0 ); //EXEC_COMMAND( S2, TANK, 0 );
-	ROCKET_STAGE_do_attach( &system_s3 ); //EXEC_COMMAND( S3, ATTACH, 0 );
-	ROCKET_STAGE_set_fuel( &system_s3, system_s3.max_fuel, 0 ); //EXEC_COMMAND( S3, TANK, 0 );
 	EXEC_COMMAND( AUTO_PILOT, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
 	time_tick = ( time_interval * 0.001 );
-	telemetry_data.mission_time = -30.0;
+	telemetry_data.mission_time = -10.0;
 	telemetry_data.launch_escape_tower_ready = 1;
 	telemetry_data.active_stage = 1;
 	telemetry_data.orbit_revolution_duration = -1;
@@ -433,7 +427,8 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 							ROCKET_ENGINE_set_thrust( &main_engine, 0 );
 							success = 1;
-							memset( message, '\0', BIG_BUFF_SIZE );
+							sprintf( message, "%s ENGINE SHUTDOWN", current_system->id == 1 ? "S-IC" : current_system->id == 2 ? "S-II" : current_system->id == 3 ? "S-IVB" : "MAIN", BIG_BUFF_SIZE );
+							//memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
 							strncpy( message, "ERROR: MAIN ENGINE SYSTEM IS IDLE", BIG_BUFF_SIZE );
@@ -701,7 +696,10 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 	if( strlen( message ) > 0 ) {
 		LOG_print( "[%s] %s.\n", get_actual_time(), message );
-		printf( "[%s] %s.\n", get_actual_time(), message );
+		if( telemetry_data.mission_time  ) {
+			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), message );
+		}
+		
 		strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
 	}
 
@@ -779,6 +777,7 @@ double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 		} else {
 			telemetry_data.max_q_achieved = 1;
 			strncpy( telemetry_data.computer_message, "MAXIMUM DYNAMIC PRESSURE", STD_BUFF_SIZE );
+			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), "MAXIMUM DYNAMIC PRESSURE" );
 			telemetry_data.current_dynamic_pressure = round( telemetry_data.current_dynamic_pressure );
 			return current_dynamic_pressure;
 		}
@@ -797,6 +796,11 @@ void PHYSICS_instrument_unit_calculations( void ) {
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
 		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
+	}
+	if( telemetry_data.mach_1_achieved == 0 && telemetry_data.current_velocity >= 340 ) {
+		telemetry_data.mach_1_achieved = 1;
+		strncpy( telemetry_data.computer_message, "MACH 1 ACHIEVED", STD_BUFF_SIZE );
+		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), "MACH 1 ACHIEVED" );
 	}
 
 	if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
@@ -822,6 +826,7 @@ void PHYSICS_instrument_unit_calculations( void ) {
 		if( telemetry_data.stable_orbit_achieved == 0 ) {
 			telemetry_data.stable_orbit_achieved = 1;
 			strncpy( telemetry_data.computer_message, "ORBIT INSERTION", STD_BUFF_SIZE );
+			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), "ORBIT INSERTION" );
 			telemetry_data.orbit_revolution_duration = 1;
 			MAIN_FLIGHT_STATUS = STABLE_ORBIT;
 		}
@@ -954,14 +959,23 @@ void PHYSICS_shared_calculations( void ) {
 
 	telemetry_data.current_distance = telemetry_data.current_velocity;
 
+	/* This is pitch and angle of attack relation simulation */
 	if( telemetry_data.current_distance != 0 && telemetry_data.current_acceleration != 0 ) {
 		if( pitch_program.current_value < 90 ) {
-			if( telemetry_data.current_vertical_velocity >= 0 ) {
-				telemetry_data.current_altitude += telemetry_data.current_vertical_velocity / time_mod;
+			if( current_system->id == 1 ) {
+				pitch_mod = ( 100.1 - pitch_program.current_value ) / 100;
+				telemetry_data.current_altitude += ( ( telemetry_data.current_distance ) * pitch_mod ) / ( time_mod );
+			} else {
+				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
+				telemetry_data.current_altitude += ( ( telemetry_data.current_vertical_velocity ) * pitch_mod ) / ( time_mod );
 			}
 		} else if( pitch_program.current_value > 90 ) {
-			if( telemetry_data.current_vertical_velocity != 0 ) {
-				telemetry_data.current_altitude += ( telemetry_data.current_vertical_velocity / time_mod );
+			if( current_system->id == 1 ) {
+				pitch_mod = ( 100.1 - pitch_program.current_value ) / 100;
+				telemetry_data.current_altitude -= ( ( ( telemetry_data.current_distance ) ) * pitch_mod ) / ( time_mod );
+			} else {
+				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
+				telemetry_data.current_altitude -= abs( ( ( telemetry_data.current_vertical_velocity ) * pitch_mod ) / ( time_mod ) );
 			}
 		}
 	}
@@ -1068,9 +1082,4 @@ void PHYSICS_orbit_calculations( void ) {
 	}
 
 	telemetry_data.orbit_revolution_duration += time_tick;
-	if( pitch_program.current_value < -359.999 ) {
-		pitch_program.current_value = 0;
-	}
-
-	pitch_program.current_value -= ( 360 / telemetry_data.orbit_revolution_period / time_mod );
 }

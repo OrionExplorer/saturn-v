@@ -137,6 +137,9 @@ void STAGE_1_init( void ) {
 
 	current_system = &system_s1;
 
+	system_s1.attached = 1;
+	system_s1.fuel = system_s1.max_fuel;
+
 	printf( "done.\n" );
 
 }
@@ -164,6 +167,9 @@ void STAGE_2_init( void ) {
 	system_s2.center_engine_available = 1;
 
 	strncpy( system_s2.name, "S-II", MICRO_BUFF_SIZE );
+
+	system_s2.attached = 1;
+	system_s2.fuel = system_s2.max_fuel;
 
 	printf( "done.\n" );
 
@@ -199,6 +205,9 @@ void STAGE_3_init( void ) {
 	system_s3.center_engine_available = 0;
 
 	strncpy( system_s3.name, "S-IVB", MICRO_BUFF_SIZE );
+
+	system_s3.attached = 1;
+	system_s3.fuel = system_s3.max_fuel;
 
 	printf( "done.\n" );
 

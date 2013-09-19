@@ -40,6 +40,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "last_velocity", telemetry_data.last_velocity );
 
 	cJSON_AddNumberToObject( data, "max_q_achieved", telemetry_data.max_q_achieved );
+	cJSON_AddNumberToObject( data, "mach_1_achieved", telemetry_data.mach_1_achieved );
 	cJSON_AddNumberToObject( data, "current_dynamic_pressure", telemetry_data.current_dynamic_pressure );
 
 	cJSON_AddNumberToObject( data, "stable_orbit_achieved", telemetry_data.stable_orbit_achieved );
