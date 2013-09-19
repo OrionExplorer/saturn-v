@@ -2,6 +2,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 	name : 'MainView',
 	lastComputerMessage : '',
 	cachedData : null,
+	altitudeData : {},
 	missionTimeFormat : 0,		/* 0 = HMS; 1 = S */
 	controlPanelButtons : [
 			'controlPanelSIVB_show',
@@ -20,6 +21,10 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			'controlPanelCSMChat_show',
 			'controlPanelMCChat_show'
 	],
+
+	updateAltitudeData : function(mission_time, current_altitude) {
+		this.altitudeData[mission_time] = current_altitude;
+	},
 
 	getNewData : function(json) {
 		var field = null,
@@ -158,6 +163,10 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		
 		SATURN_V.utils.Frontend.updateEl('voyager7_mission_time', SATURN_V.utils.Shared.formatTime(mission_time));
 		document.title = 'SATURN V ('+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+')';
+
+		if(mission_time != undefined && json.current_altitude != undefined) {
+			this.updateAltitudeData(mission_time, json.current_altitude);	
+		}
 		
 		if(json.current_time_gmt != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', 'GMT '+json.current_time_gmt.split(' ')[1]);	

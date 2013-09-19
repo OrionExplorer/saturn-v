@@ -100,11 +100,11 @@ void AUTOPILOT_progress( double real_second ) {
 		EXEC_COMMAND( S1, DETACH, 0 );
 	}
 
-	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5678 ) {
+	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5690 ) {
 		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
 	}
 
-	if( telemetry_data.current_velocity >= 7000 && system_s2.attached == 1 ) {
+	if( system_s2.attached == 1 && ROCKET_STAGE_get_fuel( &system_s2 ) <= 1200 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S2, DETACH, 0 );

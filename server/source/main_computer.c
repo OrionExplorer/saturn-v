@@ -59,7 +59,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 100 );
+		Sleep( 10 );
 	}
 }
 
@@ -71,19 +71,16 @@ void MAIN_COMPUTER_init( void ) {
 
 	srand ( time(NULL) );
 
-	printf( "Initializing MAIN COMPUTER...\n");
 	STAGES_init();
 	COMPUTER_PROGRAMS_init();
 	CELESTIAL_OBJECTS_load();
 
-	printf( "MAIN COMPUTER initialized.\n");
-
-	EXEC_COMMAND( S1, ATTACH, 0 );
-	EXEC_COMMAND( S1, TANK, 0 );
-	EXEC_COMMAND( S2, ATTACH, 0 );
-	EXEC_COMMAND( S2, TANK, 0 );
-	EXEC_COMMAND( S3, ATTACH, 0 );
-	EXEC_COMMAND( S3, TANK, 0 );
+	ROCKET_STAGE_do_attach( &system_s1 ); //EXEC_COMMAND( S1, ATTACH, 0 );
+	ROCKET_STAGE_set_fuel( &system_s1, system_s1.max_fuel, 0 ); //EXEC_COMMAND( S1, TANK, 0 );
+	ROCKET_STAGE_do_attach( &system_s2 ); //EXEC_COMMAND( S2, ATTACH, 0 );
+	ROCKET_STAGE_set_fuel( &system_s2, system_s2.max_fuel, 0 ); //EXEC_COMMAND( S2, TANK, 0 );
+	ROCKET_STAGE_do_attach( &system_s3 ); //EXEC_COMMAND( S3, ATTACH, 0 );
+	ROCKET_STAGE_set_fuel( &system_s3, system_s3.max_fuel, 0 ); //EXEC_COMMAND( S3, TANK, 0 );
 	EXEC_COMMAND( AUTO_PILOT, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
@@ -276,7 +273,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 					case CENTER_ENGINE_CUTOFF : {
 						if( system_s2.center_engine_available == 1 && telemetry_data.current_altitude > 0 ) {
-							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
+							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 10 );
 							system_s2.center_engine_available = 0;
 							success = 1;
 							strncpy( message, "S-II CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
@@ -508,13 +505,13 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 				switch( command ) {
 					default : /* Nic */ break;
 					case INCREASE : {
-						pitch_program.current_value++;
+						pitch_program.current_value += 0.1;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
 
 					case DECREASE : {
-						pitch_program.current_value--;
+						pitch_program.current_value -= 0.1;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
@@ -552,13 +549,13 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 				switch( command ) {
 					default : /* Nic */ break;
 					case INCREASE : {
-						roll_program.current_value++;
+						roll_program.current_value += 0.1;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
 
 					case DECREASE : {
-						roll_program.current_value--;
+						roll_program.current_value -= 0.1;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
@@ -596,13 +593,13 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 				switch( command ) {
 					default : /* Nic */ break;
 					case INCREASE : {
-						yaw_program.current_value += 0.1;
+						yaw_program.current_value += 0.3;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
 
 					case DECREASE : {
-						yaw_program.current_value -= 0.1;
+						yaw_program.current_value -= 0.3;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
