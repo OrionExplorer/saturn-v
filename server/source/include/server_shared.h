@@ -175,6 +175,7 @@ struct TELEMETRY {
 	short					pitch_program_engaged;
 	short					roll_program_engaged;
 	short					yaw_program_engaged;
+	short					iterative_guidance_mode_active;
 	long double				s_ic_fuel;
 	long double				s_ii_fuel;
 	long double				s_ivb_fuel;

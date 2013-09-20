@@ -30,6 +30,9 @@ double _AUTOPILOT_get_pitch_step( void ) {
 	if(seconds >= 70 && seconds < 130 ) {
 		result = 0.3908333;
 	}
+	if(seconds >= 160) {
+		pitch_program.running = 0;
+	}
 	if(seconds >= 130 && seconds < 210) {
 		result = -0.1562500;
 	}

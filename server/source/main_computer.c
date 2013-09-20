@@ -59,7 +59,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 100 );
+		Sleep( 10 );
 	}
 }
 
@@ -786,21 +786,59 @@ double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 	return ( result >= 0 ? result : -1 );
 }
 
+double PHYSICS_IGM_get_pitch_step( void ) {
+	int seconds = round( telemetry_data.mission_time );
+	double result = 0.0;
+
+	/*if(seconds >= 234 && seconds < 390) {
+		result = 0.0575067;
+	}
+	if(seconds >= 390 && seconds < 540) {
+		result = 0.0487867;
+	}
+	if(seconds >= 540 && seconds < 630) {
+		result = 0.0194500;
+	}
+	if(seconds >= 630 && seconds < 700) {
+		result = 0.1262500;
+	}*/
+
+
+
+	if(seconds >= 240 && seconds < 390) {
+		result = 0.0575067;
+	}
+	if(seconds >= 390 && seconds < 540) {
+		result = 0.0487867;
+	}
+	if(seconds >= 540 && seconds < 630) {
+		result = 0.0194500;
+	}
+	if(seconds >= 630 && seconds < 700) {
+		result = 0.1262500;
+	}
+
+	return result;
+}
+
 void PHYSICS_instrument_unit_calculations( void ) {
 	/* Informacje o postępie lotu*/
 	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
+		//printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 	}
 	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_altitude < 10 ) {
 		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
+		//printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
 		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
+		//printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 	}
 	if( telemetry_data.mach_1_achieved == 0 && telemetry_data.current_velocity >= 340 ) {
 		telemetry_data.mach_1_achieved = 1;
 		strncpy( telemetry_data.computer_message, "MACH 1 ACHIEVED", STD_BUFF_SIZE );
-		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), "MACH 1 ACHIEVED" );
+		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 	}
 
 	if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
@@ -819,6 +857,7 @@ void PHYSICS_instrument_unit_calculations( void ) {
 			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 			strncpy( telemetry_data.computer_message, "AUTOMATIC ENGINE DISENGAGE", STD_BUFF_SIZE );
+			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 		}
 	}
 
@@ -826,10 +865,17 @@ void PHYSICS_instrument_unit_calculations( void ) {
 		if( telemetry_data.stable_orbit_achieved == 0 ) {
 			telemetry_data.stable_orbit_achieved = 1;
 			strncpy( telemetry_data.computer_message, "ORBIT INSERTION", STD_BUFF_SIZE );
-			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), "ORBIT INSERTION" );
+			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 			telemetry_data.orbit_revolution_duration = 1;
 			MAIN_FLIGHT_STATUS = STABLE_ORBIT;
 		}
+	}
+
+	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 ) {
+		telemetry_data.iterative_guidance_mode_active = 1;
+		pitch_program.running = 0;
+		strncpy( telemetry_data.computer_message, "ITERATIVE GUIDANCE MODE INITIATED", STD_BUFF_SIZE );
+		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 	}
 }
 
@@ -946,7 +992,18 @@ void PHYSICS_shared_calculations( void ) {
 
 	if( pitch_program.running == 1 ) {
 		pitch_program.running_time += time_tick;
-		pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
+		if( telemetry_data.auto_pilot_enabled == 1 ) {
+			pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
+		}
+	}
+	if( telemetry_data.iterative_guidance_mode_active == 1 ) {
+		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
+	}
+
+	if( telemetry_data.current_altitude > 0 && telemetry_data.iterative_guidance_mode_active == 0 && pitch_program.running == 0 ) {
+		if(telemetry_data.mission_time >= 160 && telemetry_data.mission_time < 240) {
+			pitch_program.current_value -= 0.1562500 / time_mod;
+		}
 	}
 
 	if( roll_program.running == 1 ) {

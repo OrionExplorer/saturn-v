@@ -69,6 +69,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "roll", telemetry_data.roll );
 	cJSON_AddNumberToObject( data, "dest_roll", telemetry_data.dest_roll );
 	cJSON_AddNumberToObject( data, "yaw", telemetry_data.yaw );
+	cJSON_AddNumberToObject( data, "iterative_guidance_mode_active", telemetry_data.iterative_guidance_mode_active );
 
 	if( telemetry_data.holddown_arms_released == 0 ) {
 		cJSON_AddFalseToObject( data, "holddown_arms_released" );
