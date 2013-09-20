@@ -26,6 +26,7 @@ From Wikipedia:
 **TODO**:
 - CSM/LM separation from S-IVB stage
 - Separate user accounts with authorization (full CRUD)
+- Calculate current position on the orbit (with respect to peri- and apoapsis)
 - Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
 - Apollo CSM/LM coasting to the Moon
 - Entering Moon Orbit
