@@ -22,7 +22,7 @@ double _AUTOPILOT_get_pitch_step( void ) {
 	double result = 0.0;
 
 	if(seconds >= 1 && seconds < 30) {
-		result = 0.8965517;
+		result = 0.8931034;
 	}
 	if(seconds >= 30 && seconds < 70) {
 		result = 0.5212500;
@@ -50,7 +50,7 @@ double _AUTOPILOT_get_pitch_step( void ) {
 }
 
 double _AUTOPILOT_get_roll_step( void ) {
-	return 0.96;
+	return 1.1;
 }
 
 double _AUTOPILOT_get_yaw_step( void ) {
@@ -141,7 +141,7 @@ void AUTOPILOT_progress( double real_second ) {
 				EXEC_COMMAND( HOLDDOWN_ARMS, STOP, 0 );
 			}
 		} break;
-		case 2 : {
+		case 1 : {
 			if( yaw_program.running == 0 ) {
 				EXEC_COMMAND( YAW_PROGRAM, START, 0 );
 			}
