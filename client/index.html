@@ -11,10 +11,15 @@
 	<title>SATURN V</title>
 </head>
 <body>
-	<div class="indexTitle"><span>SATURN V INTERACTIVE SIMULATOR. © 2011-2013 MARCIN KELAR.</span></div>
+	<div class="indexTitle"><span data-type="additional-data-500-h">SATURN V INTERACTIVE SIMULATOR. © 2011-2013 MARCIN KELAR.</span></div>
 	<input id="csm" class="bigButton indexButton" type="button" value="COMMAND/SERVICE MODULE"/>
 	<input id="lm" class="bigButton indexButton" type="button" value="LUNAR MODULE"/>
 	<input id="mcc" class="bigButton indexButton" type="button" value="MISSION CONTROL CENTER"/>
+	<hr>
+	<input id="saturnVconfig" class="bigButton indexButton" type="button" value="CONFIGURATION"/>
+
+	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
+	<script type="text/javascript" src="js/SATURN_V/controller/Network.js"></script>
 
 	<script>
 		(function() {
@@ -27,6 +32,9 @@
 			document.getElementById('mcc').addEventListener('click', function() {
 				window.location.href = 'mcc.html';
 			});
+			document.getElementById('saturnVconfig').addEventListener('click', function() {
+				SATURN_V.controller.Network.getSaturnVRemoteAddress(true);
+			})
 		})();
 	</script>
 </body>

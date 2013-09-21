@@ -18,38 +18,20 @@ void AUTOPILOT_init( void ) {
 }
 
 double _AUTOPILOT_get_pitch_step( void ) {
-	int seconds = round(pitch_program.running_time);
+	int seconds = round( telemetry_data.mission_time );
 	double result = 0.0;
 
-	if(seconds >= 1 && seconds < 30) {
+	if(seconds >= 31 && seconds < 60) {
 		result = 0.8931034;
 	}
-	if(seconds >= 30 && seconds < 70) {
+	if(seconds >= 60 && seconds < 100) {
 		result = 0.5212500;
 	}
-	if(seconds >= 70 && seconds < 130 ) {
+	if(seconds >= 100 && seconds < 160 ) {
 		result = 0.3908333;
 	}
-	if(seconds >= 160) {
-		pitch_program.running = 0;
-	}
-	if(seconds >= 130 && seconds < 210) {
-		result = -0.1562500;
-	}
-	if(seconds >= 210 && seconds < 360) {
-		result = 0.0975067;
-	}
-	if(seconds >= 360 && seconds < 510) {
-		result = 0.0487867;
-	}
-	if(seconds >= 510 && seconds < 590) {
-		result = 0.0194500;
-	}
-	if(seconds >= 590 && seconds < 670) {
-		result = 0.1262500;
-	}
 
-	return ( result + pitch_modifier );
+	return ( result + pitch_modifier + 0.1562500);
 }
 
 double _AUTOPILOT_get_roll_step( void ) {
@@ -107,7 +89,7 @@ void AUTOPILOT_progress( double real_second ) {
 		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
 	}
 
-	if( system_s2.attached == 1 && ROCKET_STAGE_get_fuel( &system_s2 ) <= 1200 ) {
+	if( system_s2.attached == 1 && ROCKET_STAGE_get_fuel( &system_s2 ) <= 5880 ) {
 		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 		EXEC_COMMAND( S2, DETACH, 0 );
@@ -144,7 +126,7 @@ void AUTOPILOT_progress( double real_second ) {
 				EXEC_COMMAND( HOLDDOWN_ARMS, STOP, 0 );
 			}
 		} break;
-		case 1 : {
+		case 2 : {
 			if( yaw_program.running == 0 ) {
 				EXEC_COMMAND( YAW_PROGRAM, START, 0 );
 			}
@@ -175,8 +157,8 @@ void AUTOPILOT_progress( double real_second ) {
 		} break;
 
 		case 500 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 60 ) {
-				EXEC_COMMAND( THRUST, DECREASE, 20 );
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 70 ) {
+				EXEC_COMMAND( THRUST, DECREASE, 5 );
 			}
 		} break;
 	}

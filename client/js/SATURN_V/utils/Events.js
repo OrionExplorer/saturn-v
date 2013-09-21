@@ -13,6 +13,7 @@ JSMVC.define('SATURN_V.utils.Events', {
 		this.countdownButtonButtonController();
 		this.holddownArmsButtonController();
 		this.internalGuidanceButtonController();
+		this.iterativeGuidanceModeButtonController();
 
 		this.mainEngineEngageButtonController();
 		this.mainEngineThrustButtonController();
@@ -142,6 +143,16 @@ JSMVC.define('SATURN_V.utils.Events', {
 			callbackArguments : ['mainEngineEngageButton'],
 			scope : SATURN_V.controller.MainComputer
 		}]);
+	},
+
+	iterativeGuidanceModeButtonController : function() {
+		this.registerEvent([{
+			elementId : 'iterativeGuidanceModeEngageButton',
+			eventName : 'click',
+			callback : SATURN_V.controller.MainComputer.iterativeGuidanceModeButtonController,
+			callbackArguments : ['iterativeGuidanceModeEngageButton'],
+			scope : SATURN_V.controller.MainComputer
+		}]);	
 	},
 
 	mainEngineThrustButtonController : function() {
@@ -277,7 +288,7 @@ JSMVC.define('SATURN_V.utils.Events', {
 		this.registerEvent([{
 			elementId : 'saturnVconfig',
 			eventName : 'click',
-			callback : SATURN_V.controller.MainView.switchMissionTimeFormat,
+			callback : SATURN_V.controller.Network.getSaturnVRemoteAddress,
 			callbackArguments : [true],
 			scope : SATURN_V.controller.Network
 		}]);

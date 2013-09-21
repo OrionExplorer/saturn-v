@@ -210,7 +210,7 @@ span[data-name="loadingText"] {
 	font-style: italic;
 	margin-top: 10px;
 	position: absolute;
-	bottom: 10px;
+	bottom: 5px;
 }
 
 .indexButton {
@@ -451,6 +451,12 @@ input[type="button"] {
 
 @media all and (max-height: 560px) {
 	.box-1-info[data-type="additional-data-560-h"] {
+		display: none;
+	}
+}
+
+@media all and (max-height: 500px) {
+	span[data-type="additional-data-500-h"] {
 		display: none;
 	}
 }

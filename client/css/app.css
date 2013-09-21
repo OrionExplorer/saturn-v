@@ -1,13 +1,15 @@
+a {
+	color: #999999;
+}
+
 html * {
 	font-family: Helvetica !important;
 }
 body {
-	/*background-color: black;*/
 	background-color: #D6DAD0;
 	padding: 0px;
 	margin: 0 auto;
 	min-width: 320px;
-	/*width:1280px;*/
 }
 
 ul {

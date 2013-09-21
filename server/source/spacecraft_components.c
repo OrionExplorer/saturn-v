@@ -18,7 +18,6 @@ void COMPUTER_PROGRAM_start( COMPUTER_PROGRAM *cp ) {
 
 void COMPUTER_PROGRAM_stop( COMPUTER_PROGRAM *cp ) {
 	cp->running = 0;
-	cp->running_time = 0;
 }
 
 /* Cz³on rakiety */

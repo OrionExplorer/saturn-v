@@ -10,6 +10,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 			'controlPanelSIC_show',
 			'controlPanelThrust_show',
 			'controlPanelMainEngine_show',
+			'controlPanelIGM_show',
 			'controlPanelPitch_show',
 			'controlPanelRoll_show',
 			'controlPanelYaw_show',
@@ -62,20 +63,21 @@ JSMVC.define('SATURN_V.controller.MainView', {
 
 		if(json.computer_message && json.computer_message != this.lastComputerMessage && json.computer_message.length > 0) {
 			message = '<'+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+'> '+json.computer_message;
-			this.lastComputerMessage = json.computer_message;
+			this.lastComputerMessage = SATURN_V.utils.Shared.formatTime(mission_time)+': '+json.computer_message;
 			SATURN_V.utils.Frontend.updateInformation(message);
+			SATURN_V.utils.Frontend.updateEl('voyager7_recentMessage', this.lastComputerMessage );
 		}
 
 		if(json.yaw_program_engaged != undefined) {
-			SATURN_V.utils.Frontend.updateEl('yawButton', (json.yaw_program_engaged == 1 ? 'OFF' : 'ON' ));	
+			SATURN_V.utils.Frontend.updateEl('yawButton', (json.yaw_program_engaged == 1 ? 'SWITCH TO MANUAL' : 'SWITCH TO AUTO' ));	
 		}
 		
 		if(json.roll_program_engaged != undefined) {
-			SATURN_V.utils.Frontend.updateEl('rollButton', (json.roll_program_engaged == 1 ? 'OFF' : 'ON' ));	
+			SATURN_V.utils.Frontend.updateEl('rollButton', (json.roll_program_engaged == 1 ? 'SWITCH TO MANUAL' : 'SWITCH TO AUTO' ));	
 		}
 		
 		if(json.pitch_program_engaged != undefined) {
-			SATURN_V.utils.Frontend.updateEl('pitchButton', (json.pitch_program_engaged == 1 ? 'OFF' : 'ON' ));
+			SATURN_V.utils.Frontend.updateEl('pitchButton', (json.pitch_program_engaged == 1 ? 'SWITCH TO MANUAL' : 'SWITCH TO AUTO' ));
 		}
 
 		if(json.pitch != undefined) {
@@ -217,6 +219,14 @@ JSMVC.define('SATURN_V.controller.MainView', {
 				SATURN_V.utils.Frontend.updateEl('internalGuidanceButton', 'ENGAGE');//, 2000, 'SATURN_V.utils.Frontend.enableEl("'+id+'")');
 			} else {
 				SATURN_V.utils.Frontend.updateEl('internalGuidanceButton', 'DISENGAGE');//, 2000, 'SATURN_V.utils.Frontend.enableEl("'+id+'")');
+			}
+		}
+
+		if(json.iterative_guidance_mode_active != undefined) {
+			if(json.iterative_guidance_mode_active == 0) {
+				SATURN_V.utils.Frontend.updateEl('iterativeGuidanceModeEngageButton', 'ENGAGE');
+			} else {
+				SATURN_V.utils.Frontend.updateEl('iterativeGuidanceModeEngageButton', 'DISENGAGE');
 			}
 		}
 

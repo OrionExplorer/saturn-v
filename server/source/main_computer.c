@@ -44,10 +44,12 @@ double					time_mod = 0.0;
 
 pthread_t				sthread;
 
-void *SIMULATION_progress( void ) {
-	srand ( time(NULL) );
+static void 			MAIN_COMPUTER_display_last_message( void );
 
-	while(1) {
+void *SIMULATION_progress( void ) {
+	srand ( time( NULL) );
+
+	while( 1 ) {
 		PHYSICS_shared_calculations();
 
 		switch( MAIN_FLIGHT_STATUS ) {
@@ -59,7 +61,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 10 );
+		Sleep( 100 );
 	}
 }
 
@@ -110,6 +112,43 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 	switch( device ) {
 		default : /* Nic */ break;
+		case ITERATIVE_GUIDANCE_MODE : {
+			switch( command ) {
+				default : /* Nic */ break;
+
+				case START : {
+					if( telemetry_data.iterative_guidance_mode_active == 1 ) {
+						success = 0;
+						strncpy( message, "ERROR: ITERATIVE GUIDANCE MODE IS ENGAGED", BIG_BUFF_SIZE );
+					} else {
+						if( pitch_program.running == 0 && telemetry_data.current_altitude > 0 ) {
+							telemetry_data.iterative_guidance_mode_active = 1;
+							success = 1;
+							strncpy( message, "ITERATIVE GUIDANCE MODE INITIATED", BIG_BUFF_SIZE );
+						} else {
+							success = 0;
+							strncpy( message, "ERROR: UNABLE TO ENGAGE ITERATIVE GUIDANCE MODE", BIG_BUFF_SIZE );
+						}
+					}
+				} break;
+
+				case STOP : {
+					if( telemetry_data.iterative_guidance_mode_active == 0 ) {
+						success = 0;
+						strncpy( message, "ERROR: ITERATIVE GUIDANCE MODE IS DISENGAGED", BIG_BUFF_SIZE );
+					} else {
+						if( telemetry_data.iterative_guidance_mode_active == 1) {
+							telemetry_data.iterative_guidance_mode_active = 0;
+							success = 1;
+							strncpy( message, "ITERATIVE GUIDANCE MODE DISENGAGED", BIG_BUFF_SIZE );
+						} else {
+							success = 0;
+							strncpy( message, "ERROR: UNABLE TO DISENGAGE ITERATIVE GUIDANCE MODE", BIG_BUFF_SIZE );
+						}
+					}
+				} break;
+			}
+		} break;
 		case INTERNAL_GUIDANCE : {
 			switch( command ) {
 				default : /* Nic */ break;
@@ -125,7 +164,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "GUIDANCE IS INTERNAL", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO ENGAGE INTERNAL GUIDANCE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO ENGAGE INTERNAL GUIDANCE", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
@@ -141,7 +180,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "GUIDANCE IS EXTERNAL", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO SWITCH TO EXTERNAL GUIDANCE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO SWITCH TO EXTERNAL GUIDANCE", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
@@ -151,7 +190,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case S1 : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1&& command != CENTER_ENGINE_CUTOFF ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IC OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IC OPERATION", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -162,14 +201,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "S-IC STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC PROPELLANT LOADING OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC PROPELLANT LOADING OPERATION", BIG_BUFF_SIZE );
 						}
 					} break;
 
 					case ATTACH : {
 						if( telemetry_data.current_altitude > 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC ATTACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC ATTACH OPERATION", BIG_BUFF_SIZE );
 						} else {
 							if( ROCKET_STAGE_get_attached( &system_s1 ) == 0 ) {
 								ROCKET_STAGE_do_attach( &system_s1 );
@@ -185,7 +224,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					case DETACH : {
 						if( telemetry_data.current_altitude == 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC DETACH OPERATION", BIG_BUFF_SIZE );
 						} else {
 							if( ROCKET_STAGE_get_attached( &system_s1 ) == 1 ) {
 								ROCKET_STAGE_do_detach( &system_s1 );
@@ -201,13 +240,13 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 					case CENTER_ENGINE_CUTOFF : {
 						if( system_s1.center_engine_available == 1 && telemetry_data.current_altitude > 0 ) {
-							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 20 );
+							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 25 );
 							system_s1.center_engine_available = 0;
 							success = 1;
 							strncpy( message, "S-IC CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC CENTER ENGINE CUTOFF. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
 						}
 					} break;
 				}
@@ -217,7 +256,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case S2 : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ( command != CENTER_ENGINE_CUTOFF && command != INTERSTAGE_JETTISON ) ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-II OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-II OPERATION", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -228,14 +267,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "S-II STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II PROPELLANT LOADING OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II PROPELLANT LOADING OPERATION", BIG_BUFF_SIZE );
 						}
 					} break;
 
 					case ATTACH : {
 						if( telemetry_data.current_altitude > 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II ATTACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II ATTACH OPERATION", BIG_BUFF_SIZE );
 						} else {
 							if( ROCKET_STAGE_get_attached( &system_s2 ) == 0 ) {
 								ROCKET_STAGE_do_attach( &system_s2 );
@@ -251,7 +290,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					case DETACH : {
 						if( telemetry_data.current_altitude == 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II DETACH OPERATION", BIG_BUFF_SIZE );
 						} else {
 							if( ROCKET_STAGE_get_attached( &system_s2 ) == 1 ) {
 								ROCKET_STAGE_do_detach( &system_s2 );
@@ -267,13 +306,13 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 
 					case CENTER_ENGINE_CUTOFF : {
 						if( system_s2.center_engine_available == 1 && telemetry_data.current_altitude > 0 ) {
-							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 10 );
+							ROCKET_ENGINE_set_thrust( &main_engine, ROCKET_ENGINE_get_thrust( &main_engine ) - 25 );
 							system_s2.center_engine_available = 0;
 							success = 1;
 							strncpy( message, "S-II CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II CENTER ENGINE CUTOFF. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II CENTER ENGINE CUTOFF", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -284,7 +323,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "S-IC/S-II INTERSTAGE JETTISONED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC/S-II INTERSTAGE JETTISON. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IC/S-II INTERSTAGE JETTISON", BIG_BUFF_SIZE );
 						}
 					} break;
 				}
@@ -294,7 +333,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case S3 : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 1 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 && ( command != CENTER_ENGINE_CUTOFF && command != INTERSTAGE_JETTISON ) ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IVB OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO PERFORM ANY S-IVB OPERATION", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -305,14 +344,14 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "S-IVB STAGE PROPELLANT IS LOADED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB PROPELLANT LOADING OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB PROPELLANT LOADING OPERATION", BIG_BUFF_SIZE );
 						}
 					} break;
 
 					case ATTACH : {
 						if( telemetry_data.current_altitude > 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB ATTACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB ATTACH OPERATION", BIG_BUFF_SIZE );
 						} else {
 							if( ROCKET_STAGE_get_attached( &system_s3 ) == 0 ) {
 								ROCKET_STAGE_do_attach( &system_s3 );
@@ -328,7 +367,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					case DETACH : {
 						if( telemetry_data.current_altitude == 0 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB DETACH OPERATION. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-IVB DETACH OPERATION", BIG_BUFF_SIZE );
 						} else {
 							if( ROCKET_STAGE_get_attached( &system_s3 ) == 1 ) {
 								ROCKET_STAGE_do_detach( &system_s3 );
@@ -350,7 +389,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "S-IVB BURN RESTART", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO RESTART S-IVB BURN. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO RESTART S-IVB BURN", BIG_BUFF_SIZE );
 						}
 					} break;
 
@@ -361,7 +400,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							strncpy( message, "S-II/S-IVB INTERSTAGE JETTISONED", BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO PERFORM S-II/S-IVB INTERSTAGE JETTISON. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO PERFORM S-II/S-IVB INTERSTAGE JETTISON", BIG_BUFF_SIZE );
 						}
 					} break;
 				}
@@ -382,7 +421,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO START MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO START MAIN ENGINE", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
@@ -398,7 +437,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 							memset( message, '\0', BIG_BUFF_SIZE );
 						} else {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO STOP MAIN ENGINE. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO STOP MAIN ENGINE", BIG_BUFF_SIZE );
 						}
 					}
 				} break;
@@ -408,7 +447,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case THRUST : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 && ROCKET_ENGINE_get_engaged( &main_engine ) == 0) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO CHANGE THRUST. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO CHANGE THRUST", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -471,16 +510,21 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case PITCH_PROGRAM : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_acceleration <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || telemetry_data.current_altitude == 0 || telemetry_data.iterative_guidance_mode_active == 1 ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
 					case START : {
-						COMPUTER_PROGRAM_start( &pitch_program );
-						success = 1;
-						strncpy( message, "PITCH PROGRAM STARTED", BIG_BUFF_SIZE );
+						if( pitch_program.running_time > 0 ) {
+							success = 0;
+							strncpy( message, "ERROR: PITCH PROGRAM RESTART IS NOT ALLOWED", BIG_BUFF_SIZE );	
+						} else {
+							COMPUTER_PROGRAM_start( &pitch_program );
+							success = 1;
+							strncpy( message, "PITCH PROGRAM STARTED", BIG_BUFF_SIZE );	
+						}
 					} break;
 
 					case STOP : {
@@ -493,20 +537,20 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		} break;
 
 		case PITCH_MOD : {
-			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_acceleration <= 0 ) {
+			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO START PITCH PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO PITCH", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
 					case INCREASE : {
-						pitch_program.current_value += 0.1;
+						pitch_program.current_value += 0.25;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
 
 					case DECREASE : {
-						pitch_program.current_value -= 0.1;
+						pitch_program.current_value -= 0.25;
 						success = 1;
 						memset( message, '\0', BIG_BUFF_SIZE );
 					} break;
@@ -517,14 +561,19 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case ROLL_PROGRAM : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
 					case START : {
-						COMPUTER_PROGRAM_start( &roll_program );
-						success = 1;
-						strncpy( message, "ROLL PROGRAM STARTED", BIG_BUFF_SIZE );
+						if( roll_program.running_time > 0 ) {
+							success = 0;
+							strncpy( message, "ERROR: ROLL PROGRAM RESTART NOT ALLOWED", BIG_BUFF_SIZE );
+						} else {
+							COMPUTER_PROGRAM_start( &roll_program );
+							success = 1;
+							strncpy( message, "ROLL PROGRAM STARTED", BIG_BUFF_SIZE );	
+						}
 					} break;
 
 					case STOP : {
@@ -539,7 +588,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case ROLL_MOD : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO START ROLL PROGRAM", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -561,14 +610,19 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case YAW_PROGRAM : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
 					case START : {
-						COMPUTER_PROGRAM_start( &yaw_program );
-						success = 1;
-						strncpy( message, "YAW PROGRAM STARTED", BIG_BUFF_SIZE );
+						if( yaw_program.running_time > 0 ) {
+							success = 0;
+							strncpy( message, "ERROR: YAW PROGRAM RESTART IS NOT ALLOWED", BIG_BUFF_SIZE );	
+						} else {
+							COMPUTER_PROGRAM_start( &yaw_program );
+							success = 1;
+							strncpy( message, "YAW PROGRAM STARTED", BIG_BUFF_SIZE );	
+						}
 					} break;
 
 					case STOP : {
@@ -583,7 +637,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case YAW_MOD : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || telemetry_data.current_altitude <= 0 ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO START YAW PROGRAM", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -605,7 +659,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 		case LET : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 || ROCKET_ENGINE_get_engaged( &main_engine ) == 0 || ( telemetry_data.current_altitude <= 0 || telemetry_data.launch_escape_tower_ready == 0 ) ) {
 				success = 0;
-				strncpy( message, "ERROR: UNABLE TO ENGAGE LAUNCH ESCAPE TOWER SYSTEM. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+				strncpy( message, "ERROR: UNABLE TO ENGAGE LAUNCH ESCAPE TOWER SYSTEM", BIG_BUFF_SIZE );
 			} else {
 				switch( command ) {
 					default : /* Nic */ break;
@@ -645,7 +699,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						strncpy( message, "HOLDDOWN ARMS RELEASED", BIG_BUFF_SIZE );
 					} else {
 						success = 0;
-						strncpy( message, "ERROR: UNABLE TO RELEASE HOLDDOWN ARMS. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+						strncpy( message, "ERROR: UNABLE TO RELEASE HOLDDOWN ARMS", BIG_BUFF_SIZE );
 					}
 				} break;
 			}
@@ -675,7 +729,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 					} else {
 						if( telemetry_data.mission_time > -8 ) {
 							success = 0;
-							strncpy( message, "ERROR: UNABLE TO HOLD COUNTDOWN. CHECK CONFIGURATION", BIG_BUFF_SIZE );
+							strncpy( message, "ERROR: UNABLE TO HOLD COUNTDOWN", BIG_BUFF_SIZE );
 						} else {
 							telemetry_data.countdown_in_progress = 0;
 							success = 1;
@@ -697,7 +751,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	if( strlen( message ) > 0 ) {
 		LOG_print( "[%s] %s.\n", get_actual_time(), message );
 		if( telemetry_data.mission_time  ) {
-			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), message );
+			printf( "[%s, T%s%.0f]\t%s\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), message );
 		}
 		
 		strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
@@ -777,7 +831,7 @@ double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 		} else {
 			telemetry_data.max_q_achieved = 1;
 			strncpy( telemetry_data.computer_message, "MAXIMUM DYNAMIC PRESSURE", STD_BUFF_SIZE );
-			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), "MAXIMUM DYNAMIC PRESSURE" );
+			MAIN_COMPUTER_display_last_message();
 			telemetry_data.current_dynamic_pressure = round( telemetry_data.current_dynamic_pressure );
 			return current_dynamic_pressure;
 		}
@@ -790,53 +844,49 @@ double PHYSICS_IGM_get_pitch_step( void ) {
 	int seconds = round( telemetry_data.mission_time );
 	double result = 0.0;
 
-	/*if(seconds >= 234 && seconds < 390) {
-		result = 0.0575067;
-	}
-	if(seconds >= 390 && seconds < 540) {
-		result = 0.0487867;
-	}
-	if(seconds >= 540 && seconds < 630) {
-		result = 0.0194500;
-	}
-	if(seconds >= 630 && seconds < 700) {
-		result = 0.1262500;
-	}*/
-
 	if(seconds >= 240 && seconds < 390) {
-		result = 0.0540067;
+		result = 0.045800;
 	}
 	if(seconds >= 390 && seconds < 540) {
-		result = 0.0487867;
+		result = 0.0477867;
 	}
 	if(seconds >= 540 && seconds < 630) {
 		result = 0.0194500;
 	}
-	if(seconds >= 630) {
-		result = 0.1262500;
+	if(seconds >= 630 && telemetry_data.pitch <= 90.0 ) {
+		result = 0.1430500;
 	}
 
-	return result;
+	return result + 0.1562500;
+}
+
+void MAIN_COMPUTER_display_last_message( void ) {
+	static char last_message[ STD_BUFF_SIZE ];
+
+	if( strcmp( last_message, telemetry_data.computer_message ) != 0 ) {
+		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+		strncpy( last_message, telemetry_data.computer_message, STD_BUFF_SIZE );
+	}	
 }
 
 void PHYSICS_instrument_unit_calculations( void ) {
 	/* Informacje o postępie lotu*/
 	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
-		//printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+		MAIN_COMPUTER_display_last_message();
 	}
 	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_altitude < 10 ) {
 		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
-		//printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+		MAIN_COMPUTER_display_last_message();
 	}
 	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
 		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
-		//printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+		MAIN_COMPUTER_display_last_message();
 	}
 	if( telemetry_data.mach_1_achieved == 0 && telemetry_data.current_velocity >= 340 ) {
 		telemetry_data.mach_1_achieved = 1;
 		strncpy( telemetry_data.computer_message, "MACH 1 ACHIEVED", STD_BUFF_SIZE );
-		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+		MAIN_COMPUTER_display_last_message();
 	}
 
 	if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
@@ -855,7 +905,7 @@ void PHYSICS_instrument_unit_calculations( void ) {
 			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
 			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
 			strncpy( telemetry_data.computer_message, "AUTOMATIC ENGINE DISENGAGE", STD_BUFF_SIZE );
-			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+			MAIN_COMPUTER_display_last_message();
 		}
 	}
 
@@ -863,17 +913,18 @@ void PHYSICS_instrument_unit_calculations( void ) {
 		if( telemetry_data.stable_orbit_achieved == 0 ) {
 			telemetry_data.stable_orbit_achieved = 1;
 			strncpy( telemetry_data.computer_message, "ORBIT INSERTION", STD_BUFF_SIZE );
-			printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+			MAIN_COMPUTER_display_last_message();
 			telemetry_data.orbit_revolution_duration = 1;
 			MAIN_FLIGHT_STATUS = STABLE_ORBIT;
 		}
 	}
 
-	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 ) {
-		telemetry_data.iterative_guidance_mode_active = 1;
-		pitch_program.running = 0;
-		strncpy( telemetry_data.computer_message, "ITERATIVE GUIDANCE MODE INITIATED", STD_BUFF_SIZE );
-		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+	if( system_s1.attached == 0 && pitch_program.running == 1 && telemetry_data.mission_time - system_s1.staging_time >= 2 ) {
+		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
+	}
+
+	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 && telemetry_data.auto_pilot_enabled == 1 ) {
+		EXEC_COMMAND( ITERATIVE_GUIDANCE_MODE, START, 0 );
 	}
 }
 
@@ -988,30 +1039,6 @@ void PHYSICS_shared_calculations( void ) {
 		}
 	}
 
-	if( pitch_program.running == 1 ) {
-		pitch_program.running_time += time_tick;
-		if( telemetry_data.auto_pilot_enabled == 1 ) {
-			pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
-		}
-	}
-	if( telemetry_data.iterative_guidance_mode_active == 1 && telemetry_data.stable_orbit_achieved == 0 ) {
-		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
-	}
-
-	if( telemetry_data.current_altitude > 0 && telemetry_data.iterative_guidance_mode_active == 0 && pitch_program.running == 0 ) {
-		if(telemetry_data.mission_time >= 160 && telemetry_data.mission_time < 240) {
-			pitch_program.current_value -= 0.1562500 / time_mod;
-		}
-	}
-
-	if( roll_program.running == 1 ) {
-		roll_program.current_value += _AUTOPILOT_get_roll_step() / time_mod;
-	}
-
-	if( yaw_program.running == 1 ) {
-		yaw_program.current_value += _AUTOPILOT_get_yaw_step() / time_mod;
-	}
-
 	telemetry_data.current_distance = telemetry_data.current_velocity;
 
 	/* This is pitch and angle of attack relation simulation */
@@ -1054,8 +1081,9 @@ void PHYSICS_shared_calculations( void ) {
 		AUTOPILOT_progress( telemetry_data.mission_time );
 	}
 
-	
-	telemetry_data.orbit_inclination = _PHYSICS_get_orbit_inclination( launch_pad_latitude, roll_program.current_value );
+	if( telemetry_data.orbit_periapsis < 0 ) {
+		telemetry_data.orbit_inclination = _PHYSICS_get_orbit_inclination( launch_pad_latitude, roll_program.current_value );		
+	}
 	telemetry_data.orbit_semi_major_axis = _PHYSICS_get_orbit_semi_major_axis( telemetry_data.current_altitude, telemetry_data.current_velocity );
 	telemetry_data.orbit_eccentrity = _PHYSICS_get_orbit_eccentrity( telemetry_data.current_altitude, telemetry_data.current_velocity );
 	telemetry_data.orbit_semi_minor_axis = _PHYSICS_get_orbit_semi_minor_axis( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
@@ -1108,6 +1136,31 @@ void PHYSICS_launch_calculations( void ) {
 	}
 
 	dynamic_pressure_newtons = dynamic_pressure * 4.44;
+
+	if( pitch_program.running == 1 ) {
+		pitch_program.running_time += time_tick;
+		if( telemetry_data.auto_pilot_enabled == 1 ) {
+			pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
+		}
+	}
+	if( telemetry_data.iterative_guidance_mode_active == 1 ) {
+		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
+	}
+
+	//if( telemetry_data.current_altitude > 0 && telemetry_data.iterative_guidance_mode_active == 0 && pitch_program.running == 0 ) {
+		if( telemetry_data.pitch != 0 ) {
+		//if( telemetry_data.mission_time >= 160 && telemetry_data.mission_time < 240 ) {
+			pitch_program.current_value -= 0.1562500 / time_mod;
+		}
+	//}
+
+	if( roll_program.running == 1 ) {
+		roll_program.current_value += _AUTOPILOT_get_roll_step() / time_mod;
+	}
+
+	if( yaw_program.running == 1 ) {
+		yaw_program.current_value += _AUTOPILOT_get_yaw_step() / time_mod;
+	}
 
 	if( pitch_program.current_value > 0 ) {
 		rad2deg = pitch_program.current_value * _PI / 180;

@@ -11,9 +11,6 @@
 	<title>SATURN V - CSM</title>
 </head>
 <body>
-	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
-	<script type="text/javascript" src="js/Init.js"></script>
-
 	<!-- Login form -->
 	<div id="loadMask" class="terminal"><span data-name="loadingText">PLEASE WAIT. CONNECTING TO SATURN V COMPUTER...</span></div>
 	<div id="loginForm">
@@ -104,6 +101,13 @@
 				<li><input type="button" id="mainEngineEngageButton" value="ENGAGE" disabled=""></li>
 			</ul>
 		</div>
+		<!-- ITERATIVE GUIDANCE MODE CONTROL -->
+		<div id="controlPanelIGM">
+			<table class="controlNavigation links"><tbody><tr><td class="title title-center">ITERATIVE GUIDANCE MODE CONTROL</td></tr></tbody></table>
+			<ul>
+				<li><input type="button" id="iterativeGuidanceModeEngageButton" value="ENGAGE" disabled=""></li>
+			</ul>
+		</div>
 		<!-- LAUNCH ESCAPE TOWER CONTROL -->
 		<div id="controlPanelLET">
 			<table class="controlNavigation links"><tbody><tr><td class="title title-center">LAUNCH ESCAPE TOWER CONTROL</td></tr></tbody></table>
@@ -137,10 +141,10 @@
 				<table class="controlNavigation main">
 					<tbody>
 						<tr>
-							<td class="title title-left">
+							<!-- <td class="title title-left">
 								<span id="saturnVconfig">SATURN V</span>
-							</td>
-							<td class="title title-center">
+							</td> -->
+							<td class="title title-left">
 								<span data-type="additional-data-1020-w">MISSION TIME:&nbsp;</span><span id="voyager7_mission_time">000.0</span>
 							</td>
 							<td class="title title-right">
@@ -298,7 +302,7 @@
 								<span>THRUST</span>
 							</td>
 							<td class="background-value-cell">
-								<span data-name="voyager7_thrust">0</span>&nbsp;<span class="unit">N</span>
+								<span data-name="voyager7_thrust">0</span>&nbsp;<span class="unit">%</span>
 							</td>
 						</tr>
 					</tbody>
@@ -312,8 +316,8 @@
 						<table class="controlNavigation links">
 							<tbody>
 								<tr>
-									<td class="title title-center">
-										COMMAND/SERVICE MODULE
+									<td class="title title-left">
+										<span data-name="voyager7_recentMessage">COMMAND/SERVICE MODULE</span>
 									</td>
 								</tr>
 							</tbody>
@@ -424,6 +428,17 @@
 								<table class="no-border">
 									<tbody>
 										<tr>
+											<td class="background-property-cell link" id="controlPanelIGM_show">
+												<span>IGM</span>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+							<div class="box-1-info">
+								<table class="no-border">
+									<tbody>
+										<tr>
 											<td class="background-property-cell link" id="controlPanelLET_show">
 												<span>LET</span>
 											</td>
@@ -459,5 +474,7 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
+	<script type="text/javascript" src="js/Init.js"></script>
 </body>
 </html>

@@ -11,9 +11,6 @@
 	<title>SATURN V - MCC</title>
 </head>
 <body>
-	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
-	<script type="text/javascript" src="js/Init.js"></script>
-
 	<!-- Login form -->
 	<div id="loadMask" class="terminal"><span data-name="loadingText">PLEASE WAIT. CONNECTING TO SATURN V COMPUTER...</span></div>
 	<div id="loginForm">
@@ -75,9 +72,6 @@
 					<tbody>
 						<tr>
 							<td class="title title-left">
-								<span id="saturnVconfig">SATURN V</span>
-							</td>
-							<td class="title title-center">
 								<span data-type="additional-data-1020-w">MISSION TIME:&nbsp;</span><span id="voyager7_mission_time">000.0</span>
 							</td>
 							<td class="title title-right">
@@ -235,7 +229,7 @@
 								<span>THRUST</span>
 							</td>
 							<td class="background-value-cell">
-								<span data-name="voyager7_thrust">0</span>&nbsp;<span class="unit">N</span>
+								<span data-name="voyager7_thrust">0</span>&nbsp;<span class="unit">%</span>
 							</td>
 						</tr>
 					</tbody>
@@ -250,8 +244,8 @@
 						<table class="controlNavigation links">
 							<tbody>
 								<tr>
-									<td class="title title-center">
-										MISSION CONTROL CENTER
+									<td class="title title-left">
+										<span data-name="voyager7_recentMessage">MISSION CONTROL CENTER</span>
 									</td>
 								</tr>
 							</tbody>
@@ -410,5 +404,7 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="js/js-mvc/js-mvc.js"></script>
+	<script type="text/javascript" src="js/Init.js"></script>
 </body>
 </html>

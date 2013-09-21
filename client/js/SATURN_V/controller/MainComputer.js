@@ -20,7 +20,8 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 				COUNTDOWN : 12,
 				PITCH_MOD : 13,
 				ROLL_MOD : 14,
-				YAW_MOD : 15
+				YAW_MOD : 15,
+				ITERATIVE_GUIDANCE_MODE : 16
 			},
 			commands = {
 				START : 0,
@@ -91,6 +92,18 @@ JSMVC.define('SATURN_V.controller.MainComputer', {
 					this.execCommand('MAIN_ENGINE', 'STOP');
 			} break;
 		}
+	},
+
+	iterativeGuidanceModeButtonController : function(id) {
+		switch(document.getElementById(id).value) {
+			case 'ENGAGE' : {
+					this.execCommand('ITERATIVE_GUIDANCE_MODE', 'START');
+					
+			} break;
+			case 'DISENGAGE' : {
+					this.execCommand('ITERATIVE_GUIDANCE_MODE', 'STOP');
+			} break;
+		}	
 	},
 
 	mainEngineThrustButtonController : function(id) {
