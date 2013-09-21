@@ -803,10 +803,8 @@ double PHYSICS_IGM_get_pitch_step( void ) {
 		result = 0.1262500;
 	}*/
 
-
-
 	if(seconds >= 240 && seconds < 390) {
-		result = 0.0575067;
+		result = 0.0540067;
 	}
 	if(seconds >= 390 && seconds < 540) {
 		result = 0.0487867;
@@ -814,7 +812,7 @@ double PHYSICS_IGM_get_pitch_step( void ) {
 	if(seconds >= 540 && seconds < 630) {
 		result = 0.0194500;
 	}
-	if(seconds >= 630 && seconds < 700) {
+	if(seconds >= 630) {
 		result = 0.1262500;
 	}
 
@@ -996,7 +994,7 @@ void PHYSICS_shared_calculations( void ) {
 			pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
 		}
 	}
-	if( telemetry_data.iterative_guidance_mode_active == 1 ) {
+	if( telemetry_data.iterative_guidance_mode_active == 1 && telemetry_data.stable_orbit_achieved == 0 ) {
 		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
 	}
 
