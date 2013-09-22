@@ -2,6 +2,10 @@ CC=gcc
 CFLAGS=-std=c99 -g -pedantic -Wall
 LIBS =-lm -lpthread
 
+ifeq ($(OS),Windows_NT)
+	LIBS += -lws2_32
+endif
+
 all: saturn-v
 
 saturn-v: auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o

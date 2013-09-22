@@ -24,6 +24,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 /* �cie�ka startowa aplikacji */
 char	app_path[ MAX_PATH_LENGTH ];
 char	app_auth[ SMALL_BUFF_SIZE ];
+/* Prędkość dzialania symulacji */
+double	simulation_speed;
 /*Pe�na nazwa pliku ( +�cie�ka dost�pu ) "log.txt" */
 char	LOG_filename[ MAX_PATH_LENGTH ];
 
@@ -104,29 +106,46 @@ CORE_load_configuration()
 short CORE_load_configuration( void ) {
 
 	FILE *cfg_file;
-	char buf[ STD_BUFF_SIZE ];
+	char buf[ BIG_BUFF_SIZE ];
 	char configuration_filename[ MAX_PATH_LENGTH ];
-	int option;
-	char value[ STD_BUFF_SIZE ];
+	cJSON *json = NULL;
+	cJSON *remote_password_JSON = NULL;
+	cJSON *simulation_speed_JSON = NULL;
 
 	/* Reset zmiennych */
 	ip_proto_ver = 4;
 	active_port = DEFAULT_PORT;
-	//memset( app_pass, '\0', STD_BUFF_SIZE );
 
-	sprintf( configuration_filename, "%s%s", app_path, "config.dat" );
+	sprintf( configuration_filename, "%s%s", app_path, "config.json" );
 	cfg_file = fopen( configuration_filename, "rt" );
 
 	if( cfg_file ) {
-		while( fgets( buf, STD_BUFF_SIZE, cfg_file ) != NULL ) {
-			option = -1;
-			if( sscanf( buf, "%d %s", &option, value ) == 2 ) {
-				switch( option ){
-					case 0 : {
-						strncpy( app_auth, value, SMALL_BUFF_SIZE );
-						printf("Remote password is: %s.\n", app_auth );
-					} break;
-				}
+		fread( buf, 1, BIG_BUFF_SIZE, cfg_file );
+		json = cJSON_Parse( buf );
+		if( json ) {
+			remote_password_JSON = cJSON_GetObjectItem( json, "remote_paswword" );
+			if( remote_password_JSON ) {
+				strncpy( app_auth, remote_password_JSON->valuestring, SMALL_BUFF_SIZE );
+				printf( "Access token is: %s.\n", app_auth );
+			}
+
+			simulation_speed_JSON = cJSON_GetObjectItem( json, "simulation_speed" );
+			if( simulation_speed_JSON ) {
+				simulation_speed = simulation_speed_JSON->valuedouble * 100;
+			}
+
+			if( remote_password_JSON != NULL ) {
+				free( remote_password_JSON );
+				remote_password_JSON = NULL;
+			}
+			if( simulation_speed_JSON != NULL ) {
+				free( simulation_speed_JSON );
+				simulation_speed_JSON = NULL;
+			}
+
+			if( json ) {
+				free( json );
+				json = NULL;
 			}
 		}
 		fclose( cfg_file );

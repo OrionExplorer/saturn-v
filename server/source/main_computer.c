@@ -44,12 +44,13 @@ double					time_mod = 0.0;
 
 pthread_t				sthread;
 
-static void 			MAIN_COMPUTER_display_last_message( void );
+void 					MAIN_COMPUTER_display_last_message( void );
 
 void *SIMULATION_progress( void ) {
 	srand ( time( NULL) );
 
 	while( 1 ) {
+		
 		PHYSICS_shared_calculations();
 
 		switch( MAIN_FLIGHT_STATUS ) {
@@ -61,7 +62,7 @@ void *SIMULATION_progress( void ) {
 
 		PHYSICS_instrument_unit_calculations();
 
-		Sleep( 100 );
+		Sleep( simulation_speed );
 	}
 }
 
@@ -871,15 +872,15 @@ void MAIN_COMPUTER_display_last_message( void ) {
 
 void PHYSICS_instrument_unit_calculations( void ) {
 	/* Informacje o postępie lotu*/
-	if( telemetry_data.current_altitude > 130 && telemetry_data.current_altitude < 150 ) {
+	if( telemetry_data.current_altitude < 150 && telemetry_data.current_altitude > 130 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
 		MAIN_COMPUTER_display_last_message();
 	}
-	if( telemetry_data.current_velocity > 0 && telemetry_data.current_velocity < 1 && telemetry_data.current_altitude < 10 ) {
+	if( telemetry_data.current_velocity < 1 && telemetry_data.current_velocity > 0 && telemetry_data.current_altitude < 10 ) {
 		strncpy( telemetry_data.computer_message, "LIFT OFF", STD_BUFF_SIZE );
 		MAIN_COMPUTER_display_last_message();
 	}
-	if( current_system->burn_time > 0 && current_system->burn_time < 1 ) {
+	if( current_system->burn_time < 1 && current_system->burn_time > 0 ) {
 		snprintf( telemetry_data.computer_message, STD_BUFF_SIZE, "%s IGNITION", current_system->name );
 		MAIN_COMPUTER_display_last_message();
 	}
@@ -889,9 +890,9 @@ void PHYSICS_instrument_unit_calculations( void ) {
 		MAIN_COMPUTER_display_last_message();
 	}
 
-	if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
+	/*if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
 		strncpy( telemetry_data.computer_message, "PREPARE TO ORBIT INSERTION", STD_BUFF_SIZE );
-	}
+	}*/
 
 	/* CRASH */
 	if( telemetry_data.current_velocity != 0 && telemetry_data.current_altitude < 0 ) {
@@ -919,7 +920,7 @@ void PHYSICS_instrument_unit_calculations( void ) {
 		}
 	}
 
-	if( system_s1.attached == 0 && pitch_program.running == 1 && telemetry_data.mission_time - system_s1.staging_time >= 2 ) {
+	if( system_s1.attached == 0 && pitch_program.running == 1 && telemetry_data.mission_time - system_s1.staging_time >= 1 ) {
 		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
 	}
 
@@ -934,7 +935,7 @@ void PHYSICS_shared_calculations( void ) {
 
 	fw = 0;
 	real_fw = 0;
-	rad2deg = pitch_program.current_value * _PI / 180;
+	/*rad2deg = pitch_program.current_value * _PI / 180;*/
 	telemetry_data.current_fuel_mass = 0;
 	telemetry_data.total_mass = 0;
 	telemetry_data.thrust_newtons = 0;
@@ -1013,19 +1014,32 @@ void PHYSICS_shared_calculations( void ) {
 
 	telemetry_data.current_acceleration = ( fw / telemetry_data.total_mass );
 
-	if( telemetry_data.current_acceleration < 0 && telemetry_data.current_thrust == 0 && telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4) {
+	if( telemetry_data.current_acceleration < 0 ) {
+		if( telemetry_data.current_thrust == 0 && telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4 ) {
+			telemetry_data.current_acceleration = ( real_fw / telemetry_data.total_mass );	
+		}
+		if( telemetry_data.current_altitude <= 0 ) {
+			telemetry_data.current_acceleration = 0;	
+		}
+		if( telemetry_data.stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 100000 ) {
+			telemetry_data.current_acceleration = 0;
+		}
+
+	}
+	
+	/*if( telemetry_data.current_acceleration < 0 && telemetry_data.current_thrust == 0 && telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4) {
 		telemetry_data.current_acceleration = ( real_fw / telemetry_data.total_mass );
-	}
+	}*/
 
-	if( telemetry_data.current_acceleration < 0 && telemetry_data.current_altitude <= 0 ) {
+	/*if( telemetry_data.current_acceleration < 0 && telemetry_data.current_altitude <= 0 ) {
 		telemetry_data.current_acceleration = 0;
-	}
+	}*/
 
-	if( telemetry_data.stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 100000 ) {
+	/*if( telemetry_data.stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 100000 ) {
 		if( telemetry_data.current_acceleration < 0 ) {
 			telemetry_data.current_acceleration = 0;
 		}
-	}
+	}*/
 
 	if( telemetry_data.holddown_arms_released == 1 ) {
 		if( pitch_program.current_value < 90 || pitch_program.current_value > 270 ) {

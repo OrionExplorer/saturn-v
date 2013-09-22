@@ -122,7 +122,7 @@ void STAGE_1_init( void ) {
 	system_s1.max_fuel = 2145798;//2106905 + 20311;
 	system_s1.instrument_mass = 2469;//7674;//5206;
 	system_s1.interstage_mass = 0;//5205;
-	system_s1.max_fuel_burn = 13232;
+	system_s1.max_fuel_burn = 13232;//13232
 	system_s1.max_thrust_n = 39782855;
 	system_s1.current_thrust = 0;
 	system_s1.variable_thrust = 1;

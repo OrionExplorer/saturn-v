@@ -103,6 +103,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 extern char									app_path[ MAX_PATH_LENGTH ];
 extern char									app_auth[ SMALL_BUFF_SIZE ];
+extern double								simulation_speed;
 
 typedef struct COMMUNICATION_SESSION		COMMUNICATION_SESSION;
 typedef struct CONNECTED_CLIENT				CONNECTED_CLIENT;
