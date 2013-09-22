@@ -16,11 +16,11 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <stdlib.h>
 
 /*
-mem_allocated( char* ptr, int n )
+MEMORY_validate( char* ptr, int n )
 @ptr - wska�nik do przydzielonej pami�ci �a�cucha
 @n - numer porz�dkowy, s�u��cy do p�niejszej analizy problemu
 - funkcja sprawdza, czy uda�o si� przydzieli� pami�� dla danego wska�nika, ko�czy program, je�eli wyst�pi� problem */
-void mem_allocated( char *ptr, int n ) {
+void MEMORY_validate( char *ptr, int n ) {
 	/* B��d alokacji pami�ci, ptr = NULL */
 	if( !ptr ) {
 		LOG_print( "Error: malloc( %d ).\n", n );

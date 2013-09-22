@@ -5,4 +5,5 @@ obj/
 *.cbTemp
 *.conf
 *.exe
+*.o
 Release/*.txt

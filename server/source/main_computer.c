@@ -12,6 +12,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include "include/celestial_objects.h"
 #include "include/server_telemetry.h"
 #include "include/auto_pilot.h"
+#include "include/physics.h"
 #include <pthread.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -27,7 +28,6 @@ extern ROCKET_STAGE		*current_system;
 /***************************************
 Zmienne globalne
 ***************************************/
-int						current_dynamic_pressure = 0;
 long double				fw;
 long double				real_fw;
 short					computing_all = 0;
@@ -36,7 +36,6 @@ double					launch_pad_latitude = 28.500;
 /**
 Modyfikatory fizyki
 **/
-double					normal_atmospheric_pressure = 1013.25;
 int						time_interval = 100;
 double					rad2deg;
 double					time_tick;
@@ -46,21 +45,21 @@ pthread_t				sthread;
 
 void 					MAIN_COMPUTER_display_last_message( void );
 
-void *SIMULATION_progress( void ) {
-	srand ( time( NULL) );
+void *MAIN_COMPUTER_simulation_progress( void ) {
+	srand ( time( NULL ) );
 
 	while( 1 ) {
 		
-		PHYSICS_shared_calculations();
+		MAIN_COMPUTER_shared_calculations();
 
 		switch( MAIN_FLIGHT_STATUS ) {
-			case LAUNCH_FROM_EARTH : PHYSICS_launch_calculations(); break;
-			case STABLE_ORBIT : PHYSICS_orbit_calculations(); break;
+			case LAUNCH_FROM_EARTH : MAIN_COMPUTER_launch_calculations(); break;
+			case STABLE_ORBIT : MAIN_COMPUTER_orbit_calculations(); break;
 			case TRANSFER_ORBIT : { /*TODO*/ } break;
 			default : break;
 		}
 
-		PHYSICS_instrument_unit_calculations();
+		MAIN_COMPUTER_instrument_unit_calculations();
 
 		Sleep( simulation_speed );
 	}
@@ -78,7 +77,7 @@ void MAIN_COMPUTER_init( void ) {
 	COMPUTER_PROGRAMS_init();
 	CELESTIAL_OBJECTS_load();
 
-	EXEC_COMMAND( AUTO_PILOT, START, 0 );
+	MAIN_COMPUTER_exec( AUTO_PILOT, START, 0 );
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
@@ -94,7 +93,7 @@ void MAIN_COMPUTER_init( void ) {
 	SOCKET_main();
 
 	while( scanf("%d %d %d", ( int * )&device, ( int * )&command, &value ) == 3) {
-		result = EXEC_COMMAND( device, command, value );
+		result = MAIN_COMPUTER_exec( device, command, value );
 		printf("%s\n", result->message );
 	}
 }
@@ -102,7 +101,7 @@ void MAIN_COMPUTER_init( void ) {
 /**
 Interpreter komend komputera
 **/
-INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int value ) {
+INTERPRETER_RESULT* MAIN_COMPUTER_exec( vDEVICE device, vCOMMAND command, const int value ) {
 	static INTERPRETER_RESULT interpreter_result;
 	short success = 0;
 	char message[ BIG_BUFF_SIZE ];
@@ -718,7 +717,7 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 						success = 1;
 						strncpy( message, "COUNTDOWN IS CONTINUED", BIG_BUFF_SIZE );
 						if( computing_all == 0 ) {
-							pthread_create(&sthread, NULL, SIMULATION_progress, NULL );
+							pthread_create(&sthread, NULL, MAIN_COMPUTER_simulation_progress, NULL );
 							computing_all = 1;
 						}
 					}
@@ -750,9 +749,9 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	strncpy( interpreter_result.message, message, BIG_BUFF_SIZE );
 
 	if( strlen( message ) > 0 ) {
-		LOG_print( "[%s] %s.\n", get_actual_time(), message );
+		LOG_print( "[%s] %s.\n", TIME_get_gmt(), message );
 		if( telemetry_data.mission_time  ) {
-			printf( "[%s, T%s%.0f]\t%s\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), message );
+			printf( "[%s, T%s%.0f]\t%s\n", TIME_get_gmt(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), message );
 		}
 		
 		strncpy( telemetry_data.computer_message, message, STD_BUFF_SIZE );
@@ -761,116 +760,18 @@ INTERPRETER_RESULT* EXEC_COMMAND( vDEVICE device, vCOMMAND command, const int va
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
 
-double _PHYSICS_get_orbit_mean_motion( double semi_major_axis ) {
-	return sqrt( (GRAVITATIONAL_CONSTANT * AO_current->mass ) / pow( semi_major_axis, 3 ) );
-}
 
-double _PHYSICS_get_orbit_periapsis_velocity( double apoapsis, double periapsis ) {
-	double Rp = AO_current->radius + periapsis;
-	double Ra = AO_current->radius + apoapsis;
-	double GM = GRAVITATIONAL_CONSTANT * AO_current->mass;
-
-	return sqrt( 2 * GM * Ra / ( Rp * ( Ra + Rp ) ) );
-}
-
-double _PHYSICS_get_orbit_apoapsis_velocity( double apoapsis, double periapsis ) {
-	double Rp = AO_current->radius + periapsis;
-	double Ra = AO_current->radius + apoapsis;
-	double GM = GRAVITATIONAL_CONSTANT * AO_current->mass;
-
-	return apoapsis > 0 ? sqrt( 2 * GM * Rp / ( Ra * ( Ra + Rp ) ) ) : 0;
-}
-
-double _PHYSICS_get_orbit_revolution_period( double semi_major_axis ) {
-	return sqrt( 4 * ( _PI * _PI ) * pow( semi_major_axis, 3 ) / ( GRAVITATIONAL_CONSTANT * AO_current->mass ) );
-}
-
-double _PHYSICS_get_orbit_circumference( double semi_major_axis, double semi_minor_axis ) {
-	return ( ( sqrt( 0.5 * (( semi_major_axis * semi_major_axis) + ( semi_minor_axis * semi_minor_axis ) ) ) ) * ( _PI * 2 ) ) / 2;
-}
-
-double _PHYSICS_get_orbit_eccentrity( double altitude, double velocity ) {
-	return ( AO_current->radius + altitude ) * pow( velocity, 2 ) / ( 3.986005 * pow( 10, 14 ) ) -1;
-}
-
-double _PHYSICS_get_orbit_semi_minor_axis( double semi_major_axis, double eccentrity ) {
-	return sqrt( semi_major_axis * sqrt( 1 - pow( eccentrity, 2 ) ) * ( semi_major_axis * ( 1 - pow( eccentrity, 2 ) ) ) );
-}
-
-double _PHYSICS_get_orbit_semi_major_axis( double altitude, double velocity ) {
-	return ( 1 / ( 2 / ( AO_current->radius + altitude ) - pow( velocity, 2 ) / ( 3.986005 * pow( 10,14 ) ) ) );
-}
-
-double _PHYSICS_get_orbit_perigee( double semi_major_axis, double eccentrity ) {
-	return semi_major_axis * ( 1 - eccentrity ) - AO_current->radius;
-}
-
-double _PHYSICS_get_orbit_apogee( double semi_major_axis, double eccentrity ) {
-	return semi_major_axis * ( 1 + eccentrity ) - AO_current->radius;
-}
-
-double _PHYSICS_get_orbit_inclination( double latitude, double current_roll ) {
-	return ( acos( cos( latitude * DEG2RAD ) * sin( ( 90 - current_roll ) * DEG2RAD ) ) ) * 57.29577;
-}
-
-double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
-	double current_temperature = 288.15 - (0.0065 * altitude );
-	long double gas_constant = 8.3144621;
-	double current_atmospheric_pressure = normal_atmospheric_pressure * exp( ( -1 * ( 0.0289644 * CELESTIAL_OBJECT_get_gravity_value( AO_current, altitude ) * altitude ) ) / (gas_constant * current_temperature ) );
-	double current_air_destiny = current_atmospheric_pressure / ( gas_constant * current_temperature );
-	double dynamic_pressure = ( 0.5 * current_air_destiny) * pow( telemetry_data.last_velocity, 2 );
-	double result = dynamic_pressure;
-
-	if( telemetry_data.max_q_achieved == 1 ) {
-		if( round( result ) == 0 ) {
-			return round( result );
-		}
-	} else {
-		if( result >= telemetry_data.current_dynamic_pressure ) {
-			telemetry_data.current_dynamic_pressure = result;
-			return round( result );
-		} else {
-			telemetry_data.max_q_achieved = 1;
-			strncpy( telemetry_data.computer_message, "MAXIMUM DYNAMIC PRESSURE", STD_BUFF_SIZE );
-			MAIN_COMPUTER_display_last_message();
-			telemetry_data.current_dynamic_pressure = round( telemetry_data.current_dynamic_pressure );
-			return current_dynamic_pressure;
-		}
-	}
-
-	return ( result >= 0 ? result : -1 );
-}
-
-double PHYSICS_IGM_get_pitch_step( void ) {
-	int seconds = round( telemetry_data.mission_time );
-	double result = 0.0;
-
-	if(seconds >= 240 && seconds < 390) {
-		result = 0.045800;
-	}
-	if(seconds >= 390 && seconds < 540) {
-		result = 0.0477867;
-	}
-	if(seconds >= 540 && seconds < 630) {
-		result = 0.0194500;
-	}
-	if(seconds >= 630 && telemetry_data.pitch <= 90.0 ) {
-		result = 0.1430500;
-	}
-
-	return result + 0.1562500;
-}
 
 void MAIN_COMPUTER_display_last_message( void ) {
 	static char last_message[ STD_BUFF_SIZE ];
 
 	if( strcmp( last_message, telemetry_data.computer_message ) != 0 ) {
-		printf( "[%s, T%s%.0f]\t%s.\n", get_actual_time(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
+		printf( "[%s, T%s%.0f]\t%s.\n", TIME_get_gmt(), telemetry_data.mission_time <= 0 ? "" : "+", round( telemetry_data.mission_time ), telemetry_data.computer_message );
 		strncpy( last_message, telemetry_data.computer_message, STD_BUFF_SIZE );
 	}	
 }
 
-void PHYSICS_instrument_unit_calculations( void ) {
+void MAIN_COMPUTER_instrument_unit_calculations( void ) {
 	/* Informacje o postępie lotu*/
 	if( telemetry_data.current_altitude < 150 && telemetry_data.current_altitude > 130 ) {
 		strncpy( telemetry_data.computer_message, "TOWER CLEARED", STD_BUFF_SIZE );
@@ -903,8 +804,8 @@ void PHYSICS_instrument_unit_calculations( void ) {
 
 	if( telemetry_data.holddown_arms_released == 0 ) {
 		if( telemetry_data.current_acceleration >= 3 ) {
-			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+			MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
+			MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
 			strncpy( telemetry_data.computer_message, "AUTOMATIC ENGINE DISENGAGE", STD_BUFF_SIZE );
 			MAIN_COMPUTER_display_last_message();
 		}
@@ -921,15 +822,15 @@ void PHYSICS_instrument_unit_calculations( void ) {
 	}
 
 	if( system_s1.attached == 0 && pitch_program.running == 1 && telemetry_data.mission_time - system_s1.staging_time >= 1 ) {
-		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
+		MAIN_COMPUTER_exec( PITCH_PROGRAM, STOP, 0 );
 	}
 
 	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 && telemetry_data.auto_pilot_enabled == 1 ) {
-		EXEC_COMMAND( ITERATIVE_GUIDANCE_MODE, START, 0 );
+		MAIN_COMPUTER_exec( ITERATIVE_GUIDANCE_MODE, START, 0 );
 	}
 }
 
-void PHYSICS_shared_calculations( void ) {
+void MAIN_COMPUTER_shared_calculations( void ) {
 	double pitch_mod = ( telemetry_data.stable_orbit_achieved ? 0 : ( ( 100 - pitch_program.current_value ) / 100 ) );
 	double tmp;
 
@@ -953,7 +854,7 @@ void PHYSICS_shared_calculations( void ) {
 
 	if( current_system->burn_start == 0 ) {
 		if( telemetry_data.current_thrust > 0 ) {
-			current_system->burn_start = get_current_epoch();
+			current_system->burn_start = TIME_get_epoch();
 		}
 	} else {
 		if( ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
@@ -1116,7 +1017,7 @@ void PHYSICS_shared_calculations( void ) {
 	}
 }
 
-void PHYSICS_launch_calculations( void ) {
+void MAIN_COMPUTER_launch_calculations( void ) {
 	double dynamic_pressure = 0;
 	double dynamic_pressure_newtons = 0;
 
@@ -1126,8 +1027,8 @@ void PHYSICS_launch_calculations( void ) {
 	if( telemetry_data.countdown_in_progress == 1 ) {
 		if( current_system->id == 1 && current_system->burn_time < 15 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
 			if( telemetry_data.current_thrust < 100 ) {
-				if( EXEC_COMMAND( THRUST, INCREASE, 10 / time_mod )->success == 0) {
-					EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+				if( MAIN_COMPUTER_exec( THRUST, INCREASE, 10 / time_mod )->success == 0) {
+					MAIN_COMPUTER_exec( THRUST, FULL_THRUST, 0 );
 				}
 			}
 		}
@@ -1197,7 +1098,7 @@ void PHYSICS_launch_calculations( void ) {
 	}
 }
 
-void PHYSICS_orbit_calculations( void ) {
+void MAIN_COMPUTER_orbit_calculations( void ) {
 
 	if( telemetry_data.current_vertical_velocity < 0 ) {
 		telemetry_data.current_vertical_velocity = 0;

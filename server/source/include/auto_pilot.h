@@ -16,5 +16,3 @@ void AUTOPILOT_progress( double real_second );
 void AUTOPILOT_init( void );
 
 #endif
-
-

@@ -15,10 +15,10 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <time.h>
 
 /*
-get_actual_time_gmt()
+TIME_get_gmt_gmt()
 - pobiera aktualny czas
 - zwraca char *z aktualnym czasem w formacie GMT */
-char* get_actual_time( void ) {
+char* TIME_get_gmt( void ) {
 	static char s[ TIME_BUFF_SIZE ];
 	struct tm tim;
 	time_t now;
@@ -30,25 +30,10 @@ char* get_actual_time( void ) {
 	return ( ( char* )&s );
 }
 
-/*void c_sleep(int delay)
-{
-	double t1 = clock(), t2;
-
-	fflush(stdout);
-
-	do {
-		t2 = clock();
-	} while( ( (t2 - t1) / CLK_TCK ) < delay );
-}*/
-
-long int get_current_epoch( void ) {
+long int TIME_get_epoch( void ) {
 	time_t now;
 
 	now = time( NULL );
 
 	return ( long int )now;
-}
-
-char* seconds_to_hms( const long double seconds ) {
-	return "";
 }

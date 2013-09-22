@@ -11,7 +11,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 #include "server_shared.h"
 
-void SYS_MESSAGE_send_to_all( char *msg );
-void CHAT_send_to_all( char *msg, CONNECTED_CLIENT *client );
+void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data );
+void COMMUNICATION_send_to_all( char *msg );
+void COMMUNICATION_chat_to_all( char *msg, CONNECTED_CLIENT *client );
 
 #endif

@@ -57,55 +57,55 @@ void AUTOPILOT_progress( double real_second ) {
 
 	if( telemetry_data.stable_orbit_achieved == 1 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
-			EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-			EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
+			MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
+			MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
 		}
 		return;
 	}
 
 	if( yaw_program.current_value <= 0 && liftoff_yaw_achieved == 1 && yaw_program.running == 1 ) {
-		EXEC_COMMAND( YAW_PROGRAM, STOP, 0 );
+		MAIN_COMPUTER_exec( YAW_PROGRAM, STOP, 0 );
 	}
 
 	if( ( 90 - roll_program.current_value ) <= roll_program.dest_value && roll_program.running == 1 ) {
-		EXEC_COMMAND( ROLL_PROGRAM, STOP, 0 );
+		MAIN_COMPUTER_exec( ROLL_PROGRAM, STOP, 0 );
 	}
 
 	if( pitch_program.current_value >= pitch_program.dest_value && pitch_program.running == 1 ) {
-		EXEC_COMMAND( PITCH_PROGRAM, STOP, 0 );
+		MAIN_COMPUTER_exec( PITCH_PROGRAM, STOP, 0 );
 	}
 
 	if( system_s1.center_engine_available == 1 && telemetry_data.current_velocity >= 1970 ) {
-		EXEC_COMMAND( S1, CENTER_ENGINE_CUTOFF, 0 );
+		MAIN_COMPUTER_exec( S1, CENTER_ENGINE_CUTOFF, 0 );
 	}
 
 	if( telemetry_data.current_velocity >= 2750 && system_s1.attached == 1 ) {
-		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-		EXEC_COMMAND( S1, DETACH, 0 );
+		MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
+		MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
+		MAIN_COMPUTER_exec( S1, DETACH, 0 );
 	}
 
 	if( system_s2.center_engine_available == 1 && telemetry_data.current_velocity >= 5690 ) {
-		EXEC_COMMAND( S2, CENTER_ENGINE_CUTOFF, 0 );
+		MAIN_COMPUTER_exec( S2, CENTER_ENGINE_CUTOFF, 0 );
 	}
 
 	if( system_s2.attached == 1 && ROCKET_STAGE_get_fuel( &system_s2 ) <= 5880 ) {
-		EXEC_COMMAND( THRUST, NULL_THRUST, 0 );
-		EXEC_COMMAND( MAIN_ENGINE, STOP, 0 );
-		EXEC_COMMAND( S2, DETACH, 0 );
+		MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
+		MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
+		MAIN_COMPUTER_exec( S2, DETACH, 0 );
 	}
 
 	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+			MAIN_COMPUTER_exec( MAIN_ENGINE, START, 0 );
+			MAIN_COMPUTER_exec( THRUST, FULL_THRUST, 0 );
 		}
 	}
 
 	if( current_system->id == system_s3.id && system_s3.attached == 1 && system_s2.attached == 0 && system_s2.burn_start > 0 && ( telemetry_data.mission_time - system_s2.staging_time ) >= 4 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
-			EXEC_COMMAND( MAIN_ENGINE, START, 0 );
-			EXEC_COMMAND( THRUST, FULL_THRUST, 0 );
+			MAIN_COMPUTER_exec( MAIN_ENGINE, START, 0 );
+			MAIN_COMPUTER_exec( THRUST, FULL_THRUST, 0 );
 		}
 	}
 
@@ -113,52 +113,52 @@ void AUTOPILOT_progress( double real_second ) {
 		default : /* Nic */ break;
 		case -10 : {
 			if( ROCKET_ENGINE_get_engaged( &internal_guidance ) == 0 ) {
-				EXEC_COMMAND( INTERNAL_GUIDANCE, START, 0 );
+				MAIN_COMPUTER_exec( INTERNAL_GUIDANCE, START, 0 );
 			}
 		} break;
 		case -8 : {
 			if( ROCKET_ENGINE_get_engaged( &main_engine ) == 0 ) {
-				EXEC_COMMAND( MAIN_ENGINE, START, 0 );
+				MAIN_COMPUTER_exec( MAIN_ENGINE, START, 0 );
 			}
 		} break;
 		case 0 : {
 			if( telemetry_data.holddown_arms_released == 0 ) {
-				EXEC_COMMAND( HOLDDOWN_ARMS, STOP, 0 );
+				MAIN_COMPUTER_exec( HOLDDOWN_ARMS, STOP, 0 );
 			}
 		} break;
 		case 2 : {
 			if( yaw_program.running == 0 ) {
-				EXEC_COMMAND( YAW_PROGRAM, START, 0 );
+				MAIN_COMPUTER_exec( YAW_PROGRAM, START, 0 );
 			}
 		} break;
 
 		case 13 : {
 			if( roll_program.running == 0 ) {
-				EXEC_COMMAND( ROLL_PROGRAM, START, 0 );
+				MAIN_COMPUTER_exec( ROLL_PROGRAM, START, 0 );
 			}
 		} break;
 
 		case 31 : {
 			if( pitch_program.running == 0 ) {
-				EXEC_COMMAND( PITCH_PROGRAM, START, 0 );
+				MAIN_COMPUTER_exec( PITCH_PROGRAM, START, 0 );
 			}
 		} break;
 
 		case 192 : {
 			if( system_s2.interstage_mass > 0 ) {
-				EXEC_COMMAND( S2, INTERSTAGE_JETTISON, 0 );
+				MAIN_COMPUTER_exec( S2, INTERSTAGE_JETTISON, 0 );
 			}
 		} break;
 
 		case 197 : {
 			if( telemetry_data.launch_escape_tower_ready == 1 ) {
-				EXEC_COMMAND( LET, JETTISON, 0 );
+				MAIN_COMPUTER_exec( LET, JETTISON, 0 );
 			}
 		} break;
 
 		case 500 : {
 			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) > 70 ) {
-				EXEC_COMMAND( THRUST, DECREASE, 5 );
+				MAIN_COMPUTER_exec( THRUST, DECREASE, 5 );
 			}
 		} break;
 	}

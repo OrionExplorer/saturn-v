@@ -104,6 +104,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 extern char									app_path[ MAX_PATH_LENGTH ];
 extern char									app_auth[ SMALL_BUFF_SIZE ];
 extern double								simulation_speed;
+extern double								normal_atmospheric_pressure;
 
 typedef struct COMMUNICATION_SESSION		COMMUNICATION_SESSION;
 typedef struct CONNECTED_CLIENT				CONNECTED_CLIENT;
@@ -227,7 +228,7 @@ extern struct sockaddr_in	server_address;
 extern int					ip_proto_ver;
 extern COMMUNICATION_SESSION			communication_session_;
 extern fd_set				master;
-char*						server_get_remote_hostname( COMMUNICATION_SESSION *communication_session );
+
 TELEMETRY					telemetry_data;
 FLIGHT_STATUS				MAIN_FLIGHT_STATUS;
 

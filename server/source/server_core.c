@@ -32,14 +32,14 @@ char	LOG_filename[ MAX_PATH_LENGTH ];
 /*Przechowuje informacj� o typach adres�w IP: IPv4 lub IPv6 */
 int		ip_proto_ver = -1;
 
-static void		server_log_prepare( void );
-static void		server_validate_paths( void );
+static void		CORE_log_prepare( void );
+static void		CORE_validate_paths( void );
 
 /*
-server_log_prepare()
+CORE_log_prepare()
 - sprawdza, czy istnieje folder, w kt�rym przechowywany b�dzie log z dzia�ania aplikacji
 - tworzy plik "log.txt" w katalogu, kt�rego nazwa jest aktualn� dat� */
-static void server_log_prepare( void ) {
+static void CORE_log_prepare( void ) {
 	char *tmp_path = malloc( MAX_PATH_LENGTH_CHAR+1 );
 
 	/*Utworzenie �cie�ki do pliku "log.txt" */
@@ -63,16 +63,16 @@ static void server_log_prepare( void ) {
 	strncpy( LOG_filename, tmp_path, MAX_PATH_LENGTH );
 	strncat( LOG_filename, "log.txt", MAX_PATH_LENGTH );
 
-	LOG_print( "=======NEW SERVER SESSION [%s]=======\n", get_actual_time() );
+	LOG_print( "=======NEW SERVER SESSION [%s]=======\n", TIME_get_gmt() );
 
 	free( tmp_path );
 	tmp_path = NULL;
 }
 
 /*
-server_validate_paths()
+CORE_validate_paths()
 - sprawdza, czy istniej� wszystie foldery niezb�dne do poprawnego dzia�ania aplikacji */
-static void server_validate_paths( void ) {
+static void CORE_validate_paths( void ) {
 	char *tmp_path = malloc( MAX_PATH_LENGTH_CHAR+1 );
 	int res = -1;
 
@@ -91,8 +91,8 @@ static void server_validate_paths( void ) {
 		}
 	}
 
-	/*Patrz opis funkcji server_log_prepare() */
-	server_log_prepare();
+	/*Patrz opis funkcji CORE_log_prepare() */
+	CORE_log_prepare();
 
 	free( tmp_path );
 	tmp_path = NULL;
@@ -174,8 +174,8 @@ void CORE_initialize( void ) {
 	/* Pobranie �cie�ki startowej aplikacji */
 	strncpy( app_path, get_app_path(), MAX_PATH_LENGTH );
 
-	/*Patrz opis funkcji server_validate_paths() */
-	( void )server_validate_paths();
+	/*Patrz opis funkcji CORE_validate_paths() */
+	( void )CORE_validate_paths();
 
 	LOG_print( "Service start path:\n%s\n", app_path );
 

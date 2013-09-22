@@ -17,7 +17,15 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include "include/server_socket_io.h"
 #include "include/server_log.h"
 
-void app_terminate( void );
+void app_terminate( void ) {
+	LOG_print( "Application terminate command received.\n" );
+	printf( "Service is being closed..." );
+	SOCKET_stop();
+	LOG_print( "Service closed.\n" );
+	LOG_save();
+	printf( "ok.\n" );
+	return;
+}
 
 int main( void ) {
 
@@ -31,14 +39,4 @@ int main( void ) {
 	printf( "%s\n", SERVER_NAME );
 	CORE_initialize();
 	return 0;
-}
-
-void app_terminate( void ) {
-	LOG_print( "Application terminate command received.\n" );
-	printf( "Service is being closed..." );
-	SOCKET_stop();
-	LOG_print( "Service closed.\n" );
-	LOG_save();
-	printf( "ok.\n" );
-	return;
 }

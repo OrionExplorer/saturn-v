@@ -155,7 +155,7 @@ void* TELEMETRY_send_live_data( void* data ) {
 }
 
 void TELEMETRY_update( void ) {
-	strncpy( telemetry_data.current_time_gmt, get_actual_time(), TIME_BUFF_SIZE );
+	strncpy( telemetry_data.current_time_gmt, TIME_get_gmt(), TIME_BUFF_SIZE );
 
 	telemetry_data.current_gforce = round( telemetry_data.current_acceleration / 10 );
 

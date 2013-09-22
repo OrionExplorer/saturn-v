@@ -15,7 +15,6 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <string.h>
 #include <ctype.h>
 
-
 int xdigit( char digit ){
 	int val;
 

@@ -12,7 +12,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 /* Program komputerowy */
 void COMPUTER_PROGRAM_start( COMPUTER_PROGRAM *cp ) {
-	cp->start_time = get_current_epoch();
+	cp->start_time = TIME_get_epoch();
 	cp->running = 1;
 }
 

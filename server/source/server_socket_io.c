@@ -222,160 +222,6 @@ void SOCKET_run( void ) {
 	} /*for( ;; ) */
 }
 
-void REQUEST_parse_command( CONNECTED_CLIENT *client, const char *data ) {
-	vDEVICE rocket_device;
-	vCOMMAND rocket_command;
-	int rocket_value;
-	INTERPRETER_RESULT *result;
-
-	cJSON *json = cJSON_Parse( data );
-	cJSON *command_json;
-	cJSON *command_type_json;
-	cJSON *response_mode_json;
-
-	cJSON *username_json;
-	cJSON *password_json;
-
-	char *command = NULL;
-	char *command_type = NULL;
-	char *response_mode = NULL;
-	char *username = NULL;
-	char *password = NULL;
-	char *login_response = NULL;
-	char *main_computer_response_str = NULL;
-	short main_computer_response_success = 0;
-
-	LOG_print( "[%s] [%d] Received command: \"%s\".\n", get_actual_time(), client->socket_descriptor, data );
-
-	if( json == NULL ) {
-		SOCKET_send( &communication_session_, client, INVALID_JSON, -1 );
-		return;
-	}
-	command_json = cJSON_GetObjectItem( json, "command" );
-	command_type_json = cJSON_GetObjectItem( json, "command_type" );
-	response_mode_json = cJSON_GetObjectItem( json, "response_mode" );
-
-	if( command_json ) {
-		command = command_json->valuestring;
-	}
-
-	if( command_type_json ) {
-		command_type = command_type_json->valuestring;
-	}
-
-	if( response_mode_json ) {
-		response_mode = response_mode_json->valuestring;
-	}
-
-    if( client->authorized == 0 ) {
-		if( strlen( app_auth ) == 0 ) {
-			client->authorized = 1;
-			SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
-		} else {
-			if( command_type ) {
-				if( strncmp( "authorization", command_type, STD_BUFF_SIZE ) == 0 ) {
-					username_json = cJSON_GetObjectItem( json, "username" );
-					password_json = cJSON_GetObjectItem( json, "password" );
-
-					if( username_json != NULL ) {
-						username = username_json->valuestring;
-					}
-					if( password_json != NULL ) {
-						password = password_json->valuestring;
-					}
-
-					if( username != NULL && password != NULL ) {
-						if( strncmp( app_auth, password, STD_BUFF_SIZE ) == 0 ) {
-							client->authorized = 1;
-							strncpy( client->name, username, STD_BUFF_SIZE );
-							SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
-							LOG_print( "[%s] client connected with descriptor %d is %s.\n", get_actual_time(), client->socket_descriptor, username );
-
-							login_response = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
-							snprintf( login_response, STD_BUFF_SIZE, NEW_USER_STR, client->name );
-							SYS_MESSAGE_send_to_all( login_response );
-
-							if( login_response != NULL ) {
-								free( login_response );
-								login_response = NULL;
-							}
-
-						} else {
-							SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
-						}
-
-						if( username != NULL ) {
-							free( username );
-							username = NULL;
-						}
-
-						if( password != NULL ) {
-							free( password );
-							password = NULL;
-						}
-					} else {
-						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
-					}
-				} else {
-					SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
-				}
-			} else {
-				SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
-			}
-		}
-	} else {
-		if( command != NULL && command_type != NULL ) {
-			if(strncmp( "computer", command_type, STD_BUFF_SIZE ) == 0 ) {
-				if( sscanf( command, "%d %d %d", ( int * )&rocket_device, ( int * )&rocket_command, &rocket_value ) == 3 ) {
-					main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
-					result = EXEC_COMMAND( rocket_device, rocket_command, rocket_value );
-
-					main_computer_response_success = result->success;
-					snprintf( main_computer_response_str, STD_BUFF_SIZE, MAIN_COMPUTER_RESPONSE_TEMPLATE, ( main_computer_response_success == 1 ? "true" : "false" ), result->message );
-					SOCKET_send( &communication_session_, client, main_computer_response_str, -1 );
-
-					if( main_computer_response_str != NULL ) {
-						free( main_computer_response_str );
-						main_computer_response_str = NULL;
-					}
-
-				} else {
-					SOCKET_send( &communication_session_, client, "ILLEGAL COMMAND", -1 );
-				}
-			} else if( strncmp( "data", command_type, STD_BUFF_SIZE ) == 0 ) {
-				if( strncmp( "status", command, STD_BUFF_SIZE ) == 0 ) {
-					TELEMETRY_send_ondemand_data( client );
-				}
-			} else if( strncmp( "chat_message", command_type, STD_BUFF_SIZE ) == 0 ) {
-				CHAT_send_to_all( command, client );
-			}
-
-			if( command != NULL ) {
-				free( command );
-				command = NULL;
-			}
-		}
-
-		if( response_mode != NULL ) {
-			if(strncmp( "live", response_mode, STD_BUFF_SIZE ) == 0 ) {
-				client->binded = 1;
-			} else if ( strncmp( "on-demand", response_mode, STD_BUFF_SIZE ) == 0 ) {
-				client->binded = 0;
-			}
-		}
-	}
-
-	if( command_type != NULL ) {
-		free( command_type );
-		command_type = NULL;
-	}
-
-	if( response_mode != NULL ) {
-		free( response_mode );
-		response_mode = NULL;
-	}
-}
-
 /*
 SOCKET_process( int socket_fd )
 @socket_fd - identyfikator gniazda
@@ -403,7 +249,7 @@ static void SOCKET_process( int socket_fd ) {
 		if( communication_session_.data_length > 0 ) {
 			client->socket_info.connection_status = CCONNECTED;
 		} else {
-			LOG_print( "[%s] WebSocket handshake failed.\n", get_actual_time() );
+			LOG_print( "[%s] WebSocket handshake failed.\n", TIME_get_gmt() );
 		}
 	}
 
@@ -416,7 +262,7 @@ static void SOCKET_process( int socket_fd ) {
 			if( strlen( client->name ) > 0 ) {
 				main_computer_response_str = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
 				snprintf( main_computer_response_str, STD_BUFF_SIZE, DEL_USER_STR, client->name );
-				SYS_MESSAGE_send_to_all( main_computer_response_str );
+				COMMUNICATION_send_to_all( main_computer_response_str );
 
 				free( main_computer_response_str );
 				main_computer_response_str = NULL;
@@ -455,7 +301,7 @@ static void SOCKET_process( int socket_fd ) {
 				}
 				/* Przetworzenie komendy */
 				if( websocket_recv_data_len > 0 ) {
-					REQUEST_parse_command( client, parsed_content );
+					COMMUNICATION_parse_command( client, parsed_content );
 				}
 			}
 		}
@@ -543,17 +389,6 @@ void SOCKET_send( COMMUNICATION_SESSION *communication_session, CONNECTED_CLIENT
 }
 
 /*
-server_get_remote_hostname( const char *remote_addr )
-@communication_session - wskaŸnik do pod³¹czonego klienta
-- zwraca ciï¿½g znakï¿½w bï¿½dï¿½cy nazwï¿½ hosta. */
-char* server_get_remote_hostname( COMMUNICATION_SESSION *communication_session ) {
-	static char remote_name[ TINY_BUFF_SIZE ];
-	memset( remote_name, '\0', TINY_BUFF_SIZE );
-	getnameinfo( ( struct sockaddr * )&communication_session->address, sizeof( communication_session->address ), remote_name, sizeof( remote_name ), NULL, 0, NI_NAMEREQD );
-	return ( ( char* )&remote_name );
-}
-
-/*
 SOCKET_get_remote_ip( COMMUNICATION_SESSION *communication_session )
 @communication_session - wskaŸnik do pod³¹czonego klienta
 - zwraca ciï¿½g znakï¿½w bï¿½dï¿½cy adresem IP. */
@@ -590,7 +425,7 @@ void SOCKET_register_client( int socket_descriptor ) {
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
 			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
-			LOG_print("[%s] client connected with descriptor %d.\n", get_actual_time(), socket_descriptor );
+			LOG_print("[%s] client connected with descriptor %d.\n", TIME_get_gmt(), socket_descriptor );
 			return;
 		}
 	}
@@ -612,9 +447,9 @@ void SOCKET_unregister_client( int socket_descriptor ) {
 			connected_clients[ i ].socket_info.type = CUNKNOWN;
 			connected_clients[ i ].socket_info.connection_status = CDISCONNECTED;
 			if( strlen( connected_clients[ i ].name ) > 0 ) {
-				LOG_print("[%s] client disconnected: %s (descriptor %d.)\n", get_actual_time(), connected_clients[ i ].name, socket_descriptor );
+				LOG_print("[%s] client disconnected: %s (descriptor %d.)\n", TIME_get_gmt(), connected_clients[ i ].name, socket_descriptor );
 			} else {
-				LOG_print("[%s] client disconnected: %d.\n", get_actual_time(), socket_descriptor );
+				LOG_print("[%s] client disconnected: %d.\n", TIME_get_gmt(), socket_descriptor );
 			}
 
 			memset( connected_clients[ i ].name, '\0', STD_BUFF_SIZE );
