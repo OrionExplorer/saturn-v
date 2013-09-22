@@ -8,8 +8,8 @@ endif
 
 all: saturn-v
 
-saturn-v: auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o
-	gcc auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o -o saturn-v $(LIBS)
+saturn-v: auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o physics.o
+	gcc auto_pilot.o server_communication.o server_telemetry.o base64.o server_core.o server_time_util.o celestial_objects.o server_files_io.o sha1.o cJSON.o server_log.o spacecraft_components.o cWebSockets.o server_mem_manager.o saturn-v.o server_socket_io.o main_computer.o server_strings_util.o physics.o -o saturn-v $(LIBS)
 
 saturn-v.o: source/saturn-v.c
 	gcc -c source/saturn-v.c $(CFLAGS)
@@ -25,6 +25,9 @@ server_telemetry.o: source/server_telemetry.c
 
 base64.o: source/base64.c
 	gcc -c source/base64.c $(CFLAGS)
+
+physics.o: source/physics.c
+	gcc -c source/physics.c $(CFLAGS)
 
 server_core.o: source/server_core.c
 	gcc -c source/server_core.c $(CFLAGS)
