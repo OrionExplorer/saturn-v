@@ -2,14 +2,15 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_time_util.h
+Plik: core.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#ifndef SERVER_TIME_UTIL_H
-#define SERVER_TIME_UTIL_H
+#ifndef SERVER_CORE_H
+#define SERVER_CORE_H
 
-char*			TIME_get_gmt( void );
-long int		TIME_get_epoch( void );
+void			CORE_initialize( void );
+void			CORE_start( void );
+short			CORE_load_configuration( void );
 
 #endif

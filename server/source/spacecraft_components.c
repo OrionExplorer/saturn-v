@@ -6,7 +6,7 @@ Plik: spacecraft_components.c
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_shared.h"
+#include "include/shared.h"
 #include "include/spacecraft_components.h"
 
 

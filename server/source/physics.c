@@ -7,7 +7,7 @@ Plik: physics.c
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #include "include/physics.h"
-#include "include/server_shared.h"
+#include "include/shared.h"
 #include "include/celestial_objects.h"
 
 double		normal_atmospheric_pressure = 1013.25;

@@ -2,16 +2,16 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_mem_manager.c
+Plik: memory_manager.c
 
 Przeznaczenie:
 Funkcje u�atwiaj�ce zarz�dzanie pami�ci�
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_shared.h"
-#include "include/server_mem_manager.h"
-#include "include/server_log.h"
+#include "include/shared.h"
+#include "include/memory_manager.h"
+#include "include/log.h"
 #include <stdio.h>
 #include <stdlib.h>
 

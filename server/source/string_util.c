@@ -2,15 +2,15 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_strings_util.c
+Plik: string_util.c
 
 Przeznaczenie:
 Zbiór funkcji rozszerzaj¹cych dzia³ania na ci¹gach znaków
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_strings_util.h"
-#include "include/server_shared.h"
+#include "include/string_util.h"
+#include "include/shared.h"
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>

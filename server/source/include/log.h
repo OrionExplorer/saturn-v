@@ -2,15 +2,15 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_core.h
+Plik: log.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#ifndef SERVER_CORE_H
-#define SERVER_CORE_H
+#ifndef SERVER_LOG_H
+#define SERVER_LOG_H
 
-void			CORE_initialize( void );
-void			CORE_start( void );
-short			CORE_load_configuration( void );
+extern char				LOG_filename[ MAX_PATH_LENGTH ];
+void					LOG_print( char *fmt, ... );
+void					LOG_save( void );
 
 #endif

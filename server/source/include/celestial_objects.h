@@ -10,7 +10,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define CELESTIAL_OBJECTS_H
 
 #include <math.h>
-#include "server_shared.h"
+#include "shared.h"
 
 #define GRAVITATIONAL_CONSTANT			6.67*pow(10, -11)
 #define AU								149598000000LL

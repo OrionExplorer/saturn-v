@@ -2,14 +2,14 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_log.c
+Plik: log.c
 
 Przeznaczenie:
 Obs�uga logowania zdarze� do pliku logs/log.txt
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_shared.h"
+#include "include/shared.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>

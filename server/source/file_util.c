@@ -2,13 +2,13 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_files_io.c
+Plik: file_util.c
 Przeznaczenie:
 Zbi�r funkcji przeznaczonych do obs�ugi plik�w i katalog�w
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_files_io.h"
+#include "include/file_util.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

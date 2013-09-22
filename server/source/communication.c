@@ -2,11 +2,11 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_communication.c
+Plik: communication.c
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_communication.h"
+#include "include/communication.h"
 
 void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	vDEVICE rocket_device;

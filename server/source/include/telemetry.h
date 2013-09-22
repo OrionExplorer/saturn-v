@@ -2,14 +2,14 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_telemetry.h
+Plik: telemetry.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #ifndef SERVER_TELEMETRY_H
 #define SERVER_TELEMETRY_H
 
-#include "server_shared.h"
+#include "shared.h"
 
 void TELEMETRY_prepare_data( char *dst, unsigned int dst_len );
 void* TELEMETRY_send_live_data( void* data );

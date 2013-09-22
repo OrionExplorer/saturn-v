@@ -2,11 +2,11 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_telemetry.c
+Plik: telemetry.c
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_telemetry.h"
+#include "include/telemetry.h"
 #include "include/spacecraft_components.h"
 #include "include/celestial_objects.h"
 

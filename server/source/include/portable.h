@@ -2,7 +2,7 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_portable.h
+Plik: portable.h
 
 Przeznaczenie:
 Dzi�ki definicjom w tym pliku mo�liwe jest ujednolicenie kodu dla r�nych platform.

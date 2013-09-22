@@ -13,9 +13,9 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #include <stdio.h>
 #include <signal.h>
-#include "include/server_core.h"
-#include "include/server_socket_io.h"
-#include "include/server_log.h"
+#include "include/core.h"
+#include "include/socket_io.h"
+#include "include/log.h"
 
 void app_terminate( void ) {
 	LOG_print( "Application terminate command received.\n" );

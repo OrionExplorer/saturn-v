@@ -2,7 +2,7 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_mem_manager.h
+Plik: memory_manager.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/

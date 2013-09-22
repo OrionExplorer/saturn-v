@@ -1,18 +1,18 @@
 /*******************************************************************
 
-Projekt voyager7computer
+Projekt Saturn V Computer
 
-Plik: server_shared.h
+Plik: shared.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #ifndef SERVER_SHARED_H
 #define SERVER_SHARED_H
 
-#include "server_portable.h"
-#include "server_strings_util.h"
-#include "server_time_util.h"
-#include "server_mem_manager.h"
+#include "portable.h"
+#include "string_util.h"
+#include "time_util.h"
+#include "memory_manager.h"
 #include "cJSON.h"
 #include <stdio.h>
 #include <time.h>

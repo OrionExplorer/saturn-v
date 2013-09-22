@@ -2,7 +2,7 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_core.c
+Plik: core.c
 
 Przeznaczenie:
 Konfiguracja aplikacji
@@ -10,11 +10,11 @@ Ustawienie nas�uchiwania socket�w
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_core.h"
-#include "include/server_shared.h"
-#include "include/server_files_io.h"
-#include "include/server_socket_io.h"
-#include "include/server_log.h"
+#include "include/core.h"
+#include "include/shared.h"
+#include "include/file_util.h"
+#include "include/socket_io.h"
+#include "include/log.h"
 #include "include/main_computer.h"
 #include <stdio.h>
 #include <stdlib.h>

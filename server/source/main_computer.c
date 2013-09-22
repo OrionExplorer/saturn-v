@@ -7,10 +7,10 @@ Plik: main_computer.c
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #include "include/main_computer.h"
-#include "include/server_log.h"
+#include "include/log.h"
 #include "include/spacecraft_components.h"
 #include "include/celestial_objects.h"
-#include "include/server_telemetry.h"
+#include "include/telemetry.h"
 #include "include/auto_pilot.h"
 #include "include/physics.h"
 #include <pthread.h>

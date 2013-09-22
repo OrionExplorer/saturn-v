@@ -2,14 +2,14 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_time_util.c
+Plik: time_util.c
 
 Przeznaczenie:
 Zbiór funkcji przeznaczonych do zarz¹dzania dat¹ i czasem
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_shared.h"
+#include "include/shared.h"
 #include <stdio.h>
 #include <string.h>
 #include <time.h>

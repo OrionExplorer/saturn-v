@@ -2,14 +2,14 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_files_io.h
+Plik: file_util.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
 #ifndef SERVER_FILES_IO_H
 #define SERVER_FILES_IO_H
 
-#include "server_shared.h"
+#include "shared.h"
 
 char*	get_app_path( void );
 char*	file_get_ext( const char *filename );

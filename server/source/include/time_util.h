@@ -2,15 +2,14 @@
 
 Projekt Saturn V Main Computer
 
-Plik: server_log.h
+Plik: time_util.h
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#ifndef SERVER_LOG_H
-#define SERVER_LOG_H
+#ifndef SERVER_TIME_UTIL_H
+#define SERVER_TIME_UTIL_H
 
-extern char				LOG_filename[ MAX_PATH_LENGTH ];
-void					LOG_print( char *fmt, ... );
-void					LOG_save( void );
+char*			TIME_get_gmt( void );
+long int		TIME_get_epoch( void );
 
 #endif

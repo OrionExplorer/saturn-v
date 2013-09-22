@@ -2,7 +2,7 @@
 
 Projekt voyager7computer
 
-Plik: server_socket_io.c
+Plik: socket_io.c
 
 Przeznaczenie:
 Inicjalizacja socketów
@@ -11,15 +11,15 @@ Odbieranie danych z sieci i przekazanie do interpretacji
 
 Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 *******************************************************************/
-#include "include/server_socket_io.h"
-#include "include/server_shared.h"
-#include "include/server_log.h"
-#include "include/server_files_io.h"
-#include "include/server_strings_util.h"
+#include "include/socket_io.h"
+#include "include/shared.h"
+#include "include/log.h"
+#include "include/file_util.h"
+#include "include/string_util.h"
 #include "include/cWebSockets.h"
 #include "include/main_computer.h"
-#include "include/server_telemetry.h"
-#include "include/server_communication.h"
+#include "include/telemetry.h"
+#include "include/communication.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>

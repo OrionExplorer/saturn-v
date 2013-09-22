@@ -9,7 +9,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #ifndef SPACECRAFT_COMPONENTS_H
 #define SPACECRAFT_COMPONENTS_H
 
-#include "server_shared.h"
+#include "shared.h"
 
 #define MAX_THRUST					100.0
 
