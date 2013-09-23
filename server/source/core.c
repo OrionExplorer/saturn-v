@@ -124,7 +124,7 @@ short CORE_load_configuration( void ) {
 		fread( buf, 1, BIG_BUFF_SIZE, cfg_file );
 		json = cJSON_Parse( buf );
 		if( json ) {
-			remote_password_JSON = cJSON_GetObjectItem( json, "remote_paswword" );
+			remote_password_JSON = cJSON_GetObjectItem( json, "remote_password" );
 			if( remote_password_JSON ) {
 				strncpy( app_auth, remote_password_JSON->valuestring, SMALL_BUFF_SIZE );
 				printf( "Access token is: %s.\n", app_auth );

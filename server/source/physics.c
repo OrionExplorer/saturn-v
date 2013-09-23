@@ -97,17 +97,17 @@ double PHYSICS_IGM_get_pitch_step( void ) {
 	int seconds = round( telemetry_data.mission_time );
 	double result = 0.0;
 
-	if(seconds >= 240 && seconds < 390) {
+	if( seconds >= 240 && seconds < 390 ) {
 		result = 0.045800;
 	}
-	if(seconds >= 390 && seconds < 540) {
+	if( seconds >= 390 && seconds < 540 ) {
 		result = 0.0477867;
 	}
-	if(seconds >= 540 && seconds < 630) {
+	if( seconds >= 540 && seconds < 630 ) {
 		result = 0.0194500;
 	}
-	if(seconds >= 630 && telemetry_data.pitch <= 90.0 ) {
-		result = 0.1439900;
+	if( seconds >= 630 ) {
+		result = 0.1449900;
 	}
 
 	return result + 0.1562500;

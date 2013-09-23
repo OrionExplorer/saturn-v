@@ -61,7 +61,7 @@ void *MAIN_COMPUTER_simulation_progress( void ) {
 
 		MAIN_COMPUTER_instrument_unit_calculations();
 
-		Sleep( 100 );
+		Sleep( simulation_speed );
 	}
 }
 
