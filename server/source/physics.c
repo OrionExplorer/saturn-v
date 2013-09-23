@@ -107,7 +107,7 @@ double PHYSICS_IGM_get_pitch_step( void ) {
 		result = 0.0194500;
 	}
 	if(seconds >= 630 && telemetry_data.pitch <= 90.0 ) {
-		result = 0.1430500;
+		result = 0.1439900;
 	}
 
 	return result + 0.1562500;

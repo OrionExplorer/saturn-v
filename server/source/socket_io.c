@@ -111,6 +111,12 @@ static void SOCKET_prepare( void ) {
 	setgid( 0 );
 #endif
 
+	if( setsockopt( socket_server, SOL_SOCKET, SO_REUSEADDR, ( char * )&i, sizeof( i ) ) == SOCKET_ERROR ) {
+		wsa_result = WSAGetLastError();
+		LOG_print( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
+		printf( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
+	}
+
 	if ( bind( socket_server, ( struct sockaddr* )&server_address, sizeof( server_address ) ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "bind() error: %d.\n", wsa_result );
@@ -135,12 +141,6 @@ static void SOCKET_prepare( void ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "setsockopt( TCP_NODELAY ) error: %d.\n", wsa_result );
 		printf( "setsockopt( TCP_NODELAY ) error: %d.\n", wsa_result );
-	}
-
-	if( setsockopt( socket_server, SOL_SOCKET, SO_REUSEADDR, ( char * )&i, sizeof( i ) ) == SOCKET_ERROR ) {
-		wsa_result = WSAGetLastError();
-		LOG_print( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
-		printf( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
 	}
 
 	/* Ustawienie na non-blocking socket */

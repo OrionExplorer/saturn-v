@@ -50,8 +50,8 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <sys/select.h>
 #endif
 
-#define APP_VER								"0.4"
-#define SERVER_NAME							APP_NAME"/"APP_VER
+#define APP_VER								"0.9"
+#define SERVER_NAME							APP_NAME", version "APP_VER
 
 #define LOGS_PATH							""SLASH
 
@@ -103,7 +103,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 extern char									app_path[ MAX_PATH_LENGTH ];
 extern char									app_auth[ SMALL_BUFF_SIZE ];
-extern double								simulation_speed;
+extern int									simulation_speed;
 extern double								normal_atmospheric_pressure;
 
 typedef struct COMMUNICATION_SESSION		COMMUNICATION_SESSION;

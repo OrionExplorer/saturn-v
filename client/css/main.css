@@ -280,6 +280,7 @@ span[data-name="loadingText"] {
 }
 
 .chatInput {
+	color: #404040;
 	width: 99%;
 	height: 35px;
 	margin-top: 1px !important;
@@ -289,6 +290,7 @@ span[data-name="loadingText"] {
 }
 
 .messageBox {
+	color: #404040;
 	height: 150px;
 	width: 99%;
 	border: 1px solid #1B2128;

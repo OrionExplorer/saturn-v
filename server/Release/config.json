@@ -1,4 +1,5 @@
 {
-	"remote_paswword":"eagle321",
-	"simulation_speed": 1.0
+	"remote_paswword": "eagle321",
+	"simulation_speed": 1.0,
+	"countdown_start": 10
 }

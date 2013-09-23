@@ -25,7 +25,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 char	app_path[ MAX_PATH_LENGTH ];
 char	app_auth[ SMALL_BUFF_SIZE ];
 /* Prędkość dzialania symulacji */
-double	simulation_speed;
+int		simulation_speed;
 /*Pe�na nazwa pliku ( +�cie�ka dost�pu ) "log.txt" */
 char	LOG_filename[ MAX_PATH_LENGTH ];
 
@@ -111,6 +111,7 @@ short CORE_load_configuration( void ) {
 	cJSON *json = NULL;
 	cJSON *remote_password_JSON = NULL;
 	cJSON *simulation_speed_JSON = NULL;
+	cJSON *countdown_start_JSON = NULL;
 
 	/* Reset zmiennych */
 	ip_proto_ver = 4;
@@ -131,7 +132,14 @@ short CORE_load_configuration( void ) {
 
 			simulation_speed_JSON = cJSON_GetObjectItem( json, "simulation_speed" );
 			if( simulation_speed_JSON ) {
-				simulation_speed = simulation_speed_JSON->valuedouble * 100;
+				simulation_speed = round( simulation_speed_JSON->valuedouble * 100 );
+				LOG_print( "Simulation speed is: %d\n", simulation_speed );
+			}
+
+			countdown_start_JSON = cJSON_GetObjectItem( json, "countdown_start" );
+			if( countdown_start_JSON ) {
+				telemetry_data.mission_time = round( abs( countdown_start_JSON->valuedouble ) )*(-1);
+				LOG_print( "Countdown start at: %d\n", simulation_speed );
 			}
 
 			if( remote_password_JSON != NULL ) {
@@ -141,6 +149,10 @@ short CORE_load_configuration( void ) {
 			if( simulation_speed_JSON != NULL ) {
 				free( simulation_speed_JSON );
 				simulation_speed_JSON = NULL;
+			}
+			if( countdown_start_JSON != NULL ) {
+				free( countdown_start_JSON );
+				countdown_start_JSON = NULL;
 			}
 
 			if( json ) {

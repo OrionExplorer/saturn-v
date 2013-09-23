@@ -41,7 +41,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 	#define MSG_NOSIGNAL	0
 	#define sleep		Sleep
 
-	#define APP_NAME	"Saturn V Computer (Win32)"
+	#define APP_NAME	"Saturn V Computer Windows"
 #else
 	#define WSAGetLastError() errno
 /* �cie�ki do plik�w/folder�w na systemach LINUX s� oddzielone "/" */
@@ -54,7 +54,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 	#define sighandler	__sighandler_t
 	#define Sleep(x)	usleep(x*1000)
 
-	#define APP_NAME	"Saturn V Computer (Linux)"
+	#define APP_NAME	"Saturn V Computer for Linux"
 #endif
 
 #ifndef NI_MAXHOST

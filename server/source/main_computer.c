@@ -61,7 +61,7 @@ void *MAIN_COMPUTER_simulation_progress( void ) {
 
 		MAIN_COMPUTER_instrument_unit_calculations();
 
-		Sleep( simulation_speed );
+		Sleep( 100 );
 	}
 }
 
@@ -77,12 +77,12 @@ void MAIN_COMPUTER_init( void ) {
 	COMPUTER_PROGRAMS_init();
 	CELESTIAL_OBJECTS_load();
 
-	MAIN_COMPUTER_exec( AUTO_PILOT, START, 0 );
+	telemetry_data.auto_pilot_enabled = 1;
 
 	time_mod = ( 1000 / time_interval );
 	normal_atmospheric_pressure += rand() % 10;
 	time_tick = ( time_interval * 0.001 );
-	telemetry_data.mission_time = -10.0;
+	/*telemetry_data.mission_time = -10.0;*/
 	telemetry_data.launch_escape_tower_ready = 1;
 	telemetry_data.active_stage = 1;
 	telemetry_data.orbit_revolution_duration = -1;
@@ -825,7 +825,7 @@ void MAIN_COMPUTER_instrument_unit_calculations( void ) {
 		MAIN_COMPUTER_exec( PITCH_PROGRAM, STOP, 0 );
 	}
 
-	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 && telemetry_data.auto_pilot_enabled == 1 ) {
+	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 && telemetry_data.auto_pilot_enabled == 1 && telemetry_data.stable_orbit_achieved == 0 ) {
 		MAIN_COMPUTER_exec( ITERATIVE_GUIDANCE_MODE, START, 0 );
 	}
 }
@@ -928,20 +928,6 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 
 	}
 	
-	/*if( telemetry_data.current_acceleration < 0 && telemetry_data.current_thrust == 0 && telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.mission_time - current_system->staging_time ) < 4) {
-		telemetry_data.current_acceleration = ( real_fw / telemetry_data.total_mass );
-	}*/
-
-	/*if( telemetry_data.current_acceleration < 0 && telemetry_data.current_altitude <= 0 ) {
-		telemetry_data.current_acceleration = 0;
-	}*/
-
-	/*if( telemetry_data.stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 100000 ) {
-		if( telemetry_data.current_acceleration < 0 ) {
-			telemetry_data.current_acceleration = 0;
-		}
-	}*/
-
 	if( telemetry_data.holddown_arms_released == 1 ) {
 		if( pitch_program.current_value < 90 || pitch_program.current_value > 270 ) {
 			telemetry_data.current_velocity = telemetry_data.last_velocity + ( telemetry_data.current_acceleration / ( time_mod ) );
@@ -994,6 +980,13 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 
 	if( telemetry_data.auto_pilot_enabled == 1 ) {
 		AUTOPILOT_progress( telemetry_data.mission_time );
+	}
+
+	if( telemetry_data.iterative_guidance_mode_active == 1 ) {
+		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
+		if( telemetry_data.pitch > 90.0 ) {
+			telemetry_data.iterative_guidance_mode_active = 0;
+		}
 	}
 
 	if( telemetry_data.orbit_periapsis < 0 ) {
@@ -1058,16 +1051,10 @@ void MAIN_COMPUTER_launch_calculations( void ) {
 			pitch_program.current_value += _AUTOPILOT_get_pitch_step() / time_mod;
 		}
 	}
-	if( telemetry_data.iterative_guidance_mode_active == 1 ) {
-		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
-	}
 
-	//if( telemetry_data.current_altitude > 0 && telemetry_data.iterative_guidance_mode_active == 0 && pitch_program.running == 0 ) {
-		if( telemetry_data.pitch != 0 ) {
-		//if( telemetry_data.mission_time >= 160 && telemetry_data.mission_time < 240 ) {
-			pitch_program.current_value -= 0.1562500 / time_mod;
-		}
-	//}
+	if( telemetry_data.pitch != 0 ) {
+		pitch_program.current_value -= 0.1562500 / time_mod;
+	}
 
 	if( roll_program.running == 1 ) {
 		roll_program.current_value += _AUTOPILOT_get_roll_step() / time_mod;
