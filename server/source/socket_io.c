@@ -117,14 +117,6 @@ static void SOCKET_prepare( void ) {
 		printf( "setsockopt( SO_REUSEADDR ) error: %d.\n", wsa_result );
 	}
 
-	if ( bind( socket_server, ( struct sockaddr* )&server_address, sizeof( server_address ) ) == SOCKET_ERROR ) {
-		wsa_result = WSAGetLastError();
-		LOG_print( "bind() error: %d.\n", wsa_result );
-		printf( "bind() error: %d.\n", wsa_result );
-		SOCKET_stop();
-		exit( EXIT_FAILURE );
-	}
-
 	if( setsockopt( socket_server, SOL_SOCKET, SO_RCVTIMEO, ( char* )&tv, sizeof( struct timeval ) ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
 		LOG_print( "setsockopt( SO_RCVTIMEO ) error: %d.\n", wsa_result );
@@ -146,8 +138,16 @@ static void SOCKET_prepare( void ) {
 	/* Ustawienie na non-blocking socket */
 	if( fcntl( socket_server, F_SETFL, &b ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
-		LOG_print( "ioctlsocket(): error: %d.\n", wsa_result );
-		printf( "ioctlsocket(): error: %d.\n", wsa_result );
+		LOG_print( "ioctlsocket() error: %s.\n", wsa_result );
+		printf( "ioctlsocket() error: %s.\n", wsa_result );
+		SOCKET_stop();
+		exit( EXIT_FAILURE );
+	}
+
+	if ( bind( socket_server, ( struct sockaddr* )&server_address, sizeof( server_address ) ) == SOCKET_ERROR ) {
+		wsa_result = WSAGetLastError();
+		LOG_print( "bind() error: %d.\n", wsa_result );
+		printf( "bind() error: %d.\n", wsa_result );
 		SOCKET_stop();
 		exit( EXIT_FAILURE );
 	}

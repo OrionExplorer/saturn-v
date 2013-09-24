@@ -825,7 +825,7 @@ void MAIN_COMPUTER_instrument_unit_calculations( void ) {
 		MAIN_COMPUTER_exec( PITCH_PROGRAM, STOP, 0 );
 	}
 
-	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 && telemetry_data.auto_pilot_enabled == 1 && telemetry_data.stable_orbit_achieved == 0 ) {
+	if( system_s1.attached == 0 && telemetry_data.iterative_guidance_mode_active == 0 && telemetry_data.mission_time - system_s1.staging_time >= 44 && telemetry_data.mission_time - system_s1.staging_time < 45 && telemetry_data.auto_pilot_enabled == 1 && telemetry_data.stable_orbit_achieved == 0 ) {
 		MAIN_COMPUTER_exec( ITERATIVE_GUIDANCE_MODE, START, 0 );
 	}
 }
@@ -836,7 +836,6 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 
 	fw = 0;
 	real_fw = 0;
-	/*rad2deg = pitch_program.current_value * _PI / 180;*/
 	telemetry_data.current_fuel_mass = 0;
 	telemetry_data.total_mass = 0;
 	telemetry_data.thrust_newtons = 0;
@@ -925,7 +924,6 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 		if( telemetry_data.stable_orbit_achieved == 1 && telemetry_data.current_altitude >= 100000 ) {
 			telemetry_data.current_acceleration = 0;
 		}
-
 	}
 	
 	if( telemetry_data.holddown_arms_released == 1 ) {
@@ -940,11 +938,32 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 		}
 	}
 
+	if( pitch_program.current_value != 0 ) {
+		rad2deg = pitch_program.current_value * _PI / 180;
+		telemetry_data.current_vertical_velocity = round( ( ( telemetry_data.last_velocity + telemetry_data.current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) ) * cos( rad2deg ) );
+		telemetry_data.current_vertical_velocity -= CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) / time_mod;
+		if( telemetry_data.stable_orbit_achieved == 1 ) {
+			telemetry_data.current_vertical_velocity += abs ( CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) / time_mod );
+		}
+
+		if( telemetry_data.current_vertical_velocity == 0 ) {
+			telemetry_data.current_horizontal_velocity = telemetry_data.current_velocity;
+		} else {
+			telemetry_data.current_horizontal_velocity = round( telemetry_data.last_velocity * sin( rad2deg ) );
+		}
+	} else {
+		telemetry_data.current_vertical_velocity = telemetry_data.current_velocity;
+	}
+
+	if( telemetry_data.current_vertical_velocity != 0 && round( telemetry_data.pitch ) == 90 ) {
+		telemetry_data.current_vertical_velocity = 0;
+	}
+
 	telemetry_data.current_distance = telemetry_data.current_velocity;
 
 	/* This is pitch and angle of attack relation simulation */
-	if( telemetry_data.current_distance != 0 && telemetry_data.current_acceleration != 0 ) {
-		if( pitch_program.current_value < 90 ) {
+	if( telemetry_data.current_distance != 0 ) {
+		if( pitch_program.current_value <= 90 ) {
 			if( current_system->id == 1 ) {
 				pitch_mod = ( 100.1 - pitch_program.current_value ) / 100;
 				telemetry_data.current_altitude += ( ( telemetry_data.current_distance ) * pitch_mod ) / ( time_mod );
@@ -958,7 +977,7 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 				telemetry_data.current_altitude -= ( ( ( telemetry_data.current_distance ) ) * pitch_mod ) / ( time_mod );
 			} else {
 				pitch_mod = ( 90.1 - pitch_program.current_value ) / 100;
-				telemetry_data.current_altitude -= abs( ( ( telemetry_data.current_vertical_velocity ) * pitch_mod ) / ( time_mod ) );
+				telemetry_data.current_altitude += ( ( ( telemetry_data.current_vertical_velocity ) * pitch_mod ) );
 			}
 		}
 	}
@@ -967,9 +986,7 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 
 	if( telemetry_data.current_altitude > 0 ) {
 		telemetry_data.total_distance += ( abs( telemetry_data.current_distance ) / time_mod );
-		if( telemetry_data.stable_orbit_achieved == 0 ) {
-			telemetry_data.downrange += telemetry_data.current_horizontal_velocity / time_mod;
-		}
+		telemetry_data.downrange += telemetry_data.current_horizontal_velocity / time_mod;
 	} else {
 		telemetry_data.last_velocity = 0;
 	}
@@ -984,9 +1001,6 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 
 	if( telemetry_data.iterative_guidance_mode_active == 1 ) {
 		pitch_program.current_value += PHYSICS_IGM_get_pitch_step() / time_mod;	
-		if( telemetry_data.pitch > 90.0 ) {
-			telemetry_data.iterative_guidance_mode_active = 0;
-		}
 	}
 
 	if( telemetry_data.orbit_periapsis < 0 ) {
@@ -1013,9 +1027,6 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 void MAIN_COMPUTER_launch_calculations( void ) {
 	double dynamic_pressure = 0;
 	double dynamic_pressure_newtons = 0;
-
-	telemetry_data.current_vertical_velocity = 0;
-	telemetry_data.current_horizontal_velocity = 0;
 
 	if( telemetry_data.countdown_in_progress == 1 ) {
 		if( current_system->id == 1 && current_system->burn_time < 15 && ROCKET_ENGINE_get_engaged( &main_engine ) == 1 ) {
@@ -1052,7 +1063,7 @@ void MAIN_COMPUTER_launch_calculations( void ) {
 		}
 	}
 
-	if( telemetry_data.pitch != 0 ) {
+	if( telemetry_data.stable_orbit_achieved == 0 && pitch_program.current_value > 0 && pitch_program.current_value < 90 ) {
 		pitch_program.current_value -= 0.1562500 / time_mod;
 	}
 
@@ -1063,33 +1074,8 @@ void MAIN_COMPUTER_launch_calculations( void ) {
 	if( yaw_program.running == 1 ) {
 		yaw_program.current_value += _AUTOPILOT_get_yaw_step() / time_mod;
 	}
-
-	if( pitch_program.current_value > 0 ) {
-		rad2deg = pitch_program.current_value * _PI / 180;
-		telemetry_data.current_vertical_velocity = round( ( ( telemetry_data.last_velocity + telemetry_data.current_acceleration) - CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) ) * cos( rad2deg ) );
-		if( telemetry_data.stable_orbit_achieved == 0 ) {
-			telemetry_data.current_vertical_velocity -= CELESTIAL_OBJECT_get_gravity_value( AO_current, telemetry_data.current_altitude ) / time_mod;
-		} else {
-			if( telemetry_data.current_vertical_velocity < 0 ) {
-				telemetry_data.current_vertical_velocity = 0;
-			}
-		}
-
-		if( telemetry_data.current_vertical_velocity == 0 ) {
-			telemetry_data.current_horizontal_velocity = telemetry_data.current_velocity;
-		} else {
-			telemetry_data.current_horizontal_velocity = round( telemetry_data.last_velocity * sin( rad2deg ) );
-		}
-	} else {
-		telemetry_data.current_vertical_velocity = telemetry_data.current_velocity;
-	}
 }
 
 void MAIN_COMPUTER_orbit_calculations( void ) {
-
-	if( telemetry_data.current_vertical_velocity < 0 ) {
-		telemetry_data.current_vertical_velocity = 0;
-	}
-
 	telemetry_data.orbit_revolution_duration += time_tick;
 }

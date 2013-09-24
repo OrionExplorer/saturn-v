@@ -94,21 +94,36 @@ double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 }
 
 double PHYSICS_IGM_get_pitch_step( void ) {
-	int seconds = round( telemetry_data.mission_time );
+	long int seconds = round( telemetry_data.mission_time );
 	double result = 0.0;
 
-	if( seconds >= 240 && seconds < 390 ) {
-		result = 0.045800;
-	}
-	if( seconds >= 390 && seconds < 540 ) {
-		result = 0.0477867;
-	}
-	if( seconds >= 540 && seconds < 630 ) {
-		result = 0.0194500;
-	}
-	if( seconds >= 630 ) {
-		result = 0.1449900;
+	if( telemetry_data.stable_orbit_achieved == 1 ) {
+		if( telemetry_data.pitch == 90.00 ) {
+			return result;
+		}
+		if( telemetry_data.pitch < 90.00 ) {
+			result = 0.01;
+		} else if( telemetry_data.pitch > 90.00 ) {
+			result = -0.01;
+		}
+	} else {
+		if( seconds >= 240 && seconds < 390 ) {
+			result = 0.045800;
+		}
+		if( seconds >= 390 && seconds < 540 ) {
+			result = 0.0477867;
+		}
+		if( seconds >= 540 && seconds < 630 ) {
+			result = 0.0194500;
+		}
+		if( seconds >= 630 && telemetry_data.pitch < 90.00 ) {
+			result = 0.1590900;
+		}
+
+		if( telemetry_data.pitch >= 90 ) {
+			result -= 0.1562500;
+		}
 	}
 
-	return result + 0.1562500;
+	return result + ( telemetry_data.stable_orbit_achieved == 0 ? 0.1562500 : 0 );
 }

@@ -41,7 +41,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 	#define MSG_NOSIGNAL	0
 	#define sleep		Sleep
 
-	#define APP_NAME	"Saturn V Computer Windows"
+	#define APP_NAME	"Saturn V Computer for Windows"
 #else
 	#define WSAGetLastError() errno
 /* �cie�ki do plik�w/folder�w na systemach LINUX s� oddzielone "/" */

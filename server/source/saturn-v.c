@@ -19,7 +19,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 
 void app_terminate( void ) {
 	LOG_print( "Application terminate command received.\n" );
-	printf( "Service is being closed..." );
+	printf( "\rService is being closed..." );
 	SOCKET_stop();
 	LOG_print( "Service closed.\n" );
 	LOG_save();

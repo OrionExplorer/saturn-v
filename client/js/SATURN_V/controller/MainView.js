@@ -81,18 +81,18 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 
 		if(json.pitch != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_pitch', Math.round(json.pitch)/*+'°'*/);
+			SATURN_V.utils.Frontend.updateEl('voyager7_pitch', (Math.round(json.pitch*100)/100).toFixed(2)/*+'°'*/);
 			setTimeout(function() {
 				me.updateRocketPitch(json.pitch);
 			}, 100);
 		}
 		
 		if(json.roll != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_rollAzimuth', Math.round(json.roll)/*+'°'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_rollAzimuth', (Math.round(json.roll*100)/100).toFixed(2)/*+'°'*/);	
 		}
 		
 		if(json.yaw != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', Math.round(json.yaw*10)/10/*+'°'*/);
+			SATURN_V.utils.Frontend.updateEl('voyager7_yaw', (Math.round(json.yaw*10)/10).toFixed(2)/*+'°'*/);
 			this.updateRocketYaw(json.yaw);
 		}
 
