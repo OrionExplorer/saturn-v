@@ -109,7 +109,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 		
 		if(json.orbit_inclination != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_orbitInclination', Math.round(json.orbit_inclination));	
+			SATURN_V.utils.Frontend.updateEl('voyager7_orbitInclination', json.orbit_inclination.toFixed(2));	
 		}
 
 		if(json.orbit_revolution_period != undefined) {
@@ -175,23 +175,23 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 
 		if(json.last_velocity != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_velocity', Math.round(json.last_velocity)/* + ' M/S'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_velocity', json.last_velocity.toFixed(2)/* + ' M/S'*/);	
 		}
 
 		if(json.current_horizontal_velocity != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_horizontal_velocity', Math.round(json.current_horizontal_velocity)/* + ' M/S'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_horizontal_velocity', json.current_horizontal_velocity.toFixed(2)/* + ' M/S'*/);	
 		}
 
 		if(json.current_vertical_velocity != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_vertical_velocity', Math.round(json.current_vertical_velocity)/* + ' M/S'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_vertical_velocity', json.current_vertical_velocity.toFixed(2)/* + ' M/S'*/);	
 		}
 		
 		if(json.current_acceleration != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_acceleration', (Math.round(json.current_acceleration*10)/10).toFixed(1));
+			SATURN_V.utils.Frontend.updateEl('voyager7_acceleration', json.current_acceleration.toFixed(2));
 		}
 		
 		if(json.current_gforce != undefined) {
-			SATURN_V.utils.Frontend.updateEl('voyager7_gForce', json.current_gforce /*+ ' G'*/);	
+			SATURN_V.utils.Frontend.updateEl('voyager7_gForce', json.current_gforce.toFixed(2) /*+ ' G'*/);	
 		}
 		
 		if(json.current_dynamic_pressure != undefined) {

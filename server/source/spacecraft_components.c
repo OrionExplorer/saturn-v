@@ -153,7 +153,7 @@ void STAGE_2_init( void ) {
 	system_s2.staging_time = -1;
 	system_s2.dry_mass = 36157;//36729;
 	system_s2.max_fuel = 443235;
-	system_s2.instrument_mass = 5205;//571;//4234;//3663;
+	system_s2.instrument_mass = 3663;//5205;//571;//4234;//3663;
 	system_s2.interstage_mass = 3663;
 	system_s2.max_fuel_burn = 1224;
 	system_s2.max_thrust_n = 5095279;

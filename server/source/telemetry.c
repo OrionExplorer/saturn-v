@@ -43,6 +43,7 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len ) {
 	cJSON_AddNumberToObject( data, "mach_1_achieved", telemetry_data.mach_1_achieved );
 	cJSON_AddNumberToObject( data, "current_dynamic_pressure", telemetry_data.current_dynamic_pressure );
 
+	cJSON_AddNumberToObject( data, "orbital_velocity", telemetry_data.orbital_velocity );
 	cJSON_AddNumberToObject( data, "stable_orbit_achieved", telemetry_data.stable_orbit_achieved );
 	cJSON_AddNumberToObject( data, "orbit_semi_major_axis", telemetry_data.orbit_semi_major_axis );
 	cJSON_AddNumberToObject( data, "orbit_semi_minor_axis", telemetry_data.orbit_semi_minor_axis );
@@ -156,8 +157,6 @@ void* TELEMETRY_send_live_data( void* data ) {
 
 void TELEMETRY_update( void ) {
 	strncpy( telemetry_data.current_time_gmt, TIME_get_gmt(), TIME_BUFF_SIZE );
-
-	telemetry_data.current_gforce = round( telemetry_data.current_acceleration / 10 );
 
 	telemetry_data.pitch_program_engaged = pitch_program.running;
 	telemetry_data.roll_program_engaged = roll_program.running;

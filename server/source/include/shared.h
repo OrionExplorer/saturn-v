@@ -149,6 +149,7 @@ struct TELEMETRY {
 	short					mach_1_achieved;
 	int						current_dynamic_pressure;
 	short					stable_orbit_achieved;
+	double					orbital_velocity;
 	double					orbit_semi_major_axis;
 	double					orbit_semi_minor_axis;
 	double					orbit_eccentrity;

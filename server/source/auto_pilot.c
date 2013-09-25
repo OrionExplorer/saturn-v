@@ -14,24 +14,28 @@ double					pitch_modifier = 0.0;
 short					liftoff_yaw_achieved = 0;
 
 void AUTOPILOT_init( void ) {
-	pitch_modifier = ( (double)rand()/(double)RAND_MAX ) / 1380;
+	pitch_modifier = ( ( double )rand() / ( double )RAND_MAX ) / 1380;
 }
 
 double _AUTOPILOT_get_pitch_step( void ) {
 	int seconds = round( telemetry_data.mission_time );
-	double result = 0.0;
+	double result = 0.0662500;
+
+	if( seconds >= 80 ) {
+		result -= result;
+	}
 
 	if(seconds >= 31 && seconds < 60) {
-		result = 0.8931034;
+		result += 1.1525;
 	}
-	if(seconds >= 60 && seconds < 100) {
-		result = 0.5212500;
+	if(seconds >= 60 && seconds < 80) {
+		result += 1.285;
 	}
-	if(seconds >= 100 && seconds < 160 ) {
-		result = 0.3908333;
+	if(seconds >= 80 && seconds < 110) {
+		result += 0.465;
 	}
 
-	return ( result + pitch_modifier + 0.1562500);
+	return ( result + pitch_modifier );
 }
 
 double _AUTOPILOT_get_roll_step( void ) {
@@ -54,14 +58,6 @@ double _AUTOPILOT_get_yaw_step( void ) {
 
 void AUTOPILOT_progress( double real_second ) {
 	int second = round( real_second );
-
-	if( telemetry_data.stable_orbit_achieved == 1 ) {
-		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
-			MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
-			MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
-		}
-		return;
-	}
 
 	if( yaw_program.current_value <= 0 && liftoff_yaw_achieved == 1 && yaw_program.running == 1 ) {
 		MAIN_COMPUTER_exec( YAW_PROGRAM, STOP, 0 );
@@ -95,17 +91,24 @@ void AUTOPILOT_progress( double real_second ) {
 		MAIN_COMPUTER_exec( S2, DETACH, 0 );
 	}
 
-	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4 ) {
+	if( current_system->id == system_s2.id  && system_s2.attached == 1 && system_s1.attached == 0 && system_s1.burn_start > 0 && ( telemetry_data.mission_time - system_s1.staging_time ) >= 4  && ( telemetry_data.mission_time - system_s1.staging_time ) <= 6 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
 			MAIN_COMPUTER_exec( MAIN_ENGINE, START, 0 );
 			MAIN_COMPUTER_exec( THRUST, FULL_THRUST, 0 );
 		}
 	}
 
-	if( current_system->id == system_s3.id && system_s3.attached == 1 && system_s2.attached == 0 && system_s2.burn_start > 0 && ( telemetry_data.mission_time - system_s2.staging_time ) >= 4 ) {
+	if( current_system->id == system_s3.id && system_s3.attached == 1 && system_s2.attached == 0 && system_s2.burn_start > 0 && ( telemetry_data.mission_time - system_s2.staging_time ) >= 4 && ( telemetry_data.mission_time - system_s2.staging_time ) <= 6 ) {
 		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 0 ) {
 			MAIN_COMPUTER_exec( MAIN_ENGINE, START, 0 );
 			MAIN_COMPUTER_exec( THRUST, FULL_THRUST, 0 );
+		}
+	}
+
+	if( current_system->id == system_s3.id && ( current_system->burn_time > 141.5 && current_system->burn_time < 142.0 ) && ROCKET_ENGINE_get_thrust( &internal_guidance ) > 0 ) {
+		if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
+			MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
+			MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
 		}
 	}
 
@@ -161,5 +164,12 @@ void AUTOPILOT_progress( double real_second ) {
 				MAIN_COMPUTER_exec( THRUST, DECREASE, 5 );
 			}
 		} break;
+
+		/*case 695 : {
+			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
+				MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
+				MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
+			}
+		} break;*/
 	}
 }

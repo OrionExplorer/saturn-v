@@ -138,8 +138,8 @@ static void SOCKET_prepare( void ) {
 	/* Ustawienie na non-blocking socket */
 	if( fcntl( socket_server, F_SETFL, &b ) == SOCKET_ERROR ) {
 		wsa_result = WSAGetLastError();
-		LOG_print( "ioctlsocket() error: %s.\n", wsa_result );
-		printf( "ioctlsocket() error: %s.\n", wsa_result );
+		LOG_print( "ioctlsocket() error: %d.\n", wsa_result );
+		printf( "ioctlsocket() error: %d.\n", wsa_result );
 		SOCKET_stop();
 		exit( EXIT_FAILURE );
 	}
