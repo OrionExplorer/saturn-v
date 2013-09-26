@@ -97,10 +97,10 @@ double PHYSICS_IGM_get_pitch_step( void ) {
 	double result = 0.0;
 
 	if( seconds >= 210 && seconds < 260 ) {
-		result = 0.346;
+		result = 0.349;
 	}
 	if( seconds >= 260 && telemetry_data.stable_orbit_achieved == 0 ) {
-		result = 0.054;
+		result = 0.055;
 	}
 
 	if( telemetry_data.current_vertical_velocity <= 0 ) {

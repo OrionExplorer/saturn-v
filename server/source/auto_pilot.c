@@ -164,12 +164,5 @@ void AUTOPILOT_progress( double real_second ) {
 				MAIN_COMPUTER_exec( THRUST, DECREASE, 5 );
 			}
 		} break;
-
-		/*case 695 : {
-			if( ROCKET_ENGINE_get_thrust( &internal_guidance ) == 100 ) {
-				MAIN_COMPUTER_exec( THRUST, NULL_THRUST, 0 );
-				MAIN_COMPUTER_exec( MAIN_ENGINE, STOP, 0 );
-			}
-		} break;*/
 	}
 }

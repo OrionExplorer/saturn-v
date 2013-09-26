@@ -166,9 +166,9 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		SATURN_V.utils.Frontend.updateEl('voyager7_mission_time', SATURN_V.utils.Shared.formatTime(mission_time));
 		document.title = 'SATURN V ('+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+')';
 
-		if(mission_time != undefined && json.current_altitude != undefined) {
+		/*if(mission_time != undefined && json.current_altitude != undefined) {
 			this.updateAltitudeData(mission_time, json.current_altitude);	
-		}
+		}*/
 		
 		if(json.current_time_gmt != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', 'GMT '+json.current_time_gmt.split(' ')[1]);	

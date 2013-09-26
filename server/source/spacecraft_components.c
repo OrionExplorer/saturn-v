@@ -111,7 +111,6 @@ short ROCKET_ENGINE_get_engaged( ROCKET_ENGINE *re ) {
 Człony rakiety
 **/
 void STAGE_1_init( void ) {
-
 	printf( "Initializing STAGE S-IC..." );
 
 	system_s1.id = 1;
@@ -140,11 +139,9 @@ void STAGE_1_init( void ) {
 	system_s1.fuel = system_s1.max_fuel;
 
 	printf( "done.\n" );
-
 }
 
 void STAGE_2_init( void ) {
-
 	printf( "Initializing STAGE S-II..." );
 
 	system_s2.id = 2;
@@ -171,11 +168,9 @@ void STAGE_2_init( void ) {
 	system_s2.fuel = system_s2.max_fuel;
 
 	printf( "done.\n" );
-
 }
 
 void STAGE_3_init( void ) {
-
 	printf( "Initializing STAGE S-IVB..." );
 
 	system_s3.id = 3;
@@ -184,13 +179,6 @@ void STAGE_3_init( void ) {
 	system_s3.staging_time = -1;
 	system_s3.dry_mass = 11272;//11943;
 	system_s3.max_fuel = 107095;
-	/*
-	Spacecraft/Lunar Module Adapter: 3,951 lbm
-	Lunar Module: 33,278 lbm
-	Command and Service Module: 63,507 lbm
-	Total Launch Escape System: 8,910 lbm
-	Total Spacecraft (CSM): 109,646 lbm
-	*/
 	system_s3.instrument_mass = 49734;//45693+1939;
 	system_s3.interstage_mass = 571;
 	system_s3.max_fuel_burn = 213;
@@ -209,11 +197,9 @@ void STAGE_3_init( void ) {
 	system_s3.fuel = system_s3.max_fuel;
 
 	printf( "done.\n" );
-
 }
 
 void STAGE_null_init( void ) {
-
 	system_null.id = -1;
 	system_null.max_fuel = 0;
 	system_null.dry_mass = 0;
@@ -221,23 +207,19 @@ void STAGE_null_init( void ) {
 	system_null.max_fuel_burn = 0;
 	system_null.variable_thrust = 0;
 	system_null.max_thrust_n = 0;
-
 }
 
 void STAGES_init( void ) {
-
 	STAGE_1_init();
 	STAGE_2_init();
 	STAGE_3_init();
 	STAGE_null_init();
-
 }
 
 /**
 Programy komputerowe
 **/
 void PITCH_init( void ) {
-
 	printf( "Initializing PITCH PROGRAM..." );
 	strncpy( pitch_program.name, "PITCH PROGRAM", SMALL_BUFF_SIZE );
 
@@ -245,11 +227,9 @@ void PITCH_init( void ) {
 	pitch_program.dest_value = 90.0;
 
 	printf( "done.\n" );
-
 }
 
 void ROLL_init( void ) {
-
 	printf( "Initializing ROLL PROGRAM...");
 	strncpy( roll_program.name, "ROLL PROGRAM", SMALL_BUFF_SIZE );
 
@@ -257,11 +237,9 @@ void ROLL_init( void ) {
 	roll_program.dest_value = 72.0;
 
 	printf( "done.\n" );
-
 }
 
 void YAW_init( void ) {
-
 	printf( "Initializing YAW PROGRAM..." );
 	strncpy( yaw_program.name, "YAW PROGRAM", SMALL_BUFF_SIZE );
 
@@ -272,9 +250,7 @@ void YAW_init( void ) {
 }
 
 void COMPUTER_PROGRAMS_init( void ) {
-
 	PITCH_init();
 	ROLL_init();
 	YAW_init();
-
 }
