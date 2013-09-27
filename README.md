@@ -17,6 +17,8 @@ From Wikipedia:
 * Saturn V main computer (server application) uses WebSockets and standard sockets simultaneously
 * Control panels (client application) uses HTML5, CSS3, JavaScript and make use of Responsive Design for better user experience on every possible device
 
+**_Warning:_** _This is work in progress and flight without auto-pilot is extremely difficult._
+
 **Screenshots**:
 * Before launch (from MCC panel view) ![Before launch](http://img404.imageshack.us/img404/2193/seuf.png)
 * Countdown resume (from MCC panel view) ![MCC countdown](http://img30.imageshack.us/img30/9098/okz2.png)
