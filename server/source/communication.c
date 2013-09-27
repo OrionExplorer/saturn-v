@@ -73,6 +73,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					if( username != NULL && password != NULL ) {
 						if( strncmp( app_auth, password, STD_BUFF_SIZE ) == 0 ) {
 							client->authorized = 1;
+							client->no_cache = 1;
 							strncpy( client->name, username, STD_BUFF_SIZE );
 							SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
 							LOG_print( "[%s] client connected with descriptor %d is %s.\n", TIME_get_gmt(), client->socket_descriptor, username );
@@ -175,7 +176,6 @@ void COMMUNICATION_send_to_all( char *msg ) {
 }
 
 void COMMUNICATION_chat_to_all( char *msg, CONNECTED_CLIENT *client ) {
-	int i;
 	cJSON *root = cJSON_CreateObject();
 	cJSON *data = cJSON_CreateObject();
 	char *output;

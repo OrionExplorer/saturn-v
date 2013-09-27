@@ -171,8 +171,6 @@ struct TELEMETRY {
 	short					countdown_in_progress;
 	short					holddown_arms_released;
 	short					auto_pilot_enabled;
-	char					destination[ SMALL_BUFF_SIZE ];
-	int						destination_altitude;
 	short					internal_guidance_engaged;
 	short					main_engine_engaged;
 	short					pitch_program_engaged;
@@ -231,6 +229,7 @@ extern COMMUNICATION_SESSION			communication_session_;
 extern fd_set				master;
 
 TELEMETRY					telemetry_data;
+TELEMETRY 					cached_telemetry_data;
 FLIGHT_STATUS				MAIN_FLIGHT_STATUS;
 
 enum vCONTROL_MODE {
@@ -306,6 +305,7 @@ struct CONNECTED_CLIENT {
 	short				authorized;
 	vCONTROL_MODE		mode;
 	char				name[ STD_BUFF_SIZE ];
+	short				no_cache;
 };
 
 CONNECTED_CLIENT			connected_clients[ MAX_CLIENTS ];

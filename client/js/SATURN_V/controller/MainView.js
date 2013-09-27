@@ -166,10 +166,6 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		SATURN_V.utils.Frontend.updateEl('voyager7_mission_time', SATURN_V.utils.Shared.formatTime(mission_time));
 		document.title = 'SATURN V ('+SATURN_V.utils.Shared.formatTimeForTitle(mission_time)+')';
 
-		/*if(mission_time != undefined && json.current_altitude != undefined) {
-			this.updateAltitudeData(mission_time, json.current_altitude);	
-		}*/
-		
 		if(json.current_time_gmt != undefined) {
 			SATURN_V.utils.Frontend.updateEl('voyager7_timeInfo', 'GMT '+json.current_time_gmt.split(' ')[1]);	
 		}
@@ -265,17 +261,19 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 		
 		if(json.auto_pilot_enabled != undefined) {
-			SATURN_V.utils.Frontend.updateEl('autoPilotButton', (json.auto_pilot_enabled ? 'OFF' : 'ON'));	
+			SATURN_V.utils.Frontend.updateEl('autoPilotButton', (json.auto_pilot_enabled == 1 ? 'OFF' : 'ON'));	
 		}
 		
 		if(json.holddown_arms_released != undefined) {
-			SATURN_V.utils.Frontend.disableEl('holddownArmsButton');
-		} else {
-			SATURN_V.utils.Frontend.enableEl('holddownArmsButton');
+			if(json.holddown_arms_released == 1) {
+				SATURN_V.utils.Frontend.disableEl('holddownArmsButton');	
+			} else {
+				SATURN_V.utils.Frontend.enableEl('holddownArmsButton');	
+			}
 		}
 
 		if(json.countdown_in_progress != undefined) {
-			SATURN_V.utils.Frontend.updateEl('countdownButton', (json.countdown_in_progress ? 'STOP' : 'START'));	
+			SATURN_V.utils.Frontend.updateEl('countdownButton', (json.countdown_in_progress == 1 ? 'STOP' : 'START'));	
 		}
 
 		if(json.countdown_in_progress != undefined) {
