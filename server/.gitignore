@@ -4,6 +4,6 @@ obj/
 *.layout
 *.cbTemp
 *.conf
-*.exe
+Release/*.exe
 *.o
 Release/*.txt
