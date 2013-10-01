@@ -31,10 +31,11 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	char *main_computer_response_str = NULL;
 	short main_computer_response_success = 0;
 
-	LOG_print( "[%s] [%d] Received command: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, data );
+	LOG_print( "[%s] [%d] Command received: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, data );
 
 	if( json == NULL ) {
 		SOCKET_send( &communication_session_, client, INVALID_JSON, -1 );
+		LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, INVALID_JSON );
 		return;
 	}
 	command_json = cJSON_GetObjectItem( json, "command" );
@@ -57,6 +58,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		if( strlen( app_auth ) == 0 ) {
 			client->authorized = 1;
 			SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
+			LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_SUCCESS );
 		} else {
 			if( command_type ) {
 				if( strncmp( "authorization", command_type, STD_BUFF_SIZE ) == 0 ) {
@@ -76,6 +78,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 							client->no_cache = 1;
 							strncpy( client->name, username, STD_BUFF_SIZE );
 							SOCKET_send( &communication_session_, client, LOGIN_SUCCESS, -1 );
+							LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_SUCCESS );
 							LOG_print( "[%s] client connected with descriptor %d is %s.\n", TIME_get_gmt(), client->socket_descriptor, username );
 
 							login_response = ( char * )calloc( STD_BUFF_SIZE, sizeof( char ) );
@@ -89,6 +92,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 
 						} else {
 							SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
+							LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_STR );
 						}
 
 						if( username != NULL ) {
@@ -102,12 +106,15 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 						}
 					} else {
 						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
+						LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_STR );
 					}
 				} else {
 					SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
+					LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_STR );
 				}
 			} else {
 				SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
+				LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_STR );
 			}
 		}
 	} else {
@@ -120,6 +127,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					main_computer_response_success = result->success;
 					snprintf( main_computer_response_str, STD_BUFF_SIZE, MAIN_COMPUTER_RESPONSE_TEMPLATE, ( main_computer_response_success == 1 ? "true" : "false" ), result->message );
 					SOCKET_send( &communication_session_, client, main_computer_response_str, -1 );
+					LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, main_computer_response_str );
 
 					if( main_computer_response_str != NULL ) {
 						free( main_computer_response_str );
@@ -127,7 +135,8 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 					}
 
 				} else {
-					SOCKET_send( &communication_session_, client, "ILLEGAL COMMAND", -1 );
+					SOCKET_send( &communication_session_, client, ILLEGAL_COMMAND_STR, -1 );
+					LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, ILLEGAL_COMMAND_STR );
 				}
 			} else if( strncmp( "data", command_type, STD_BUFF_SIZE ) == 0 ) {
 				if( strncmp( "status", command, STD_BUFF_SIZE ) == 0 ) {

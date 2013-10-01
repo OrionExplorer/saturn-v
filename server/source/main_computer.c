@@ -49,7 +49,7 @@ void *MAIN_COMPUTER_simulation_progress( void ) {
 	srand ( time( NULL ) );
 
 	while( 1 ) {
-		
+
 		MAIN_COMPUTER_shared_calculations();
 
 		switch( MAIN_FLIGHT_STATUS ) {
@@ -790,10 +790,6 @@ void MAIN_COMPUTER_instrument_unit_calculations( void ) {
 		strncpy( telemetry_data.computer_message, "MACH 1 ACHIEVED", STD_BUFF_SIZE );
 		MAIN_COMPUTER_display_last_message();
 	}
-
-	/*if( telemetry_data.stable_orbit_achieved == 0 && ( telemetry_data.current_velocity + 150 ) >= CELESTIAL_OBJECT_get_orbital_speed( AO_current, telemetry_data.current_altitude ) ) {
-		strncpy( telemetry_data.computer_message, "PREPARE TO ORBIT INSERTION", STD_BUFF_SIZE );
-	}*/
 
 	/* CRASH */
 	if( telemetry_data.current_velocity != 0 && telemetry_data.current_altitude < 0 ) {

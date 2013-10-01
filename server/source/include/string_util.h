@@ -16,11 +16,6 @@ void			strdelstr( char *s1, const char* s2 );
 int				xdigit( char digit );
 int				xstr2str( char *buf, unsigned bufsize, const char *in );
 
-
-#ifdef _MSC_VER
-short			strncasecmp( const char *s1, const char *s2, int n );
-#endif
-
 /*char*	text_md5( const char *sz_Text );*/
 
 #endif

@@ -132,34 +132,6 @@ int strpos( const char *s1, const char *s2 ) {
 	return -1;
 }
 
-/* Na platformie WIN32+Visual C++ brak funkcji strncasecmp */
-#ifdef _MSC_VER
-/*
-strncasecmp( const char *s1, const char *s2 )
-@s1 - ci¹g znaków do porównania
-@s2 - ci¹g znaków do porównania
-@n - maksymalna iloœæ znaków do porównania
-- zwraca int, który wskazuje na ró¿nicê pomiêdzy ci¹giem s1 a s2 */
-int strncasecmp( const char *s1, const char *s2, int n ) {
-{
-	if ( !s1 && !s2 )
-		return 0;
-	if ( !s1 )
-		return 1;
-	if ( !s2 )
-		return -1;
-	if ( n < 0 )
-		return 0;
-	while ( n && *s1 && *s2 && tolower( ( unsigned char )*s1 ) == tolower( ( unsigned char )*s2 ) ) {
-		s1++;
-		s2++;
-		n--;
-	}
-
-	return n == 0 ? 0 : tolower( ( unsigned char )*s1 ) - tolower( ( unsigned char )*s2 );
-}
-#endif
-
 /*#include "external\md5\md5.h"
 text_md5( const char *sz_Text )
 @sz_Text - treœæ, z której ma zostaæ wyliczony MD5

@@ -29,15 +29,10 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <WS2tcpip.h>
 #endif
 
-#ifdef _MSC_VER
-#pragma comment( lib, "WS2_32.lib" )
-#endif
-
-#ifndef _MSC_VER
 #include <sys/types.h>
 #include <fcntl.h>
 #include <unistd.h>
-#endif
+
 
 #ifndef _WIN32
 #include <sys/socket.h>
@@ -97,9 +92,10 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #define MAIN_COMPUTER_RESPONSE_TEMPLATE		"{\"success\":%s,\"msg\":\"%s\",\"data_type\":\"command_response\"}\0"
 #define NEW_USER_STR						"{\"success\":true,\"msg\":\"%s\",\"data_type\":\"new_user\"}\0"
 #define DEL_USER_STR						"{\"success\":true,\"msg\":\"%s\",\"data_type\":\"del_user\"}\0"
+#define ILLEGAL_COMMAND_STR					"ILLEGAL COMMAND\0"
 
 #define DEG2RAD								( _PI / 180 )
-#define RAD2DEG								( 180 / _PI ) //_PI / 180
+#define RAD2DEG								( 180 / _PI )
 
 extern char									app_path[ MAX_PATH_LENGTH ];
 extern char									app_auth[ SMALL_BUFF_SIZE ];

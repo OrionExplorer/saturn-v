@@ -13,9 +13,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
-#ifndef _MSC_VER
 #include <unistd.h>
-#endif
 
 /*
 get_app_path( void )

@@ -139,7 +139,7 @@ short CORE_load_configuration( void ) {
 			countdown_start_JSON = cJSON_GetObjectItem( json, "countdown_start" );
 			if( countdown_start_JSON ) {
 				telemetry_data.mission_time = round( abs( countdown_start_JSON->valuedouble ) )*(-1);
-				LOG_print( "Countdown start at: %d\n", simulation_speed );
+				LOG_print( "Countdown start at: %.1f\n", telemetry_data.mission_time );
 			}
 
 			if( remote_password_JSON != NULL ) {
