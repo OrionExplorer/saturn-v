@@ -12,6 +12,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	vDEVICE rocket_device;
 	vCOMMAND rocket_command;
 	int rocket_value;
+	int i;
 	INTERPRETER_RESULT *result;
 
 	cJSON *json = cJSON_Parse( data );
