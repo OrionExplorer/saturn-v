@@ -219,6 +219,7 @@ void SOCKET_run( void ) {
 				}
 			} /*nowe po³¹czenie */
 		} /*pêtla deskryptorów while( --i )*/
+		Sleep( 1 );
 	} /*for( ;; ) */
 }
 

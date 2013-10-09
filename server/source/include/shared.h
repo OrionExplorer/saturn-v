@@ -158,6 +158,8 @@ struct TELEMETRY {
 	double					orbit_revolution_period;
 	double					orbit_revolution_duration;
 	double					orbit_mean_motion;
+	double					orbit_current_altitude;
+	double					orbit_current_velocity;
 	short					launch_escape_tower_ready;
 	double					pitch;
 	double					dest_pitch;

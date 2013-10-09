@@ -92,6 +92,28 @@ double _PHYSICS_get_dynamic_pressure_force( double altitude ) {
 	return ( result >= 0 ? result : -1 );
 }
 
+double _PHYSICS_get_current_orbit_altitude( double apoapsis, double periapsis, double revolution_period, double current_revolution_time ) {
+	double apsis_diff = apoapsis - periapsis;
+	double half_revolution_period = revolution_period / 2;
+
+	if( current_revolution_time < half_revolution_period ) {
+		return periapsis + ( apsis_diff / half_revolution_period ) * current_revolution_time;
+	} else {
+		return periapsis + ( apsis_diff / half_revolution_period ) * ( telemetry_data.orbit_revolution_period - current_revolution_time );
+	}
+}
+
+double _PHYSICS_get_current_orbit_velocity( double apo_velocity, double peri_velocity, double revolution_period, double current_revolution_time ) {
+	double apsis_velocity_diff = apo_velocity - peri_velocity;
+	double half_revolution_period = revolution_period / 2;
+
+	if( current_revolution_time < half_revolution_period ) {
+		return peri_velocity + ( apsis_velocity_diff / half_revolution_period ) * current_revolution_time;
+	} else {
+		return peri_velocity + ( apsis_velocity_diff / half_revolution_period ) * ( telemetry_data.orbit_revolution_period - current_revolution_time );
+	}
+}
+
 double PHYSICS_IGM_get_pitch_step( void ) {
 	long int seconds = round( telemetry_data.mission_time );
 	double result = 0.0;

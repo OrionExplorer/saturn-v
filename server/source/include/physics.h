@@ -21,6 +21,8 @@ double _PHYSICS_get_orbit_perigee( double semi_major_axis, double eccentrity );
 double _PHYSICS_get_orbit_apogee( double semi_major_axis, double eccentrity );
 double _PHYSICS_get_orbit_inclination( double latitude, double current_roll );
 double _PHYSICS_get_dynamic_pressure_force( double altitude );
+double _PHYSICS_get_current_orbit_altitude( double apoapsis, double periapsis, double revolution_period, double current_revolution_time );
+double _PHYSICS_get_current_orbit_velocity( double apo_velocity, double peri_velocity, double revolution_period, double current_revolution_time );
 double PHYSICS_IGM_get_pitch_step( void );
 
 #endif
