@@ -26,12 +26,12 @@ From Wikipedia:
 * [More](http://imageshack.us/g/1/10321436/)
 
 **TODO**:
+- Calculate current position on the orbit (with respect to peri- and apoapsis)
 - CSM/LM separation from S-IVB stage
 - Separate user accounts with authorization (full CRUD)
-- Calculate current position on the orbit (with respect to peri- and apoapsis)
 - Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
 - Apollo CSM/LM coasting to the Moon
-- Entering Moon Orbit
+- Enter Lunar Orbit
 - Apollo CSM and LM separation
 - Landing on the Moon
 
