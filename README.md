@@ -26,7 +26,6 @@ From Wikipedia:
 * [More](http://imageshack.us/g/1/10321436/)
 
 **TODO**:
-- Calculate current position on the orbit (with respect to peri- and apoapsis)
 - CSM/LM separation from S-IVB stage
 - Separate user accounts with authorization (full CRUD)
 - Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
