@@ -46,8 +46,6 @@ void TELEMETRY_cache( void ) {
 	cached_telemetry_data.orbit_inclination = telemetry_data.orbit_inclination;
 	cached_telemetry_data.orbit_circumference = telemetry_data.orbit_circumference;
 	cached_telemetry_data.orbit_mean_motion = telemetry_data.orbit_mean_motion;
-	cached_telemetry_data.orbit_current_altitude = telemetry_data.orbit_current_altitude;
-	cached_telemetry_data.orbit_current_velocity = telemetry_data.orbit_current_velocity;
 	cached_telemetry_data.launch_escape_tower_ready = telemetry_data.launch_escape_tower_ready;
 	cached_telemetry_data.auto_pilot_enabled = telemetry_data.auto_pilot_enabled;
 	cached_telemetry_data.pitch = telemetry_data.pitch;
@@ -231,14 +229,6 @@ void TELEMETRY_prepare_data( char *dst, unsigned int dst_len, short no_cache ) {
 	
 	if( no_cache == 1 || cached_telemetry_data.orbit_mean_motion != telemetry_data.orbit_mean_motion ) {
 		cJSON_AddNumberToObject( data, "orbit_mean_motion", telemetry_data.orbit_mean_motion );
-	}
-
-	if( no_cache == 1 || cached_telemetry_data.orbit_current_altitude != telemetry_data.orbit_current_altitude ) {
-		cJSON_AddNumberToObject( data, "orbit_current_altitude", telemetry_data.orbit_current_altitude );
-	}
-
-	if( no_cache == 1 || cached_telemetry_data.orbit_current_velocity != telemetry_data.orbit_current_velocity ) {
-		cJSON_AddNumberToObject( data, "orbit_current_velocity", telemetry_data.orbit_current_velocity );
 	}
 	
 	if( no_cache == 1 || cached_telemetry_data.launch_escape_tower_ready != telemetry_data.launch_escape_tower_ready ) {

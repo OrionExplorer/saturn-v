@@ -60,12 +60,6 @@ void *MAIN_COMPUTER_simulation_progress( void ) {
 		}
 
 		MAIN_COMPUTER_instrument_unit_calculations();
-
-		/*if( telemetry_data.mission_time < 690 ) {
-			Sleep( simulation_speed );
-		} else {
-			Sleep( 100 );
-		}*/
 		Sleep( simulation_speed );
 	}
 }
@@ -97,7 +91,7 @@ void MAIN_COMPUTER_init( void ) {
 	/* Uruchomienie sieci */
 	SOCKET_main();
 
-	while( scanf("%d %d %d", ( int * )&device, ( int * )&command, &value ) == 3) {
+	while( scanf("%d %d %d", ( int * )&device, ( int * )&command, &value ) == 3 ) {
 		result = MAIN_COMPUTER_exec( device, command, value );
 		printf("%s\n", result->message );
 	}
@@ -765,8 +759,6 @@ INTERPRETER_RESULT* MAIN_COMPUTER_exec( vDEVICE device, vCOMMAND command, const 
 	return ( INTERPRETER_RESULT * )&interpreter_result;
 }
 
-
-
 void MAIN_COMPUTER_display_last_message( void ) {
 	static char last_message[ STD_BUFF_SIZE ];
 
@@ -1000,25 +992,6 @@ void MAIN_COMPUTER_shared_calculations( void ) {
 	if( telemetry_data.orbit_periapsis < 0 ) {
 		telemetry_data.orbit_inclination = _PHYSICS_get_orbit_inclination( launch_pad_latitude, roll_program.current_value );		
 	}
-	/*telemetry_data.orbit_semi_major_axis = _PHYSICS_get_orbit_semi_major_axis( telemetry_data.current_altitude, telemetry_data.current_velocity );
-	telemetry_data.orbit_eccentrity = _PHYSICS_get_orbit_eccentrity( telemetry_data.current_altitude, telemetry_data.current_velocity );
-	telemetry_data.orbit_semi_minor_axis = _PHYSICS_get_orbit_semi_minor_axis( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
-	telemetry_data.orbit_apoapsis = _PHYSICS_get_orbit_apogee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
-	telemetry_data.orbit_periapsis = _PHYSICS_get_orbit_perigee( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_eccentrity );
-	telemetry_data.orbit_apoapsis_velocity = _PHYSICS_get_orbit_apoapsis_velocity( telemetry_data.orbit_apoapsis, telemetry_data.orbit_periapsis );
-	//telemetry_data.orbit_periapsis_velocity = _PHYSICS_get_orbit_periapsis_velocity( telemetry_data.orbit_apoapsis, telemetry_data.orbit_periapsis );
-	telemetry_data.orbit_circumference = _PHYSICS_get_orbit_circumference( telemetry_data.orbit_semi_major_axis, telemetry_data.orbit_semi_minor_axis );
-	telemetry_data.orbit_revolution_period = _PHYSICS_get_orbit_revolution_period( telemetry_data.orbit_semi_major_axis );
-	telemetry_data.orbit_mean_motion = _PHYSICS_get_orbit_mean_motion( telemetry_data.orbit_semi_major_axis );*/
-
-	/*if( telemetry_data.orbit_periapsis > telemetry_data.orbit_apoapsis ) {
-		tmp = telemetry_data.orbit_apoapsis;
-		telemetry_data.orbit_apoapsis = telemetry_data.orbit_periapsis;
-		telemetry_data.orbit_periapsis = tmp;
-	}*/
-
-	/*telemetry_data.orbit_current_altitude = _PHYSICS_get_current_orbit_altitude( telemetry_data.orbit_apoapsis, telemetry_data.orbit_periapsis, telemetry_data.orbit_revolution_period, telemetry_data.orbit_revolution_duration );
-	telemetry_data.orbit_current_velocity = _PHYSICS_get_current_orbit_velocity( telemetry_data.orbit_apoapsis_velocity, telemetry_data.orbit_periapsis_velocity, telemetry_data.orbit_revolution_period, telemetry_data.orbit_revolution_duration );*/
 }
 
 void MAIN_COMPUTER_launch_calculations( void ) {
@@ -1099,5 +1072,4 @@ void MAIN_COMPUTER_orbit_calculations( void ) {
 	telemetry_data.orbit_current_velocity = _PHYSICS_get_current_orbit_velocity( telemetry_data.orbit_apoapsis_velocity, telemetry_data.orbit_periapsis_velocity, telemetry_data.orbit_revolution_period, telemetry_data.orbit_revolution_duration );
 	telemetry_data.last_velocity = telemetry_data.orbit_current_velocity;
 	telemetry_data.current_altitude = telemetry_data.orbit_current_altitude;
-	//printf("OCV: %.2f\tOCA: %.2f\n", telemetry_data.orbit_current_velocity, telemetry_data.orbit_current_altitude );
 }
