@@ -23,6 +23,7 @@ From Wikipedia:
 * Before launch (from MCC panel view) ![Before launch](http://img404.imageshack.us/img404/2193/seuf.png)
 * Countdown resume (from MCC panel view) ![MCC countdown](http://img30.imageshack.us/img30/9098/okz2.png)
 * S-IC stage separation (from CSM panel view) ![S-IC staging](http://img12.imageshack.us/img12/4223/vn07.png)
+* Saturn V computer log ![Saturn V computer log](http://img62.imageshack.us/img62/3498/j3jx.png)
 * [More](http://imageshack.us/g/1/10321436/)
 
 **TODO**:
