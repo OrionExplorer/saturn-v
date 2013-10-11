@@ -13,8 +13,6 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 #ifndef SERVER_PORTABLE_H
 #define SERVER_PORTABLE_H
 
-/* #undef _WIN32 */
-
 #ifdef _WIN32
 	#include <direct.h>
 /* �cie�ki do plik�w/folder�w na systemach WIN32 s� oddzielone "\" */

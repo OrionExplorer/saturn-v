@@ -425,12 +425,16 @@ input[type="button"] {
 	.box-1-info[data-type="additional-data-1200-w"] {
 		display: none;
 	}
+	td[data-name="mission-time"] {
+		width: 100% !important;
+	}
 }
 
 @media all and (max-width: 768px) {
 	#voyager7_timeInfo {
 		display: none;
 	}
+
 }
 
 @media all and (min-height: 660px) {
@@ -464,13 +468,13 @@ input[type="button"] {
 }
 
 @media all and (orientation: portrait) {
-	td { 
+	/*td { 
 		padding: 10px;
-	}
+	}*/
 
-	span {
+	/*span {
 		font-weight: bold;
-	}
+	}*/
 
 	#controlPanel {
 		opacity: 1 !important;
@@ -493,9 +497,9 @@ input[type="button"] {
 	}
 
 	input[type="text"], input[type="password"] {
-		width: 90% !important;
-		padding: 1em !important;
-		font-size: 4em !important;
+		/*width: 90% !important;*/
+		/*padding: 1em !important;*/
+		/*font-size: 4em !important;*/
 	}
 
 	.indexButton {
@@ -536,11 +540,17 @@ input[type="button"] {
 	}
 
 	.background-value-cell span {
-		font-size: 2em;
+		font-size: 1.5em;
+		/*overflow: hidden;*/
 	}
 
-	.background-property-cell span {
-		font-size: 2em;
+	.background-property-cell {
+		text-overflow:ellipsis;
+		white-space: nowrap;
+	}
+
+	.unit, .background-property-cell span {
+		font-size: 1.5em !important;
 	}
 
 	.terminal table {
@@ -560,7 +570,7 @@ input[type="button"] {
 	}
 
 	td.title-center, td.title-left, td.title-right {
-		font-size: 3em !important;
+		font-size: 2em !important;
 	}
 }
 
