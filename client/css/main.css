@@ -270,6 +270,10 @@ span[data-name="loadingText"] {
 	background-color: #c0c4bb;
 }
 
+.mission-control-machines-tabs {
+	min-height:30em;
+}
+
 .controlNavigation.main {
 	font-size: 20px;
 	margin-top: 10px !important;
@@ -616,7 +620,7 @@ input[type="button"] {
 
 .terminal td.title-left, #controlPanel td.title-left {
 	text-align: left;
-	width:20%;
+	width:33%;
 }
 
 .terminal td.title-center, #controlPanel td.title-center {
@@ -626,7 +630,7 @@ input[type="button"] {
 
 .terminal td.title-right, #controlPanel td.title-right {
 	text-align: right;
-	width:20%;
+	width:33%;
 }
 
 .link {
