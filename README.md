@@ -27,14 +27,15 @@ Source: Wikipedia.
 * Saturn V computer log ![Saturn V computer log](http://img62.imageshack.us/img62/3498/j3jx.png)
 * [More](http://imageshack.us/g/1/10321436/)
 
-**TODO**:
+**Next milestones**:
 - CSM/LM separation from S-IVB stage
-- Separate user accounts with authorization (full CRUD)
-- Trans Lunar Injection burn (patched conics along with Hohmann Transfer Orbit)
-- Apollo CSM/LM coasting to the Moon
-- Enter Lunar Orbit
+- Trans-Lunar/Earth Injection burn (patched conics along with Hohmann Transfer Orbit)
+- Deorbit burn (CSM and/or LM)
+- Apollo CSM/LM coasting to the Moon/Earth
+- Enter Lunar/Earth Orbit
 - Apollo CSM and LM separation
-- Landing on the Moon
+- Gravity assist in mind
+- Separate user accounts with authorization (full CRUD?)
 
 
 All data used for this simulation is available in Apollo Flight Journals at http://history.nasa.gov/ (NASA) and http://www.braeunig.us/apollo/saturnV.htm (Robert A. Braeunig).  
