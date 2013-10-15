@@ -257,26 +257,26 @@
 						<div class="rocket-display" data-component="rocket-display"></div>
 					</div>
 					<div class="box-1-info mission-control-controls">
-						<div id="missionControl_CSM" class="mission-control-machines-tabs" style="display:none;">
-							<!-- CSM CLOCKS -->
+						<div id="missionControl_LM" class="mission-control-machines-tabs" style="display:none;">
+						<!-- LM CLOCKS -->
 							<table class="controlNavigation links">
 								<tbody>
 									<tr>
 										<td class="title title-left">
-											<span>LM</span>
+											<span data-component="show-sa514-tab" class="link">SATURN V</span>
 										</td>
 										<td class="title title-center">
-											<span>CSM</span>
+											<span>LM</span>
 										</td>
 										<td class="title title-right">
-											<span>SATURN V</span>
+											<span data-component="show-csm-tab" class="link">CSM</span>
 										</td>
 									</tr>
 								</tbody>
 							</table>
 							<div class="reports-1-panel">
 								<div class="box-1-info" data-type="additional-data-560-h">
-									<table>
+									<!-- <table>
 										<tbody>
 											<tr>
 												<td class="background-property-cell">
@@ -287,23 +287,57 @@
 												</td>
 											</tr>
 										</tbody>
-									</table>
+									</table> -->
 								</div>
 							</div>
 						</div>
-						<!-- SATURN V CLOCKS -->
-						<div id="missionControl_SA514" class="mission-control-machines-tabs">
+						<div id="missionControl_CSM" class="mission-control-machines-tabs" style="display:none;">
+							<!-- CSM CLOCKS -->
 							<table class="controlNavigation links">
 								<tbody>
 									<tr>
 										<td class="title title-left">
+											<span data-component="show-lm-tab" class="link">LM</span>
+										</td>
+										<td class="title title-center">
 											<span>CSM</span>
+										</td>
+										<td class="title title-right">
+											<span data-component="show-sa514-tab" class="link">SATURN V</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="reports-1-panel">
+								<div class="box-1-info" data-type="additional-data-560-h">
+									<!-- <table>
+										<tbody>
+											<tr>
+												<td class="background-property-cell">
+													<span>MAX Q</span>
+												</td>
+												<td class="background-value-cell">
+													<span data-name="voyager7_dynamicPressure">0</span>&nbsp;<span class="unit">KG/M²</span>
+												</td>
+											</tr>
+										</tbody>
+									</table> -->
+								</div>
+							</div>
+						</div>
+						<!-- SATURN V CLOCKS -->
+						<div id="missionControl_SA514" class="mission-control-machines-tabs" >
+							<table class="controlNavigation links">
+								<tbody>
+									<tr>
+										<td class="title title-left">
+											<span data-component="show-csm-tab" class="link">CSM</span>
 										</td>
 										<td class="title title-center">
 											<span>SATURN V</span>
 										</td>
 										<td class="title title-right">
-											<span>LM</span>
+											<span data-component="show-lm-tab" class="link">LM</span>
 										</td>
 									</tr>
 								</tbody>

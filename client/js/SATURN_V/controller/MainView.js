@@ -303,7 +303,7 @@ JSMVC.define('SATURN_V.controller.MainView', {
 				SATURN_V.utils.Frontend.disableEl('systemS2ActionButton');
 			} else {
 				SATURN_V.utils.Frontend.enableEl('systemS2ActionButton');
-			}	
+			}
 		}
 
 		if(json.s_ii_interstage_mass != undefined && json.s_ii_interstage_mass == 0) {
@@ -317,6 +317,25 @@ JSMVC.define('SATURN_V.controller.MainView', {
 		}
 	},
 
+	showCSMTab : function() {
+		document.getElementById('missionControl_SA514').style.display = 'none';
+		document.getElementById('missionControl_LM').style.display = 'none';
+		document.getElementById('missionControl_CSM').style.display = 'block';
+	},
+
+	showSA514Tab : function() {
+		document.getElementById('missionControl_LM').style.display = 'none';
+		document.getElementById('missionControl_CSM').style.display = 'none';
+		document.getElementById('missionControl_SA514').style.display = 'block';
+		
+	},
+
+	showLMTab : function() {
+		document.getElementById('missionControl_CSM').style.display = 'none';
+		document.getElementById('missionControl_SA514').style.display = 'none';
+		document.getElementById('missionControl_LM').style.display = 'block';
+	},
+ 
 	updateRocketView : function(action) {
 		var rocketView = SATURN_V.utils.Frontend.findElementsByDataAttr('component', 'rocket-display'),
 		i = 0, j = 0,

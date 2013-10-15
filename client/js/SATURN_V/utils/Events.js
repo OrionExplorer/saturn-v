@@ -5,10 +5,10 @@ JSMVC.define('SATURN_V.utils.Events', {
 		this.closeControlPanelButton();
 		this.onSaturnVLabelClick();
 		this.onMissionTimeLabelClick();
-		this.showApolloSA514ControlPanel();
-		this.showApolloLMControlPanel();
-		this.showApolloCSMControlPanel();
-		this.showHoustonMCControlPanel();
+
+		this.showCSMTab();
+		this.showSA514Tab();
+		this.showLMTab();
 
 		this.countdownButtonButtonController();
 		this.holddownArmsButtonController();
@@ -79,6 +79,36 @@ JSMVC.define('SATURN_V.utils.Events', {
 		for(i = 0; i < cfg.length; i++) {
 			listener(i);
 		}
+	},
+
+	showCSMTab : function() {
+		this.registerEvent([{
+			elementId : 'show-csm-tab',
+			eventName : 'click',
+			callback : SATURN_V.controller.MainView.showCSMTab,
+			callbackArguments : null,
+			scope : SATURN_V.controller.MainView
+		}]);
+	},
+
+	showSA514Tab : function() {
+		this.registerEvent([{
+			elementId : 'show-sa514-tab',
+			eventName : 'click',
+			callback : SATURN_V.controller.MainView.showSA514Tab,
+			callbackArguments : null,
+			scope : SATURN_V.controller.MainView
+		}]);
+	},
+
+	showLMTab : function() {
+		this.registerEvent([{
+			elementId : 'show-lm-tab',
+			eventName : 'click',
+			callback : SATURN_V.controller.MainView.showLMTab,
+			callbackArguments : null,
+			scope : SATURN_V.controller.MainView
+		}]);
 	},
 
 	chatInputController : function() {
@@ -302,69 +332,5 @@ JSMVC.define('SATURN_V.utils.Events', {
 			callbackArguments : [true],
 			scope : SATURN_V.controller.MainView
 		}]);
-	},
-
-	showApolloSA514ControlPanel : function() {
-		this.registerEvent([{
-			elementId : 'showApolloSA514ControlPanel_CSM',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloSA514ControlPanel,
-			callbackArguments : [],
-			scope : SATURN_V.controller.MainView
-		}, {
-			elementId : 'showApolloSA514ControlPanel_LM',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloSA514ControlPanel,
-			callbackArguments : [],
-			scope : SATURN_V.controller.MainView
-		}, {
-			elementId : 'showApolloSA514ControlPanel_MC',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloSA514ControlPanel,
-			callbackArguments : [],
-			scope : SATURN_V.controller.MainView
-		}]);
-	},
-
-	showApolloLMControlPanel : function() {
-		this.registerEvent([{
-			elementId : 'showApolloLMControlPanel_CSM',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloLMControlPanel,
-			callbackArguments : [],
-			scope :SATURN_V.controller.MainView
-		}]);
-	},
-
-	showApolloCSMControlPanel : function() {
-		this.registerEvent([{
-			elementId : 'showApolloCSMControlPanel_LM',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloCSMControlPanel,
-			callbackArguments : [],
-			scope : SATURN_V.controller.MainView
-		}, {
-			elementId : 'showApolloCSMControlPanel_MC',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloCSMControlPanel,
-			callbackArguments : [],
-			scope : SATURN_V.controller.MainView
-		}, {
-			elementId : 'showApolloCSMControlPanel_SA',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showApolloCSMControlPanel,
-			callbackArguments : [],
-			scope : SATURN_V.controller.MainView
-		}]);
-	},
-
-	showHoustonMCControlPanel : function() {
-		this.registerEvent([{
-			elementId : 'showHoustonMCControlPanel_SA',
-			eventName : 'click',
-			callback : SATURN_V.controller.MainView.showHoustonMCControlPanel,
-			callbackArguments : [],
-			scope :SATURN_V.controller.MainView
-		}]);		
 	}
 });

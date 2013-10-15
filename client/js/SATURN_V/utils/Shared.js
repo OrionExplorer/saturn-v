@@ -10,7 +10,7 @@ JSMVC.define('SATURN_V.utils.Shared', {
 	formatTime : function(seconds) {
 		var lessThanZero = (seconds < 0),
 			tMark = (lessThanZero ? '-' : ''),
-			pad = 5,
+			pad = -1,
 			currentFormat = SATURN_V.controller.MainView.missionTimeFormat;
 
 		if(currentFormat == 0) {
@@ -21,11 +21,9 @@ JSMVC.define('SATURN_V.utils.Shared', {
 				pad = 5;
 			} else if(seconds >= 1000 && seconds < 10000) {
 				pad = 6;
-			} else if(seconds >= 10000 && seconds < 100000) {
-				pad = 7;
 			}
 
-			return tMark+this.padNumber(Math.abs(seconds).toFixed(1), pad);	
+			return tMark+(pad == -1 ? (Math.abs(seconds).toFixed(1)) : this.padNumber(Math.abs(seconds).toFixed(1), pad));
 		}
 	},
 
