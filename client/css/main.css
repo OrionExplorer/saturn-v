@@ -68,6 +68,13 @@
 	width: 50%;
 }
 
+.div-vertical-center {
+	position:absolute;
+	top:40%;
+	display:table-cell;
+	vertical-align: middle;
+}
+
 .background-property-cell {
 	border: 1px solid #8A8C86;
 	background-color: #C4CAC1;
