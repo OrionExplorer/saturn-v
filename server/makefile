@@ -1,6 +1,6 @@
 CC=gcc
 #CFLAGS=-std=c99 -fexpensive-optimizations -Os -O3 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wfloat-equal -Winline -Wunreachable-code -Wmissing-declarations -Wmissing-include-dirs -Wswitch-enum -Wswitch-default -Wmain -w -Wextra -Wall  -Os -O3 -O2 -O1 -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline -Wunreachable-code -Wmissing-declarations -Wmissing-include-dirs -Wswitch-enum -Wswitch-default -Wmain -pedantic-errors -pedantic -w -Wfatal-errors -Wextra -Wall -g3
-CFLAGS=-std=c11 -fexpensive-optimizations -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline -Wunreachable-code -Wmissing-declarations -Wmissing-include-dirs -Wswitch-enum -Wswitch-default -Wmain -pedantic-errors -pedantic -w -Wfatal-errors -Wextra -Wall -g3 -O0
+CFLAGS=-std=c11 -fexpensive-optimizations -Wshadow -Winit-self -Wredundant-decls -Wcast-align -Wundef -Wfloat-equal -Winline -Wunreachable-code -Wmissing-declarations -Wmissing-include-dirs -Wswitch-enum -Wswitch-default -Wmain -pedantic-errors -pedantic -w -Wfatal-errors -Wextra -Wall
 LIBS=-lm -lpthread
 LNK=gcc
 
@@ -14,6 +14,7 @@ all: saturn-v
 
 saturn-v: auto_pilot.o communication.o telemetry.o base64.o core.o time_util.o celestial_objects.o file_util.o sha1.o cJSON.o log.o spacecraft_components.o cWebSockets.o memory_manager.o saturn-v.o socket_io.o main_computer.o string_util.o physics.o
 	$(LNK) auto_pilot.o communication.o telemetry.o base64.o core.o time_util.o celestial_objects.o file_util.o sha1.o cJSON.o log.o spacecraft_components.o cWebSockets.o memory_manager.o saturn-v.o socket_io.o main_computer.o string_util.o physics.o -o saturn-v $(LIBS)
+	rm *.o
 
 saturn-v.o: source/saturn-v.c
 	$(CC) -c source/saturn-v.c $(CFLAGS)
