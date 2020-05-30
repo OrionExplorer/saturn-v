@@ -226,16 +226,12 @@ extern int					ip_proto_ver;
 extern COMMUNICATION_SESSION			communication_session_;
 extern fd_set				master;
 
-TELEMETRY					telemetry_data;
-TELEMETRY 					cached_telemetry_data;
-FLIGHT_STATUS				MAIN_FLIGHT_STATUS;
-
-enum vCONTROL_MODE {
+typedef enum vCONTROL_MODE {
 	COMPUTER,
 	CONNECTION
-};
+} vCONTROL_MODE;
 
-enum vDEVICE {
+typedef enum vDEVICE {
 	INTERNAL_GUIDANCE,
 	S1,
 	S2,
@@ -253,9 +249,9 @@ enum vDEVICE {
 	ROLL_MOD,
 	YAW_MOD,
 	ITERATIVE_GUIDANCE_MODE
-};
+} vDEVICE;
 
-enum vCOMMAND {
+typedef enum vCOMMAND {
 	START,
 	STOP,
 	TANK,
@@ -269,34 +265,34 @@ enum vCOMMAND {
 	DECREASE,
 	JETTISON,
 	INTERSTAGE_JETTISON
-};
+} vCOMMAND;
 
-enum vCONNECTION_TYPE {
+typedef enum vCONNECTION_TYPE {
 	CUNKNOWN,
 	CWEBSOCKET,
 	CSOCKET
-};
+} vCONNECTION_TYPE;
 
-enum vCONNECTION_STATUS {
+typedef enum vCONNECTION_STATUS {
 	CDISCONNECTED,
 	CCONNECTED,
 	CPENDING
-};
+} vCONNECTION_STATUS;
 
-enum FLIGHT_STATUS {
+typedef enum FLIGHT_STATUS {
 	LAUNCH_FROM_EARTH,
 	STABLE_ORBIT,
 	TRANSFER_ORBIT
-};
+} FLIGHT_STATUS;
 
 /* Struktura przechowująca informacje o sockecie */
-struct SOCKET_INFO {
+typedef struct SOCKET_INFO {
 	vCONNECTION_TYPE		type;
 	vCONNECTION_STATUS		connection_status;
-};
+} SOCKET_INFO;
 
 /* Struktura przechowuje informacje o pod³¹czonym kliencie */
-struct CONNECTED_CLIENT {
+typedef struct CONNECTED_CLIENT {
 	int					socket_descriptor;
 	SOCKET_INFO			socket_info;
 	short				binded;
@@ -304,8 +300,12 @@ struct CONNECTED_CLIENT {
 	vCONTROL_MODE		mode;
 	char				name[ STD_BUFF_SIZE ];
 	short				no_cache;
-};
+} CONNECTED_CLIENT;
 
 CONNECTED_CLIENT			connected_clients[ MAX_CLIENTS ];
+
+TELEMETRY					telemetry_data;
+TELEMETRY 					cached_telemetry_data;
+FLIGHT_STATUS				MAIN_FLIGHT_STATUS;
 
 #endif

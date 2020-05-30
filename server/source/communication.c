@@ -96,7 +96,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 							LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_STR );
 						}
 
-						if( username != NULL ) {
+						/*if( username != NULL ) {
 							free( username );
 							username = NULL;
 						}
@@ -104,7 +104,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 						if( password != NULL ) {
 							free( password );
 							password = NULL;
-						}
+						}*/
 					} else {
 						SOCKET_send( &communication_session_, client, LOGIN_STR, -1 );
 						LOG_print( "[%s] [%d] Command sent: \"%s\".\n", TIME_get_gmt(), client->socket_descriptor, LOGIN_STR );
@@ -147,10 +147,10 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 				COMMUNICATION_chat_to_all( command, client );
 			}
 
-			if( command != NULL ) {
+			/*if( command != NULL ) {
 				free( command );
 				command = NULL;
-			}
+			}*/
 		}
 
 		if( response_mode != NULL ) {
@@ -162,7 +162,7 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 		}
 	}
 
-	if( command_type != NULL ) {
+	/*if( command_type != NULL ) {
 		free( command_type );
 		command_type = NULL;
 	}
@@ -170,7 +170,9 @@ void COMMUNICATION_parse_command( CONNECTED_CLIENT *client, const char *data ) {
 	if( response_mode != NULL ) {
 		free( response_mode );
 		response_mode = NULL;
-	}
+	}*/
+
+	cJSON_Delete( json );
 }
 
 void COMMUNICATION_send_to_all( char *msg ) {

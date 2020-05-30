@@ -25,7 +25,7 @@ Autor: Marcin Kelar ( marcin.kelar@gmail.com )
 char	app_path[ MAX_PATH_LENGTH ];
 char	app_auth[ SMALL_BUFF_SIZE ];
 /* Prędkość dzialania symulacji */
-int		simulation_speed;
+int		simulation_speed = 1;
 /*Pe�na nazwa pliku ( +�cie�ka dost�pu ) "log.txt" */
 char	LOG_filename[ MAX_PATH_LENGTH ];
 
@@ -142,24 +142,8 @@ short CORE_load_configuration( void ) {
 				LOG_print( "Countdown start at: %.1f\n", telemetry_data.mission_time );
 			}
 
-			if( remote_password_JSON != NULL ) {
-				free( remote_password_JSON );
-				remote_password_JSON = NULL;
-			}
-			if( simulation_speed_JSON != NULL ) {
-				free( simulation_speed_JSON );
-				simulation_speed_JSON = NULL;
-			}
-			if( countdown_start_JSON != NULL ) {
-				free( countdown_start_JSON );
-				countdown_start_JSON = NULL;
-			}
-
-			if( json ) {
-				free( json );
-				json = NULL;
-			}
 		}
+		cJSON_Delete( json );
 		fclose( cfg_file );
 	} else {
 		printf("\nWARNING: Remote access to this computer is possible without authorization.\n\n");
